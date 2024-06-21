@@ -116,7 +116,10 @@ class Heating:
 
         # if the file is not empty, print out the data
         if not empty:
-            self.outString += "Completed Cycles: " + str(self.cycles[0] - self.cycles[-1] + 1) + "/" + str(self.cycles[0]) + "\n\n"
+            if (self.cycles[0] - self.cycles[-1] + 1) > self.cycles[0]:
+                self.outString += "Completed Cycles: " + str(self.cycles[0]) + "/" + str(self.cycles[0]) + "\n\n"
+            else:
+                self.outString += "Completed Cycles: " + str(self.cycles[0] - self.cycles[-1] + 1) + "/" + str(self.cycles[0]) + "\n\n"
             self.outString += "Number of Precursors: " + str(self.numPrecursors) + "\n\n"
             self.outString += "Inner Heater Final Temp: " + str(self.innerHeater[-1]) + "\u00b0 C" + "\n\n"
             self.outString += "Outer Heater Final Temp: " + str(self.outerHeater[-1]) + "\u00b0 C" + "\n\n"

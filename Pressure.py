@@ -86,7 +86,10 @@ class Pressure:
 
         # if the file is not empty, print out the data
         if not empty:
-            self.outString += "Completed Cycles: " + str(self.cycles[0] - self.cycles[-1] + 1) + "/" + str(self.cycles[0]) + "\n\n"
+            if (self.cycles[0] - self.cycles[-1] + 1) > self.cycles[0]:
+                self.outString += "Completed Cycles: " + str(self.cycles[0]) + "/" + str(self.cycles[0]) + "\n\n"
+            else:
+                self.outString += "Completed Cycles: " + str(self.cycles[0] - self.cycles[-1] + 1) + "/" + str(self.cycles[0]) + "\n\n"
 
 
     # Parses through the titles of the files and counts how many of each recipe is in the directory
