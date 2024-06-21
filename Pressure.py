@@ -1,11 +1,13 @@
 import matplotlib.pyplot as plt
 import timeit
 import os
+import glob
 from datetime import datetime
+
 
 class Pressure:
 
-    def __init__(self, pressureFilePath, pressureDirPath):
+    def __init__(self, pressureDirPath, pressureFilePath=""):
         # Pressure Data (Float in Torr) and Time (Float in ms)
         self.pTime = []
         self.Pressure = []
@@ -20,6 +22,8 @@ class Pressure:
         self.recipe = ""
         self.recipes = ["Al2O3", "TiO2", "HfO2", "ZrO2", "ZnO", "Ru", "Pt", "Ta2O5"]
         self.ingredientStack = []
+        self.fileStack = []
+        self.dir_list = []
 
         self.outString = ""
 
@@ -27,8 +31,8 @@ class Pressure:
     def readDir(self):
         path = self.pressureDirPath
         try:
-            dir_list = os.listdir(path)
-            self.parseTitles(dir_list)
+            self.dir_list = os.listdir(path)
+            self.parseTitles()
         except NotADirectoryError:
             print("DIRECTORY NOT FOUND, PROCESS ABORTED. \n Hint: Try putting in a valid directory path.")
             return
@@ -76,14 +80,14 @@ class Pressure:
             self.outString += "Completed Cycles: " + str(self.cycles[0] - self.cycles[-1] + 1) + "/" + str(self.cycles[0]) + "\n\n"
 
     # Parses through the titles of the files and counts how many of each recipe is in the directory
-    def parseTitles(self, dir_list):
+    def parseTitles(self):
         try:
-            foobar = dir_list[0]
+            foobar = self.dir_list[0]
         except IndexError:
             print("DIRECTORY IS EMPTY, PROCESS ABORTED. \n Hint: Try putting in a directory with files.")
             return
 
-        for i in dir_list:
+        for i in self.dir_list:
             title = i.lower()
             for j in range(self.recipes.__len__()):
                 if title.find(self.recipes[j].lower()) != -1:
@@ -92,8 +96,10 @@ class Pressure:
             if (title.find("standby") == -1) and (title.find("pulse") == -1):
                 self.ingredientStack.append("Unknown")
         
-        self.outString += "Most Recent: " + str(self.ingredientStack) + "\n\n"
+        # self.outString += "Most Recent: " + str(self.ingredientStack) + "\n\n"
 
+
+    # Generates a report of the pressure data and returns it as a string
     def genReport(self):
         self.outString = self.outString = "----------------------------------------------\n\nPRESSURE REPORT AT " + datetime.now().strftime("%H:%M:%S") + " ON " + datetime.now().strftime("%m/%d/%Y") + "\n\n----------------------------------------------\n\n"
         self.readFile()
@@ -102,10 +108,75 @@ class Pressure:
         return self.outString
 
 
+    # Plots the Pressure vs Time and saves it as a png file
+    def plotPressure(self):
+        # Plotting the Pressure vs Time
+        if (self.pTime.__len__() > 0):
+            if (self.pTime.__len__() < 1500):
+                fig, ax = plt.subplots()
+                fig.suptitle('Pressure Data')
+                fig.set_size_inches(8, 8)
+                fig.supxlabel('Time (ms)')
+                fig.supylabel('Pressure (Torr)')
+                ax.plot(self.pTime, self.Pressure)
+                fig.tight_layout()
+                plt.show()
+                fig.savefig("Output_Plots/PressureData.png")
+
+            else:
+                lastP = self.Pressure[-1500:]
+                lastT = self.pTime[-1500:]
+                fig, ax = plt.subplots(2, 1)
+                fig.suptitle('Pressure Data')
+                fig.set_size_inches(8, 8)
+                fig.supxlabel('Time (ms)')
+                fig.supylabel('Pressure (Torr)')
+                ax[0].plot(self.pTime, self.Pressure, 'tab:blue')
+                ax[1].set_title('Pressure Last 1500ms')
+                ax[1].plot(lastT, lastP, 'tab:orange', linestyle='solid')
+                fig.tight_layout()
+                # plt.show()
+                fig.savefig("Output_Plots/PressureData.png")
+
+        else:
+            print("NO DATA TO PLOT, PROCESS ABORTED. \n Hint: Try putting in a file with data.")
+            return
+
+
+    def initialize(self, e=5):
+        # tuples of (filename, creation time)
+        times = []
+        path = self.pressureFilePath
+        self.readDir()
+        listFiles = self.dir_list
+        for i in listFiles:
+            filepath = self.pressureDirPath + "/" + i
+            # get creation time
+            times.append((filepath, os.path.getctime(filepath)))
+                
+        # sort by creation time
+        times.sort(key=lambda x: x[1])
+
+        for i in range(e):
+            self.pressureFilePath = times[i][0]
+            self.fileStack.append(self.pressureFilePath)
+        
+        print("Initialized Pressure Data Stack")
+
+
+    def sendData(self):
+        self.pressureFilePath = self.fileStack.pop()
+        print(self.pressureFilePath)
+        self.plotPressure()
+        return self.genReport()
+
+
 
 def main():
     pressure = Pressure("/Users/andrew/Desktop/SNF Projects/Tool-Data/Pressure-Data/2024_06_13-12-56_Al2O3 - STANDARD.txt", "/Users/andrew/Desktop/SNF Projects/Tool-Data/Pressure-Data")
+    pressure.initialize()
     print(pressure.genReport())
+    pressure.plotPressure()
 
 
 if __name__ == "__main__":

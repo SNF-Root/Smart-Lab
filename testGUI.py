@@ -2,8 +2,7 @@ import tkinter as tk
 from tkinter import *
 from PIL import Image, ImageTk
 
-
-# default number of entries = 5 (Approx 8 seconds to load if all enourmous files)
+# default number of entries = 5
 e = 5
 
 from Pressure import Pressure
@@ -31,11 +30,11 @@ def save_and_open_new_window():
         root.destroy()  # Close the current window
         open_new_window()
 
-
 def quit_app():
     root.quit()
 
-
+def on_vertical(event):
+    canvas.yview_scroll(-1 * event.delta, 'units')
 
 def open_new_window():
     new_window = tk.Tk()
@@ -47,16 +46,9 @@ def open_new_window():
     frame.pack(fill=tk.BOTH, expand=True)
 
     # Create a canvas
+    global canvas
     canvas = tk.Canvas(frame)
     canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-
-
-    def on_vertical(event):
-        canvas.yview_scroll(-1 * event.delta, 'units')
-
-
-    # def on_horizontal(event):
-    #     canvas.xview_scroll(-1 * event.delta, 'units')
 
     # Add a scrollbar to the canvas
     scrollbar = tk.Scrollbar(frame, orient=tk.VERTICAL, command=canvas.yview)
@@ -68,81 +60,37 @@ def open_new_window():
 
     # Bind the scroll wheel event
     canvas.bind_all('<MouseWheel>', on_vertical)
-    # canvas.bind_all('<Shift-MouseWheel>', on_horizontal)
 
     # Create another frame inside the canvas
-    
+    global second_frame
     second_frame = tk.Frame(canvas)
     canvas.create_window((0, 0), window=second_frame, anchor="nw")
 
-    
-    # for i in range(50):  # Add many labels to demonstrate the scrollbar
-    #     tk.Label(second_frame, text=f"Additional content {i + 1}").pack()
-
-    text_image_frame = tk.Frame(second_frame, bd=2, relief="groove")
-    text_image_frame.pack(pady=20, padx=20, fill=tk.X)
-
-
-
-    generate_reports(second_frame)
-    # Update the scroll region and scroll to the bottom
-    second_frame.update_idletasks()  # Ensure all widgets are drawn
-    canvas.configure(scrollregion=canvas.bbox("all"))
-    canvas.yview_moveto(1.0)  # Scroll to the bottom
-
-    # # Add a label for text
-    # h = Heating("/Users/andrew/Desktop/SNF Projects/Tool-Data/Heating-Data/2024_06_13-21-21_MV standard Al2O3 4wtr pulse first 80deg.txt", "/Users/andrew/Desktop/SNF Projects/Tool-Data/Heating-Data")
-    # p = Pressure("/Users/andrew/Desktop/SNF Projects/Tool-Data/Pressure-Data/2024_06_13-12-56_Al2O3 - STANDARD.txt", "/Users/andrew/Desktop/SNF Projects/Tool-Data/Pressure-Data")
-    # imageh = "/Users/andrew/Desktop/SNF Projects/Tool-Data/Output_Plots/Precursor Heating Data.png"
-    # imagep = "/Users/andrew/Desktop/SNF Projects/Tool-Data/Output_Plots/PressureData.png"
-    # out = h.genReport()
-    # # out = "----------------------------------------------\n\nHEATING REPORT AT 11:01:27 ON 06/20/2024\n\n----------------------------------------------\n\nCompleted Cycles: 550 / 550\n\nNumber of Precursors: 3\n\nInner Heater Final Temp: 1000.0°C\n\nOuter Heater Final Temp: 1000.0°C\n\nAverage Temp of Precursor 1: 1000.0°C\n\nAverage Temp of Precursor 2: 1000.0°C\n\nAverage Temp of Precursor 3: 1000.0°C\n\nRecipe: 100C_TiO2\n\n----------------------------------------------"
-    # text_label = tk.Label(text_image_frame, text=out, wraplength=500, justify=tk.LEFT, font=("System", 18))
-    # text_label.pack(side=tk.LEFT, padx=10, pady=10, expand=True, fill=tk.BOTH)
-
-    # # Add a label for the image
-    # img = Image.open(imageh)  # Change this to your image path
-    # img = img.resize((600,600), Image.LANCZOS)
-    # img = ImageTk.PhotoImage(img)
-    # image_label = tk.Label(text_image_frame, image=img)
-    # image_label.image = img  # Keep a reference to the image
-    # image_label.pack(side=tk.RIGHT, padx=10, pady=10)
-
-
-
+    generate_reports()
 
     quit_button_frame = tk.Frame(new_window)
     quit_button_frame.pack(side=tk.BOTTOM, fill=tk.X)
-    new_quit_button = tk.Button(second_frame, text="Quit", command=new_window.destroy)
-    new_quit_button.pack(side=tk.BOTTOM, pady=10)
+    new_quit_button = tk.Button(quit_button_frame, text="Quit", command=new_window.destroy)
+    new_quit_button.pack(pady=10)
 
     new_window.mainloop()
 
-
-
-def generate_reports(second_frame):
+def generate_reports():
     reports = []
-    h = Heating("/Users/andrew/Desktop/SNF Projects/Tool-Data/Heating-Data/2024_06_13-21-21_MV standard Al2O3 4wtr pulse first 80deg.txt", "/Users/andrew/Desktop/SNF Projects/Tool-Data/Heating-Data")
-    p = Pressure("/Users/andrew/Desktop/SNF Projects/Tool-Data/Pressure-Data")
-    p.initialize(e)
-
-    for _ in range(e):
+    for i in range(e):
         text_image_frame = tk.Frame(second_frame, bd=2, relief="groove")
         text_image_frame.pack(pady=20, padx=20, fill=tk.X)
         
         # Add a label for text
-        
+        h = Heating("/Users/andrew/Desktop/SNF Projects/Tool-Data/Heating-Data/2024_06_13-21-21_MV standard Al2O3 4wtr pulse first 80deg.txt", "/Users/andrew/Desktop/SNF Projects/Tool-Data/Heating-Data")
+        p = Pressure("/Users/andrew/Desktop/SNF Projects/Tool-Data/Pressure-Data/2024_06_13-12-56_Al2O3 - STANDARD.txt", "/Users/andrew/Desktop/SNF Projects/Tool-Data/Pressure-Data")
         imageh = "/Users/andrew/Desktop/SNF Projects/Tool-Data/Output_Plots/Precursor Heating Data.png"
-        imagep = "/Users/andrew/Desktop/SNF Projects/Tool-Data/Output_Plots/PressureData.png"
-        
-        out = p.sendData()
-        
-        # out = h.genReport()
+        out = h.genReport()
         text_label = tk.Label(text_image_frame, text=out, wraplength=500, justify=tk.LEFT, font=("System", 18))
         text_label.pack(side=tk.LEFT, padx=10, pady=10, expand=True, fill=tk.BOTH)
 
         # Add a label for the image
-        img = Image.open(imagep)  # Change this to your image path
+        img = Image.open(imageh)  # Change this to your image path
         img = img.resize((600,600), Image.LANCZOS)
         img = ImageTk.PhotoImage(img)
         image_label = tk.Label(text_image_frame, image=img)
@@ -154,9 +102,6 @@ def generate_reports(second_frame):
     for report in reports:
         report.pack_forget()
         report.pack(pady=20, padx=20, fill=tk.X)
-
-
-
 
 # Create the main window
 root = tk.Tk()

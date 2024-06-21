@@ -103,7 +103,6 @@ class Heating:
 
         # if the file is not empty, print out the data
         if not empty:
-            print("bruh")
             self.outString += "Completed Cycles: " + str(self.cycles[0] - self.cycles[-1] + 1) + "/" + str(self.cycles[0]) + "\n\n"
             self.outString += "Number of Precursors: " + str(self.numPrecursors) + "\n\n"
             self.outString += "Inner Heater Final Temp: " + str(self.innerHeater[-1]) + "\u00b0 C" + "\n\n"
@@ -148,6 +147,7 @@ class Heating:
             # print("Average Temp of Precursor", i+1, ":", str(round(sum/precursors[i].__len__(), 1)) +  "\u00b0 C")
 
 
+    # Generates the report and returns it as a string
     def genReport(self):
         self.outString = "----------------------------------------------\n\nHEATING REPORT AT " + datetime.now().strftime("%H:%M:%S") + " ON " + datetime.now().strftime("%m/%d/%Y") + "\n\n----------------------------------------------\n\n"
         self.readFile()
@@ -156,13 +156,66 @@ class Heating:
         return self.outString
 
 
+    # Generates a plot of the data and saves it to the Output_Plots directory
+    def plotHeating(self):
+        # Plotting the Heating Data
+        # Graph the Non-Precursor Temperature Data
+        fig, axs = plt.subplots(3, 2)
+        fig.suptitle('Non-Precursor Heating Data')
+        fig.supxlabel('Time (s)')
+        fig.supylabel('Temperature (C)')
+        fig.set_size_inches(8, 8)
+        axs[0, 0].plot(self.hTime, self.trap, 'tab:blue')
+        axs[0, 0].set_title('Trap/Pump')
+        axs[0, 1].plot(self.hTime, self.stopValve, 'tab:orange')
+        axs[0, 1].set_title('Stop Valve')
+        axs[1, 0].plot(self.hTime, self.outerHeater, 'tab:green')
+        axs[1, 0].set_title('Outer Heater')
+        axs[1, 1].plot(self.hTime, self.innerHeater, 'tab:red')
+        axs[1, 1].set_title('Inner Heater')
+        axs[2, 0].plot(self.hTime, self.pManifold, 'tab:purple')
+        axs[2, 0].set_title('Precursor Manifold')
+        axs[2, 1].plot(self.hTime, self.mfc1, 'tab:brown')
+        axs[2, 1].set_title('MFC1')
+        fig.tight_layout()
+        fig.savefig('Output_Plots/Non-Precursor Heating Data.png')
+        # plt.show()
+        
+        # Plotting the Precursor Data
+        # Graph the Precursor Temperature Data
+        if self.numPrecursors >= 0:
+            fig, axs = plt.subplots(self.numPrecursors, 1)
+            fig.suptitle('Precursor Heating Data')
+            fig.supxlabel('Time (s)')
+            fig.supylabel('Temperature (C)')
+            fig.set_size_inches(8, 8)
+            colors = ['tab:blue', 'tab:orange', 'tab:green', 'tab:red', 'tab:purple']
+            for i in range(self.numPrecursors):
+                axs[i].plot(self.hTime, self.precursors[i], colors[i])
+                axs[i].set_title('Precursor ' + str(i + 1))
+            fig.tight_layout()
+            fig.savefig('Output_Plots/Precursor Heating Data.png')
+            # plt.show()
+
+        else:
+            fig = plt.figure()
+            fig.suptitle('Precursor Heating Data')
+            fig.set_size_inches(8, 8)
+            fig.supxlabel('Time (s)')
+            fig.supylabel('Temperature (C)')
+            fig.tight_layout()
+            fig.savefig('Output_Plots/Precursor Heating Data.png')
+            # plt.show()
+            print("Graphing Aborted: No Precursor Data")
+
+
+        
+
+
 def main():
-    # print("HEATING REPORT AT" , datetime.now().strftime("%H:%M:%S"), 
-    #       "ON", datetime.now().strftime("%m/%d/%Y"))
-    # print("----------------------------------------")
-    
     heating = Heating("/Users/andrew/Desktop/SNF Projects/Tool-Data/Heating-Data/2024_06_13-21-21_MV standard Al2O3 4wtr pulse first 80deg.txt", "/Users/andrew/Desktop/SNF Projects/Tool-Data/Heating-Data")
     print(heating.genReport())
+    heating.plotHeating()
 
 
 if __name__ == "__main__":
