@@ -1,7 +1,5 @@
 import matplotlib.pyplot as plt
-import timeit
 import os
-import glob
 from datetime import datetime
 
 
@@ -27,6 +25,7 @@ class Pressure:
 
         self.outString = ""
 
+
     # Reads through directory and prints out how many of each recipe is in the directory
     def readDir(self):
         path = self.pressureDirPath
@@ -40,9 +39,15 @@ class Pressure:
 
     # Reads through the txt file and prints out the recipe, pressure, time, and cycles
     def readFile(self):
-
         path = self.pressureFilePath
+        self.pTime = []
+        self.Pressure = []
+        self.cycles = []
+        self.recipe = ""
+       
+        # If the file is empty
         empty = True
+        # Iterator to find line 1 of file, which contains the recipe name at the end
         iter = 0
 
         try:
@@ -51,6 +56,7 @@ class Pressure:
             print("FILE NOT FOUND, PROCESS ABORTED. \n Hint: Try putting in a valid file path.")
             return
 
+        # main loop to read through the file line by line
         with open(path, "r") as file:
             for line in file:
                 data = line.strip().replace(" - ", " ").split()
@@ -60,7 +66,15 @@ class Pressure:
                     continue
                 if data[0] == "Pressure":
                     continue
-                
+
+                # If the file is not empty, record the data
+                empty = False
+                self.pTime.append(float(data[0]))
+                self.Pressure.append(float(data[1]))
+                self.cycles.append(int(data[2]))
+
+                iter += 1
+                # Find the recipe name
                 if iter == 1:
                     for i in range(data.__len__() - 3):
                         self.recipe += data[i+3] + " "
@@ -69,15 +83,11 @@ class Pressure:
                         if self.recipe.find(key) != -1:
                             self.recipe = key
 
-                empty = False
-                self.pTime.append(float(data[0]))
-                self.Pressure.append(float(data[1]))
-                self.cycles.append(int(data[2]))
 
-                iter += 1
-
+        # if the file is not empty, print out the data
         if not empty:
             self.outString += "Completed Cycles: " + str(self.cycles[0] - self.cycles[-1] + 1) + "/" + str(self.cycles[0]) + "\n\n"
+
 
     # Parses through the titles of the files and counts how many of each recipe is in the directory
     def parseTitles(self):
@@ -120,7 +130,7 @@ class Pressure:
                 fig.supylabel('Pressure (Torr)')
                 ax.plot(self.pTime, self.Pressure)
                 fig.tight_layout()
-                plt.show()
+                # plt.show()
                 fig.savefig("Output_Plots/PressureData.png")
 
             else:
@@ -146,7 +156,6 @@ class Pressure:
     def initialize(self, e=5):
         # tuples of (filename, creation time)
         times = []
-        path = self.pressureFilePath
         self.readDir()
         listFiles = self.dir_list
         for i in listFiles:
@@ -157,26 +166,26 @@ class Pressure:
         # sort by creation time
         times.sort(key=lambda x: x[1])
 
-        for i in range(e):
-            self.pressureFilePath = times[i][0]
-            self.fileStack.append(self.pressureFilePath)
-        
+        for _ in range(e):
+            self.pressureFilePath = times[_][0]
+            self.fileStack.insert(0, self.pressureFilePath)
         print("Initialized Pressure Data Stack")
 
 
     def sendData(self):
         self.pressureFilePath = self.fileStack.pop()
         print(self.pressureFilePath)
+        out = self.genReport()
+        # print(self.pTime[0])
         self.plotPressure()
-        return self.genReport()
+        return out
 
 
 
 def main():
-    pressure = Pressure("/Users/andrew/Desktop/SNF Projects/Tool-Data/Pressure-Data/2024_06_13-12-56_Al2O3 - STANDARD.txt", "/Users/andrew/Desktop/SNF Projects/Tool-Data/Pressure-Data")
+    pressure = Pressure("/Users/andrew/Desktop/SNF Projects/Tool-Data/Pressure-Data")
     pressure.initialize()
-    print(pressure.genReport())
-    pressure.plotPressure()
+    pressure.sendData()
 
 
 if __name__ == "__main__":

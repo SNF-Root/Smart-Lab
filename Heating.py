@@ -5,7 +5,7 @@ from datetime import datetime
 
 class Heating:
 
-    def __init__(self, heatingFilePath, heatingDirPath):
+    def __init__(self, heatingDirPath, heatingFilePath=""):
         # Heater Data (Floats in Celcius) and Time (Float in s)
         self.hTime = []
         self.trap = []
@@ -16,7 +16,6 @@ class Heating:
         self.precursors = [[], [], [], [], []]
         self.mfc1 = []
         self.numPrecursors = 0
-
         # Cycles (int)
         self.cycles = []
 
@@ -26,17 +25,20 @@ class Heating:
 
         # Recipe Info
         self.currentRecipe = ""
-        self.ingredientStack = []
         self.recipes = ["Al2O3", "TiO2", "HfO2", "ZrO2", "ZnO", "Ru", "Pt", "Ta2O5"]
+        self.ingredientStack = []
+        self.fileStack = []
+        self.dir_list = []
 
         self.outString = ""
+
 
     # Reads through directory and prints out how many of each recipe is in the directory
     def readDir(self):
         path = self.heatingDirPath
         try:
-            dir_list = os.listdir(path)
-            self.parseTitles(dir_list)
+            self.dir_list = os.listdir(path)
+            self.parseTitles()
         except NotADirectoryError:
             print("DIRECTORY NOT FOUND, PROCESS ABORTED. \n Hint: Try putting in a valid directory path.")
             return
@@ -45,6 +47,18 @@ class Heating:
     # Reads through the txt file and prints out the recipe, pressure, time, and cycles
     def readFile(self):
         path = self.heatingFilePath
+        self.hTime = []
+        self.trap = []
+        self.stopValve = []
+        self.outerHeater = []
+        self.innerHeater = []
+        self.pManifold = []
+        self.precursors = [[], [], [], [], []]
+        self.mfc1 = []
+        self.numPrecursors = 0
+        self.cycles = []
+        self.currentRecipe = ""
+
         # If the file is empty
         empty = True
         # Iterator to find line 1 of file, which contains the recipe name at the end
@@ -76,7 +90,6 @@ class Heating:
                 self.innerHeater.append(float(data[4]))
                 self.pManifold.append(float(data[5]))
                 
-
                 # Find the number of precursors
                 index = 6
                 while float(data[index]) < 1000:
@@ -109,22 +122,16 @@ class Heating:
             self.outString += "Outer Heater Final Temp: " + str(self.outerHeater[-1]) + "\u00b0 C" + "\n\n"
             self.averageTemp()
 
-            # print("Completed Cycles:", (cycles[0] - cycles[-1] + 1),  "/", cycles[0])
-            # print("Number of Precursors:", numPrecursors)
-            # print("Inner Heater Final Temp:", str(innerHeater[-1]) + "\u00b0 C")
-            # print("Outer Heater Final Temp:", str(outerHeater[-1]) + "\u00b0 C")
-            # averageTemp()
-
 
     # Parses through the titles of the files and counts how many of each recipe is in the directory
-    def parseTitles(self, dir_list):
+    def parseTitles(self):
         try:
-            foobar = dir_list[0]
+            foobar = self.dir_list[0]
         except IndexError:
             print("DIRECTORY IS EMPTY, PROCESS ABORTED. \n Hint: Try putting in a directory with files.")
             return
         
-        for i in dir_list:
+        for i in self.dir_list:
             title = i.lower()
             for j in range(self.recipes.__len__()):
                 if title.find(self.recipes[j].lower()) != -1:
@@ -133,7 +140,7 @@ class Heating:
             if (title.find("standby") == -1) and (title.find("pulse") == -1):
                 self.ingredientStack.append("Unknown")
         
-        self.outString += "Most Recent: " + str(self.ingredientStack) + "\n\n"
+        # self.outString += "Most Recent: " + str(self.ingredientStack) + "\n\n"
 
 
     # Helper method to calculate the average temperature of each precursor
@@ -182,8 +189,7 @@ class Heating:
         # plt.show()
         
         # Plotting the Precursor Data
-        # Graph the Precursor Temperature Data
-        if self.numPrecursors >= 0:
+        if self.numPrecursors > 0:
             fig, axs = plt.subplots(self.numPrecursors, 1)
             fig.suptitle('Precursor Heating Data')
             fig.supxlabel('Time (s)')
@@ -209,13 +215,38 @@ class Heating:
             print("Graphing Aborted: No Precursor Data")
 
 
+    def initialize(self, e=5):
+        # tuples of (filename, creation time)
+        times = []
+        self.readDir()
+        listFiles = self.dir_list
+        for i in listFiles:
+            filepath = self.heatingDirPath + "/" + i
+            # get creation time
+            times.append((filepath, os.path.getctime(filepath)))
+                
+        # sort by creation time
+        times.sort(key=lambda x: x[1])
+
+        for _ in range(e):
+            self.heatingFilePath = times[_][0]
+            self.fileStack.insert(0, self.heatingFilePath)
+        print("Initialized Heating Data Stack")
+
+
+    def sendData(self):
+        self.heatingFilePath = self.fileStack.pop()
+        print(self.heatingFilePath)
+        out = self.genReport()
+        # print(self.pTime[0])
+        self.plotHeating()
+        return out
         
 
-
 def main():
-    heating = Heating("/Users/andrew/Desktop/SNF Projects/Tool-Data/Heating-Data/2024_06_13-21-21_MV standard Al2O3 4wtr pulse first 80deg.txt", "/Users/andrew/Desktop/SNF Projects/Tool-Data/Heating-Data")
-    print(heating.genReport())
-    heating.plotHeating()
+    heating = Heating("/Users/andrew/Desktop/SNF Projects/Tool-Data/Heating-Data")
+    heating.initialize()
+    heating.sendData()
 
 
 if __name__ == "__main__":
