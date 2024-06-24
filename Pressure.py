@@ -155,10 +155,19 @@ class Pressure:
                 fig.savefig("Output_Plots/PressureData.png")
 
         else:
+            fig = plt.figure()
+            fig.suptitle('Precursor Heating Data')
+            fig.set_size_inches(8, 8)
+            fig.supxlabel('Time (s)')
+            fig.supylabel('Pressure (Torr)')
+            fig.tight_layout()
+            fig.savefig('Output_Plots/PressureData.png')
+            # plt.show()
             print("NO DATA TO PLOT, PROCESS ABORTED. \n Hint: Try putting in a file with data.")
             return
 
 
+    # Initializes the Pressure Data Stack with the most recent e files
     def initialize(self, e=5):
         # tuples of (filename, creation time)
         times = []
@@ -178,6 +187,7 @@ class Pressure:
         print("Initialized Pressure Data Stack")
 
 
+    # Sends the data to the GUI
     def sendData(self):
         self.pressureFilePath = self.fileStack.pop()
         print(self.pressureFilePath)
@@ -188,6 +198,7 @@ class Pressure:
 
 
 
+# Main function to test the Pressure class
 def main():
     pressure = Pressure("/Users/andrew/Desktop/SNF Projects/Tool-Data/Pressure-Data")
     pressure.initialize()

@@ -12,8 +12,9 @@ dir_path = "/Users/andrew/Library/CloudStorage/GoogleDrive-ajchang@ucsb.edu/My D
 newdir= ""
 currFile = "foobar"
 
+# Uploads the files to the Google Drive
 def upload():
-    newdir = dir_path + "/" + datetime.now().strftime("%H;%M;%S") + " | " + datetime.now().strftime("%m:%d:%Y")
+    newdir = dir_path + "/" + datetime.now().strftime("%H:%M:%S") + " | " + datetime.now().strftime("%m:%d:%Y")
     os.makedirs(newdir, exist_ok=True)
     shutil.copy("/Users/andrew/Desktop/SNF Projects/Tool-Data/Output_Plots/Precursor Heating Data.png", newdir)
     shutil.copy("/Users/andrew/Desktop/SNF Projects/Tool-Data/Output_Plots/PressureData.png", newdir)
@@ -23,10 +24,10 @@ def upload():
     print("Upload Complete")
 
 
+# main loop of the program
 def loop():
     global currFile
     while True:
-        time.sleep(2)
         list_of_files = glob.glob("/Users/andrew/Desktop/SNF Projects/Tool-Data/Heating-Data/*")
         latest_file = max(list_of_files, key=os.path.getctime)
 
@@ -34,7 +35,7 @@ def loop():
             currFile = latest_file
             print("New File Detected")
             upload()
-
+        time.sleep(2)
 
 def main():
     loop()

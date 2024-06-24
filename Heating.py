@@ -221,6 +221,7 @@ class Heating:
             print("Graphing Aborted: No Precursor Data")
 
 
+    # Initializes the data stack with the most recent e files
     def initialize(self, e=5):
         # tuples of (filename, creation time)
         times = []
@@ -240,6 +241,7 @@ class Heating:
         print("Initialized Heating Data Stack")
 
 
+    # Pops the most recent file from the stack and generates the report
     def sendData(self):
         self.heatingFilePath = self.fileStack.pop()
         print(self.heatingFilePath)
@@ -249,6 +251,7 @@ class Heating:
         return out
         
 
+# Main function to test the Heating class
 def main():
     heating = Heating("/Users/andrew/Desktop/SNF Projects/Tool-Data/Heating-Data")
     heating.initialize()
