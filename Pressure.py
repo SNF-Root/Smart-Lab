@@ -118,6 +118,9 @@ class Pressure:
         self.readFile()
         self.outString += "Recipe: " + self.recipe.upper() + "\n\n----------------------------------------------\n\n"
         # self.readDir()
+        file_path = "/Users/andrew/Desktop/SNF Projects/Tool-Data/Output_Text/Pressure Report.txt"
+        with open(file_path, "w") as file:
+            file.write(self.outString)
         return self.outString
 
 
