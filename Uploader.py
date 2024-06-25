@@ -1,6 +1,7 @@
 import os
 import shutil
 import glob
+import subprocess
 from datetime import datetime
 
 from Pressure import Pressure
@@ -24,6 +25,12 @@ def upload():
     print("Upload Complete")
 
 
+def rclone():
+    subprocess.run("rclone copy \"/Users/andrew/Desktop/SNF Projects/Tool-Data/Output_Text\" SNF-Root-Test:Output_Text --progress", shell=True)
+    # subprocess.run("rclone copy \"/Users/andrew/Desktop/SNF Projects/Tool-Data/Output_Plots\" SNF-Root-Test:Output_Plots --progress", shell=True)
+    return
+
+
 # main loop of the program
 def loop():
     global currFile
@@ -34,11 +41,12 @@ def loop():
         if (currFile == None) or (latest_file != currFile):
             currFile = latest_file
             print("New File Detected")
-            upload()
+            # upload()
+            rclone()
         time.sleep(2)
 
 def main():
-    loop()
+    rclone()
     # time.sleep(20)
     # os.remove(newdir)
     
