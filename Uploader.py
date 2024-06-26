@@ -4,7 +4,7 @@ import glob
 import subprocess
 from datetime import datetime
 import paramiko
-
+import getpass
 
 # from os import join, dirname
 from dotenv import load_dotenv
@@ -74,6 +74,12 @@ def transfer_file(ssh_client, local_file, remote_path):
         scp.put(local_file, remote_path, recursive=True)
 
 
+def prompt_for_password():
+    password = getpass.getpass("Enter your password: ")
+    print("Password entered successfully.")
+    return password
+
+
 def main():
     host = "10.32.74.194"
     user = "andrew"
@@ -81,6 +87,11 @@ def main():
     port = 22
     local_path = "/Users/andrew/Desktop/SNF Projects/Tool-Data/Output_Plots"
     remote_path = "/Users/andrew/Desktop/"
+    # env_path = "/Users/andrew/Desktop/SNF Projects/Tool-Data/.env"
+
+
+    # with open(env_path, "r") as file:
+    #     file.write(f"PASSKEY={prompt_for_password()}")
 
     load_dotenv()
     passkey = os.getenv("PASSKEY")
