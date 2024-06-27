@@ -1,5 +1,5 @@
 setuptools
-parakimo
+paramiko
 scp
 python-dotenv
 matplotlib

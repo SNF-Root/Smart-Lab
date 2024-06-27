@@ -7,7 +7,7 @@ setup(
     include_package_data=True,
     install_requires=[
         "setuptools",
-        "parakimo",
+        "paramiko",
         "scp",
         "python-dotenv",
         "matplotlib",
