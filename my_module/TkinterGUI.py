@@ -131,8 +131,8 @@ def open_new_window():
 
 def generate_reports(second_frame):
     reports = []
-    h = Heating("/Users/andrew/Desktop/SNF Projects/Tool-Data/data/Heating-Data")
-    p = Pressure("/Users/andrew/Desktop/SNF Projects/Tool-Data/data/Pressure-Data")
+    h = Heating("Tool-Data/data/Heating-Data")
+    p = Pressure("Tool-Data/data/Pressure-Data")
     p.initialize(e)
     h.initialize(e)
 
@@ -142,8 +142,8 @@ def generate_reports(second_frame):
         
         # Add a label for text
         
-        imageh = "/Users/andrew/Desktop/SNF Projects/Tool-Data/data/Output_Plots/Precursor Heating Data.png"
-        imagep = "/Users/andrew/Desktop/SNF Projects/Tool-Data/data/Output_Plots/PressureData.png"
+        imageh = "Tool-Data/data/Output_Plots/Precursor Heating Data.png"
+        imagep = "Tool-Data/data/Output_Plots/PressureData.png"
         
         out = h.sendData()
         

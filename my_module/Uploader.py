@@ -49,7 +49,7 @@ currFile = "foobar"
 
 
 def rclone():
-    subprocess.run("rclone copy \"/Users/andrew/Desktop/SNF Projects/Tool-Data/data/Output_Text\" SNF-Root-Test:Output_Text --progress", shell=True)
+    subprocess.run("rclone copy \"Tool-Data/data/Output_Text\" SNF-Root-Test:Output_Text --progress", shell=True)
     # subprocess.run("rclone copy \"/Users/andrew/Desktop/SNF Projects/Tool-Data/data/Output_Plots\" SNF-Root-Test:Output_Plots --progress", shell=True)
     return
 
@@ -85,7 +85,7 @@ def main():
     user = "andrew"
     passkey = ""
     port = 22
-    local_path = "/Users/andrew/Desktop/SNF Projects/Tool-Data/data/Output_Plots"
+    local_path = "Tool-Data/data/Output_Plots"
     remote_path = "/Users/andrew/Desktop/"
     # env_path = "/Users/andrew/Desktop/SNF Projects/Tool-Data/.env"
 
