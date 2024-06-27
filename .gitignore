@@ -1,2 +1,8 @@
 # Ignore .env files
 .env
+.DS_Store
+bin/
+include/
+lib/
+pyvenv.cfg
+startvenv.sh
