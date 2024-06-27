@@ -1,1 +1,0 @@
-	Pressure Time	Pressure 	Cycles Remaining	Recipe	Loop

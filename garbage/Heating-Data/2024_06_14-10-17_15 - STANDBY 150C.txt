@@ -1,1 +1,0 @@
-	Heater Time	Heater 6 	Heater 7	Heater 8	Heater 9	Heater 10	Heater 11	Heater 12	Heater 13	Heater 14	Heater 15	Heater 16	Heater 17	Program Time	MFC 1	MFC Time	Cycles Remaining	Recipe	Loop
