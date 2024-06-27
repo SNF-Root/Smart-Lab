@@ -1,0 +1,6 @@
+setuptools
+parakimo
+scp
+python-dotenv
+matplotlib
+python-dateutil

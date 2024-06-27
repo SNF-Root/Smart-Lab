@@ -1,0 +1,3 @@
+	Pressure Time	Pressure 	Cycles Remaining	Recipe	Loop
+	 0.069	 1.087	0	10 - STANDBY 100C	
+	 0.220	 0.975	0	10 - STANDBY 100C	
