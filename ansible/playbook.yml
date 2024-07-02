@@ -7,3 +7,11 @@
       user: root
       state: present
       key: "{{ lookup('file', 'something something id_rsa.pub') }}""
+
+
+      tasks:
+        - name: Copy from remote host to local machine
+          fetch:
+            src: //home/{{ ansible_user }}/Desktop/yourfile.txt
+            dest: /path
+            flat: yes
