@@ -9,8 +9,8 @@ import getpass
 # from os import join, dirname
 # from dotenv import load_dotenv
 # from scp import SCPClient
-from Pressure import Pressure
-from Heating import Heating
+from Machines.Savannah.Pressure import Pressure
+from Machines.Savannah.Heating import Heating
 
 import time
     # Uploads the files to the Google Drive
