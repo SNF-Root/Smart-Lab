@@ -18,14 +18,11 @@ python3 -m pip install -r requirements.txt
 
 echo "Dependencies installed."
 
-
-if [ -f "stopvenv.sh" ]; then
-    chmod +x stopvenv.sh
-fi
-
 export PYTHONPATH=$(pwd)
 
-python3 scripts/run_my_project.py
+# python3 scripts/run_my_project.py
+ansible-playbook -i ansible/hosts.yml ansible/playbook.yml
+
 
 deactivate
 

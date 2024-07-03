@@ -1,17 +1,27 @@
 ---
-- hosts: all
+- name: Copy files from remote hosts to local machine
+  hosts: all
+  gather_facts: no
+
+    # ansible.posix.authorized_key:
+      # user: root
+      # state: present
+      # key: "{{ lookup('file', 'something something id_rsa.pub') }}"
+
+  # tasks:
+  #   - name: Copy from remote host to local machine
+  #     fetch:
+  #       src: "{{ item.src }}"
+  #       dest: "{{ item.dest }}"
+  #       flat: yes
+  #     loop: "{{ file_location }}"
+
+
   tasks:
+    - name: Iterate over directories
+      include_tasks: fetch_files.yml
+      loop: "{{ directories }}"
+      loop_control:
+        loop_var: dir_info
+  
 
-  - name: Set authorized key taken from file
-    ansible.posix.authorized_key:
-      user: root
-      state: present
-      key: "{{ lookup('file', 'something something id_rsa.pub') }}""
-
-
-      tasks:
-        - name: Copy from remote host to local machine
-          fetch:
-            src: //home/{{ ansible_user }}/Desktop/yourfile.txt
-            dest: /path
-            flat: yes
