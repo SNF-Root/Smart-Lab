@@ -4,7 +4,7 @@
 
 The Tool-Data repository is designed to manage and organize data related to various tools used in our projects. This includes tool specifications, usage data, maintenance logs, and other relevant information. The repository aims to provide a centralized, easily accessible location for all tool-related data, facilitating better management and decision-making.
 
-![Flowchart](SmartLab_Flowchart.png)
+![Flowchart](Tool-Data/SmartLab_FLowchart.png)
 
 
 ## Table of Contents
