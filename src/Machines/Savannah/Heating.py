@@ -163,7 +163,7 @@ class Heating:
         self.readFile()
         self.outString += "Recipe: " + self.currentRecipe.upper() + "\n\n----------------------------------------------\n\n"
         # self.readDir()
-        file_path = "Tool-Data/data/Output_Text/Heating Report.txt"
+        file_path = "data/Output_Text/Heating Report.txt"
         with open(file_path, "w") as file:
             file.write(self.outString)
         return self.outString
@@ -172,11 +172,11 @@ class Heating:
     # Generates a plot of the data and saves it to the Output_Plots directory
     def plotHeating(self):
         try:
-            os.remove('Tool-Data/data/Output_Plots/Non-Precursor Heating Data.png')
+            os.remove('data/Output_Plots/Non-Precursor Heating Data.png')
         except FileNotFoundError:
             pass
         try:
-            os.remove('Tool-Data/data/Output_Plots/Precursor Heating Data.png')
+            os.remove('data/Output_Plots/Precursor Heating Data.png')
         except FileNotFoundError:
             pass
         
@@ -200,7 +200,7 @@ class Heating:
         axs[2, 1].plot(self.hTime, self.mfc1, 'tab:brown')
         axs[2, 1].set_title('MFC1')
         fig.tight_layout()
-        fig.savefig('Tool-Data/data/Output_Plots/Non-Precursor Heating Data.png')
+        fig.savefig('data/Output_Plots/Non-Precursor Heating Data.png')
         # plt.show()
         
         # Plotting the Precursor Data
@@ -215,7 +215,7 @@ class Heating:
                 axs[i].plot(self.hTime, self.precursors[i], colors[i])
                 axs[i].set_title('Precursor ' + str(i + 1))
             fig.tight_layout()
-            fig.savefig('Tool-Data/data/Output_Plots/Precursor Heating Data.png')
+            fig.savefig('data/Output_Plots/Precursor Heating Data.png')
             # plt.show()
 
         else:
@@ -225,7 +225,7 @@ class Heating:
             fig.supxlabel('Time (s)')
             fig.supylabel('Temperature (C)')
             fig.tight_layout()
-            fig.savefig('Tool-Data/data/Output_Plots/Precursor Heating Data.png')
+            fig.savefig('data/Output_Plots/Precursor Heating Data.png')
             # plt.show()
             print("Graphing Aborted: No Precursor Data")
 
@@ -262,7 +262,7 @@ class Heating:
 
 # Main function to test the Heating class
 def main():
-    heating = Heating("Tool-Data/data/Heating-Data")
+    heating = Heating("data/Heating-Data")
     heating.initialize()
     heating.sendData()
 

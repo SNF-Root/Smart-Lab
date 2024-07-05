@@ -4,7 +4,7 @@ import yaml
 
 # setup class that writes to the hosts.yml file to add a new host machine
 class WriteYaml:
-    
+
     # Constructor to initialize the host, user, source, and destination
     def __init__(self, host, user, source, destination):
         self.host = host

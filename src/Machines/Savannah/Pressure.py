@@ -118,7 +118,7 @@ class Pressure:
         self.readFile()
         self.outString += "Recipe: " + self.recipe.upper() + "\n\n----------------------------------------------\n\n"
         # self.readDir()
-        file_path = "Tool-Data/data/Output_Text/Pressure Report.txt"
+        file_path = "data/Output_Text/Pressure Report.txt"
         with open(file_path, "w") as file:
             file.write(self.outString)
         return self.outString
@@ -127,7 +127,7 @@ class Pressure:
     # Plots the Pressure vs Time and saves it as a png file
     def plotPressure(self):
         try:
-            os.remove("Tool-Data/data/Output_Plots/PressureData.png")
+            os.remove("data/Output_Plots/PressureData.png")
         except FileNotFoundError:
             pass
 
@@ -142,7 +142,7 @@ class Pressure:
                 ax.plot(self.pTime, self.Pressure)
                 fig.tight_layout()
                 # plt.show()
-                fig.savefig("Tool-Data/data/Output_Plots/PressureData.png")
+                fig.savefig("data/Output_Plots/PressureData.png")
 
             else:
                 lastP = self.Pressure[-1500:]
@@ -157,7 +157,7 @@ class Pressure:
                 ax[1].plot(lastT, lastP, 'tab:orange', linestyle='solid')
                 fig.tight_layout()
                 # plt.show()
-                fig.savefig("Tool-Data/data/Output_Plots/PressureData.png")
+                fig.savefig("data/Output_Plots/PressureData.png")
 
         else:
             fig = plt.figure()
@@ -166,7 +166,7 @@ class Pressure:
             fig.supxlabel('Time (s)')
             fig.supylabel('Pressure (Torr)')
             fig.tight_layout()
-            fig.savefig('Tool-Data/data/Output_Plots/PressureData.png')
+            fig.savefig('data/Output_Plots/PressureData.png')
             # plt.show()
             print("NO DATA TO PLOT, PROCESS ABORTED. \n Hint: Try putting in a file with data.")
             return
@@ -205,7 +205,7 @@ class Pressure:
 
 # Main function to test the Pressure class
 def main():
-    pressure = Pressure("Tool-Data/data/Pressure-Data")
+    pressure = Pressure("data/Pressure-Data")
     pressure.initialize()
     pressure.sendData()
 
