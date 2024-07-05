@@ -1,7 +1,7 @@
-setuptools
 paramiko
 scp
 python-dotenv
 matplotlib
 python-dateutil
 ansible
+PyYAML
