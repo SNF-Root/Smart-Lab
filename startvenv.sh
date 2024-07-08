@@ -20,8 +20,7 @@ echo "Dependencies installed."
 
 export PYTHONPATH=$(pwd)
 
-# python3 scripts/run_my_project.py
-ansible-playbook -i ansible/hosts.yml ansible/playbook.yml
+python3 scripts/run_my_project.py
 
 
 deactivate
