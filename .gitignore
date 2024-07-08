@@ -9,3 +9,4 @@ share/
 venv/
 __pycache__/
 .ipynb_checkpoints
+junk/
