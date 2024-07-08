@@ -2,6 +2,8 @@ import subprocess
 import os
 
 from src.uploader import Uploader
+from src.Machines.Savannah.Pressure import Pressure
+from src.Machines.Savannah.Heating import Heating
 
 def main():
     # ANSIBLE
@@ -23,9 +25,21 @@ def main():
             values = line.strip().split()
             runMachine.append(tuple(values))
 
-        for machine in runMachine:
-            for i in range(machine.__len__()):
-                subprocess.run(f"python3 src/Machines/{machine[0]}/{machine[i]}.py", shell=True)
+        # for machine in runMachine:
+        #     subprocess.run(f"cd src/Machines/{machine[0]}", shell=True)
+        #     print("1\n")
+        #     subprocess.run(f"pwd", shell=True)
+        #     for i in range(1, machine.__len__()):
+        #         subprocess.run(f"python3 src/Machines/{machine[0]}/{machine[i]}", shell=True)
+        #         print("2\n")
+        #     subprocess.run(f"cd ../../..", shell=True)
+        #     print("3\n")
+
+        p = Pressure("src/Machines/Savannah/data/Pressure-Data")
+        h = Heating("src/Machines/Savannah/data/Heating-Data")
+        p.run()
+        h.run()
+
 
         
     subdirectories = [name for name in os.listdir('src/Machines') if os.path.isdir(os.path.join('src/Machines', name))]

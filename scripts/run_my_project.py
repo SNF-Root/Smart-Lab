@@ -3,9 +3,12 @@ import subprocess
 import time
 import timeit
 
+from scripts.setupGUI import SetupGUI
+
+
 if __name__ == '__main__':
-    print("it works!")
-    subprocess.run("python3 setupGUI.py", shell=True)
+    g = SetupGUI()
+    g.run()
     while True:
         start = timeit.default_timer()
         src.main.main()

@@ -118,7 +118,7 @@ class Pressure:
         self.readFile()
         self.outString += "Recipe: " + self.recipe.upper() + "\n\n----------------------------------------------\n\n"
         # self.readDir()
-        file_path = "data/Output_Text/Pressure Report.txt"
+        file_path = "src/Machines/Savannah/data/Output_Text/Pressure Report.txt"
         with open(file_path, "w") as file:
             file.write(self.outString)
         return self.outString
@@ -126,8 +126,9 @@ class Pressure:
 
     # Plots the Pressure vs Time and saves it as a png file
     def plotPressure(self):
+        path = "src/Machines/Savannah/data/Output_Plots/PressureData.png"
         try:
-            os.remove("data/Output_Plots/PressureData.png")
+            os.remove(path)
         except FileNotFoundError:
             pass
 
@@ -142,7 +143,7 @@ class Pressure:
                 ax.plot(self.pTime, self.Pressure)
                 fig.tight_layout()
                 # plt.show()
-                fig.savefig("data/Output_Plots/PressureData.png")
+                fig.savefig(path)
 
             else:
                 lastP = self.Pressure[-1500:]
@@ -157,7 +158,7 @@ class Pressure:
                 ax[1].plot(lastT, lastP, 'tab:orange', linestyle='solid')
                 fig.tight_layout()
                 # plt.show()
-                fig.savefig("data/Output_Plots/PressureData.png")
+                fig.savefig(path)
 
         else:
             fig = plt.figure()
@@ -166,7 +167,7 @@ class Pressure:
             fig.supxlabel('Time (s)')
             fig.supylabel('Pressure (Torr)')
             fig.tight_layout()
-            fig.savefig('data/Output_Plots/PressureData.png')
+            fig.savefig(path)
             # plt.show()
             print("NO DATA TO PLOT, PROCESS ABORTED. \n Hint: Try putting in a file with data.")
             return
@@ -201,11 +202,14 @@ class Pressure:
         self.plotPressure()
         return out
 
+    def run(self):
+        self.initialize()
+        self.sendData()
 
 
 # Main function to test the Pressure class
 def main():
-    pressure = Pressure("data/Pressure-Data")
+    pressure = Pressure("src/Machines/Savannah/data/Pressure-Data")
     pressure.initialize()
     pressure.sendData()
 
