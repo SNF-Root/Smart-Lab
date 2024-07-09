@@ -35,7 +35,7 @@ class SetupGUI:
                     user = user_entry.get()
                     host = host_entry.get()
                     self.user_host_list.append((selected_option, user, host))
-                    print(f"User: {user}, Host: {host}, Option: {selected_option}")
+                    print(f"User: {user}, Host (IP): {host}, Option: {selected_option}")
                     print("Current user-host list:", self.user_host_list)
                     new_window.destroy()
 

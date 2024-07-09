@@ -1,4 +1,4 @@
-# Tool-Data Repository
+# Smart Lab
 
 ## Overview
 
@@ -21,46 +21,45 @@ To get started with the Tool-Data repository, clone the repository to your local
 
 ### Prerequisites
 
-- Git
-- Python (version 3.6 or higher)
-- Required Python libraries (listed in `requirements.txt`)
+- `Git`
+- `Python3` (version 3.6 or higher)
+- `SSH` **PASSWORDLESS** setup on all hosts (use `OpenSSH` on Windows machines)
+- `Rclone` setup on collector computer with cloud storage of choice
 
 ### Installation
 
 1. Clone the repository:
    ```sh
-   git clone https://github.com/yourusername/tool-data-repository.git
+   git clone https://github.com/SNF-Root/Tool-Data.git
    ```
 2. Navigate to the repository directory:
    ```sh
-   cd tool-data-repository
+   cd Tool-Data
    ```
-3. Install the required Python libraries:
+3. Create and run the setup `startvenv.sh`:
    ```sh
-   pip install -r requirements.txt
+   chmod +x startvenv.sh
+   source ./startvenv.sh
    ```
+   This will automatically ensure all the requirements are installed, enter a virtual environment, and run the whole program. From here you can add host machines to the program and add your Rclone root using the included setup tool.
 
 ## Usage
 
-### Data Processing
+### Setting Up
 
-To process the tool data, use the `data_processing.py` script. This script performs various data cleaning and transformation tasks.
-
-```sh
-python scripts/data_processing.py
-```
-
-### Data Analysis
-
-For analyzing the tool data, use the `data_analysis.py` script. This script generates insights and visualizations from the data.
+To set up the program at any time, use the `setupGUI.py` script. This script will open a GUI that will guide you to adding new machines/hosts to the existing list.
 
 ```sh
-python scripts/data_analysis.py
+python3 scripts/setupGUI.py
 ```
 
-### Adding New Data
+### Editing Existing Machine Entries
 
-To add new tool data, place the files in the appropriate directory within the `data` folder. Follow the naming conventions and formats described in the documentation.
+To edit the entries already saved, navigate to the `ansible/hosts.yml` file and feel free to add/edit new/existing host information using the same format.
+
+### View Local Output Data
+
+To view the output files of a specific machine stored locally on the collector, navigate to the `src/Machines/Machine-Of-Your-Choice/data` directory. There you will find directories labeled `Output_Plots` and `Output_Text` that contain graphs and reports respectively.
 
 
 ## License
@@ -70,7 +69,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Contact
 
 For questions or suggestions, please contact the project maintainers at:
-- **insert-name**: insert-email@gmail.com
-```
-
-Feel free to customize the sections further to match your specific project details and requirements.
+- **Andrew Chang**: ajchang@ucsb.edu

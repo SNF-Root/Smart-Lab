@@ -106,14 +106,14 @@ class WriteYaml:
 
 # Main function to demonstrate usage and test
 def main():
-    host = "10.32.78.231"
+    host = "10.32.75.154"
     user = "andrew"
     toolname = "Savannah"
     source = "/Users/andrew/Desktop/"
-    destination = "/Users/andrew/Desktop/SNF Projects/Tool-Data/data/Output_Text/"
+    destination = "/Users/andrew/Desktop/SNF Projects/Tool-Data/src/Machines/Savannah/data/Output_Text/"
     yml = WriteYaml(host, user, toolname, source, destination)
     yml.write_yaml()
-    yml.add_directory(host, "/Users/andrew/Desktop/", "/Users/andrew/Desktop/SNF Projects/Tool-Data/data/Output_Plots/")
+    yml.add_directory(host, "/Users/andrew/Desktop/", "/Users/andrew/Desktop/SNF Projects/Tool-Data/src/Machines/Savannah/data/Output_Plots/")
 
 
 if __name__ == "__main__":
