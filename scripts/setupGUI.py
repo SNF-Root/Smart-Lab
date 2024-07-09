@@ -1,14 +1,36 @@
 import tkinter as tk
 from tkinter import ttk
 
+from scripts.writeyaml import WriteYaml
+
 # Global list to store user and host inputs
 class SetupGUI:
 
+    # Constructor to initialize the user-host list and Rclone path
     def __init__(self):
         self.user_host_list = []
+        self.rclone_path = ""
 
+        # ADD MORE LATER
+        self.machinedict = {
+            "Savannah ALD": "Savannah",
+            "Fiji ALD": "Fiji"
+        }
+
+        self.how_many_folders = {
+            "Savannah ALD": (2, "Pressure", "Heating"),
+            "Fiji ALD": (2, "Pressure", "Heating")
+        }
+
+        self.destinations = {
+            "Savannah ALD": ["src/Machines/Savannah/data/Output_Text", "src/Machines/Savannah/data/Output_Plots"],
+            "Fiji ALD": ""
+        }
+
+
+    # Main runner of the GUI
     def run(self):
-        def on_submit():
+        def open_second_window():
             selected_option = combobox.get()
             if selected_option:
                 new_window = tk.Toplevel(root)
@@ -25,7 +47,7 @@ class SetupGUI:
                 user_entry.grid(row=1, column=1, padx=10, pady=5, sticky=(tk.W, tk.E))
 
                 # Create and place the Host label and entry
-                host_label = ttk.Label(new_window, text="Host:")
+                host_label = ttk.Label(new_window, text="Host (IP):")
                 host_label.grid(row=2, column=0, padx=10, pady=5, sticky=tk.E)
                 host_entry = ttk.Entry(new_window)
                 host_entry.grid(row=2, column=1, padx=10, pady=5, sticky=(tk.W, tk.E))
@@ -39,6 +61,30 @@ class SetupGUI:
                     print("Current user-host list:", self.user_host_list)
                     new_window.destroy()
 
+                    # Open folder window based on the number of folders required
+                    folder_window = tk.Toplevel(root)
+                    folder_window.title(f"{selected_option} Folders")
+
+                    folder_count, *folder_labels = self.how_many_folders[selected_option]
+                    folder_entries = []
+
+                    for idx, label in enumerate(folder_labels):
+                        folder_label = ttk.Label(folder_window, text=f"{label}:")
+                        folder_label.grid(row=idx, column=0, padx=10, pady=5, sticky=tk.E)
+                        folder_entry = ttk.Entry(folder_window)
+                        folder_entry.grid(row=idx, column=1, padx=10, pady=5, sticky=(tk.W, tk.E))
+                        folder_entries.append((label, folder_entry))
+
+                    def on_folder_submit():
+                        folder_data = {label: entry.get() for label, entry in folder_entries}
+                        print(f"Folder data for {selected_option}:", folder_data)
+                        folder_window.destroy()
+
+                    folder_submit_button = ttk.Button(folder_window, text="Submit", command=on_folder_submit)
+                    folder_submit_button.grid(row=folder_count, column=0, columnspan=2, pady=10)
+
+                    folder_window.grid_columnconfigure(1, weight=1)
+
                 # Create and place the Submit button for the second window
                 second_submit_button = ttk.Button(new_window, text="Submit", command=on_second_submit)
                 second_submit_button.grid(row=3, column=0, columnspan=2, pady=10)
@@ -47,6 +93,11 @@ class SetupGUI:
                 new_window.grid_columnconfigure(1, weight=1)
             else:
                 print("No option selected")
+
+        def on_submit():
+            self.rclone_path = rclone_entry.get()  # Get the Rclone path
+            print(f"Rclone root directory path: {self.rclone_path}")
+            root.destroy()
 
         root = tk.Tk()
         root.title("Smart Lab Setup")
@@ -63,16 +114,37 @@ class SetupGUI:
         combobox_label = ttk.Label(frame, text="Select an option:")
         combobox_label.grid(row=0, column=0, padx=5, pady=5, sticky=tk.W)
 
+        # ADD MORE LATER
         options = ["Savannah ALD", "Fiji ALD"]
 
         combobox = ttk.Combobox(frame, values=options, state="readonly")
         combobox.grid(row=1, column=0, padx=5, pady=5, sticky=(tk.W, tk.E))
         combobox.current(0)  # Set the default option
 
+        add_machine_button = ttk.Button(frame, text="Add Machine", command=open_second_window)
+        add_machine_button.grid(row=2, column=0, pady=10, sticky=tk.W)
+
+        rclone_label = ttk.Label(frame, text="Rclone path:")
+        rclone_label.grid(row=3, column=0, padx=5, pady=5, sticky=tk.W)
+
+        rclone_entry = ttk.Entry(frame)
+        rclone_entry.grid(row=4, column=0, padx=5, pady=5, sticky=(tk.W, tk.E))
+
         submit_button = ttk.Button(frame, text="Submit", command=on_submit)
-        submit_button.grid(row=2, column=0, pady=10, sticky=tk.W)
+        submit_button.grid(row=5, column=0, pady=10, sticky=tk.W)
 
         root.mainloop()
+
+
+    def processInfo(self):
+        print("User-Host List:", self.user_host_list)
+        print("Rclone Path:", self.rclone_path)
+        for machine, user, host in self.user_host_list:
+            realname = self.machinedict[machine]
+        file = open("src/register.txt", "w")
+        file.write(f"\n{realname} {realname}.py")
+            
+
 
 def main():
     setup = SetupGUI()
