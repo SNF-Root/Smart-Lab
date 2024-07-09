@@ -80,6 +80,16 @@ class SetupGUI:
                     print(f"Machine Name: {machine_name}, User: {user}, Host (IP): {host}, Option: {selected_option}")
                     print("Folder data:", folder_data)
                     print("Current user-host list:", self.user_host_list)
+                    outstr = ""
+                    for machine, machine_name, user, host, folder_data in self.user_host_list:
+                        outstr += machine + " " + machine_name + " " + user + " " + host
+                    for folder in folder_data:
+                        outstr += " " + folder_data[folder]
+                    outstr += "\n"
+                    file = open("src/register.txt", "a+")
+                    file.write(outstr)
+                    file.close()
+                    self.user_host_list = []
                     new_window.destroy()
 
                 # Create and place the Submit button for the second window
