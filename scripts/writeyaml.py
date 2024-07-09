@@ -1,14 +1,14 @@
 import os
 import yaml
 
-
-# setup class that writes to the hosts.yml file to add a new host machine
+# Setup class that writes to the hosts.yml file to add a new host machine
 class WriteYaml:
 
-    # Constructor to initialize the host, user, source, and destination
-    def __init__(self, host, user, source, destination):
+    # Constructor to initialize the host, user, toolname, source, and destination
+    def __init__(self, host, user, toolname="", source="", destination=""):
         self.host = host
         self.user = user
+        self.toolname = toolname
         self.source = source
         self.destination = destination
 
@@ -47,7 +47,8 @@ class WriteYaml:
             f'host{new_host_number}': {
                 'ansible_host': self.host,
                 'ansible_user': self.user,
-                'directories' : [{
+                'toolname': self.toolname,
+                'directories': [{
                     'src': self.source,
                     'dest': self.destination
                 }]
@@ -103,13 +104,14 @@ class WriteYaml:
         print(f"Host {host} not found in {file_path}")
 
 
-
+# Main function to demonstrate usage and test
 def main():
     host = "10.32.78.231"
     user = "andrew"
+    toolname = "Savannah"
     source = "/Users/andrew/Desktop/"
     destination = "/Users/andrew/Desktop/SNF Projects/Tool-Data/data/Output_Text/"
-    yml = WriteYaml(host, user, source, destination)
+    yml = WriteYaml(host, user, toolname, source, destination)
     yml.write_yaml()
     yml.add_directory(host, "/Users/andrew/Desktop/", "/Users/andrew/Desktop/SNF Projects/Tool-Data/data/Output_Plots/")
 
