@@ -5,7 +5,7 @@ from datetime import datetime
 
 class Pressure:
 
-    def __init__(self, pressureDirPath, pressureFilePath=""):
+    def __init__(self, pressureDirPath="src/Machines/Savannah/data/Pressure-Data", pressureFilePath=""):
         # Pressure Data (Float in Torr) and Time (Float in ms)
         self.pTime = []
         self.Pressure = []

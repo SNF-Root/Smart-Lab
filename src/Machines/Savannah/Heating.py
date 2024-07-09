@@ -5,7 +5,7 @@ from datetime import datetime
 
 class Heating:
 
-    def __init__(self, heatingDirPath, heatingFilePath=""):
+    def __init__(self, heatingDirPath="src/Machines/Savannah/data/Heating-Data", heatingFilePath=""):
         # Heater Data (Floats in Celcius) and Time (Float in s)
         self.hTime = []
         self.trap = []

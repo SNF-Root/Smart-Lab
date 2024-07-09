@@ -9,8 +9,8 @@ import getpass
 # from os import join, dirname
 # from dotenv import load_dotenv
 # from scp import SCPClient
-from src.Machines.Savannah.Pressure import Pressure
-from src.Machines.Savannah.Heating import Heating
+# from src.Machines.Savannah.Pressure import Pressure
+# from src.Machines.Savannah.Heating import Heating
 
 import time
     # Uploads the files to the Google Drive
@@ -45,7 +45,7 @@ class Uploader:
 
 
 def main():
-    up = Uploader("Tool-Data/data/Output_Text", "SNF-Root-Test:Output_Text")
+    up = Uploader("src/Machines/Savannah/data/Output_Text", "SNF-Root-Test:Home")
     up.rclone()
 
     
