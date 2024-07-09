@@ -27,7 +27,6 @@ class SetupGUI:
             "Fiji ALD": ""
         }
 
-
     # Main runner of the GUI
     def run(self):
         def open_second_window():
@@ -40,54 +39,52 @@ class SetupGUI:
                 label = ttk.Label(new_window, text=f"You selected: {selected_option}")
                 label.grid(row=0, column=0, columnspan=2, padx=10, pady=10)
 
+                # Create and place the Machine Name label and entry
+                machine_name_label = ttk.Label(new_window, text="Machine Name:")
+                machine_name_label.grid(row=1, column=0, padx=10, pady=5, sticky=tk.E)
+                machine_name_entry = ttk.Entry(new_window)
+                machine_name_entry.grid(row=1, column=1, padx=10, pady=5, sticky=(tk.W, tk.E))
+
                 # Create and place the User label and entry
                 user_label = ttk.Label(new_window, text="User:")
-                user_label.grid(row=1, column=0, padx=10, pady=5, sticky=tk.E)
+                user_label.grid(row=2, column=0, padx=10, pady=5, sticky=tk.E)
                 user_entry = ttk.Entry(new_window)
-                user_entry.grid(row=1, column=1, padx=10, pady=5, sticky=(tk.W, tk.E))
+                user_entry.grid(row=2, column=1, padx=10, pady=5, sticky=(tk.W, tk.E))
 
                 # Create and place the Host label and entry
                 host_label = ttk.Label(new_window, text="Host (IP):")
-                host_label.grid(row=2, column=0, padx=10, pady=5, sticky=tk.E)
+                host_label.grid(row=3, column=0, padx=10, pady=5, sticky=tk.E)
                 host_entry = ttk.Entry(new_window)
-                host_entry.grid(row=2, column=1, padx=10, pady=5, sticky=(tk.W, tk.E))
+                host_entry.grid(row=3, column=1, padx=10, pady=5, sticky=(tk.W, tk.E))
+
+                # Add folder entries based on the selected option
+                folder_count, *folder_labels = self.how_many_folders[selected_option]
+                folder_entries = []
+
+                for idx, label in enumerate(folder_labels):
+                    folder_label = ttk.Label(new_window, text=f"{label}:")
+                    folder_label.grid(row=4 + idx, column=0, padx=10, pady=5, sticky=tk.E)
+                    folder_entry = ttk.Entry(new_window)
+                    folder_entry.grid(row=4 + idx, column=1, padx=10, pady=5, sticky=(tk.W, tk.E))
+                    folder_entries.append((label, folder_entry))
 
                 # Define the submit function for the second window
                 def on_second_submit():
+                    machine_name = machine_name_entry.get()
+                    if machine_name == "":
+                        machine_name = selected_option
                     user = user_entry.get()
                     host = host_entry.get()
-                    self.user_host_list.append((selected_option, user, host))
-                    print(f"User: {user}, Host (IP): {host}, Option: {selected_option}")
+                    folder_data = {label: entry.get() for label, entry in folder_entries}
+                    self.user_host_list.append((selected_option, machine_name, user, host, folder_data))
+                    print(f"Machine Name: {machine_name}, User: {user}, Host (IP): {host}, Option: {selected_option}")
+                    print("Folder data:", folder_data)
                     print("Current user-host list:", self.user_host_list)
                     new_window.destroy()
 
-                    # Open folder window based on the number of folders required
-                    folder_window = tk.Toplevel(root)
-                    folder_window.title(f"{selected_option} Folders")
-
-                    folder_count, *folder_labels = self.how_many_folders[selected_option]
-                    folder_entries = []
-
-                    for idx, label in enumerate(folder_labels):
-                        folder_label = ttk.Label(folder_window, text=f"{label}:")
-                        folder_label.grid(row=idx, column=0, padx=10, pady=5, sticky=tk.E)
-                        folder_entry = ttk.Entry(folder_window)
-                        folder_entry.grid(row=idx, column=1, padx=10, pady=5, sticky=(tk.W, tk.E))
-                        folder_entries.append((label, folder_entry))
-
-                    def on_folder_submit():
-                        folder_data = {label: entry.get() for label, entry in folder_entries}
-                        print(f"Folder data for {selected_option}:", folder_data)
-                        folder_window.destroy()
-
-                    folder_submit_button = ttk.Button(folder_window, text="Submit", command=on_folder_submit)
-                    folder_submit_button.grid(row=folder_count, column=0, columnspan=2, pady=10)
-
-                    folder_window.grid_columnconfigure(1, weight=1)
-
                 # Create and place the Submit button for the second window
                 second_submit_button = ttk.Button(new_window, text="Submit", command=on_second_submit)
-                second_submit_button.grid(row=3, column=0, columnspan=2, pady=10)
+                second_submit_button.grid(row=4 + folder_count, column=0, columnspan=2, pady=10)
 
                 # Configure the grid to resize properly
                 new_window.grid_columnconfigure(1, weight=1)
@@ -135,16 +132,13 @@ class SetupGUI:
 
         root.mainloop()
 
-
     def processInfo(self):
         print("User-Host List:", self.user_host_list)
         print("Rclone Path:", self.rclone_path)
-        for machine, user, host in self.user_host_list:
+        for machine, machine_name, user, host, folder_data in self.user_host_list:
             realname = self.machinedict[machine]
         file = open("src/register.txt", "w")
         file.write(f"\n{realname} {realname}.py")
-            
-
 
 def main():
     setup = SetupGUI()

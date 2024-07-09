@@ -4,6 +4,7 @@ from src.uploader import Uploader
 
 from datetime import datetime
 
+# Iterates through all Savannah Machines and runs all algorithms
 class Savannah:
     def __init__(self):
         pass

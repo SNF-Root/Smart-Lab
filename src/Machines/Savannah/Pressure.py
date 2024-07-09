@@ -5,7 +5,7 @@ from datetime import datetime
 
 class Pressure:
 
-    def __init__(self, pressureDirPath="src/Machines/Savannah/data/Pressure-Data", pressureFilePath=""):
+    def __init__(self, dataPath):
         # Pressure Data (Float in Torr) and Time (Float in ms)
         self.pTime = []
         self.Pressure = []
@@ -13,8 +13,10 @@ class Pressure:
         self.cycles = []
 
         # File paths (String)
-        self.pressureFilePath = pressureFilePath
-        self.pressureDirPath = pressureDirPath
+        self.pressureFilePath = ""
+        self.pressureDirPath = dataPath + "/Pressure-Data"
+        self.plotpath = dataPath + "/Output_Plots/PressureData.png"
+        self.textpath = dataPath + "/Output_Text/Pressure Report.txt"
 
         # Recipe Info
         self.recipe = ""
@@ -118,7 +120,7 @@ class Pressure:
         self.readFile()
         self.outString += "Recipe: " + self.recipe.upper() + "\n\n----------------------------------------------\n\n"
         # self.readDir()
-        file_path = "src/Machines/Savannah/data/Output_Text/Pressure Report.txt"
+        file_path = self.textpath
         with open(file_path, "w") as file:
             file.write(self.outString)
         return self.outString
@@ -126,7 +128,7 @@ class Pressure:
 
     # Plots the Pressure vs Time and saves it as a png file
     def plotPressure(self):
-        path = "src/Machines/Savannah/data/Output_Plots/PressureData.png"
+        path = self.plotpath + "/PressureData.png"
         try:
             os.remove(path)
         except FileNotFoundError:
@@ -209,7 +211,7 @@ class Pressure:
 
 # Main function to test the Pressure class
 def main():
-    pressure = Pressure("src/Machines/Savannah/data/Pressure-Data")
+    pressure = Pressure("src/Machines/Savannah/data")
     pressure.initialize()
     pressure.sendData()
 

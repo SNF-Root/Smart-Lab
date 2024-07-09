@@ -5,7 +5,7 @@ from datetime import datetime
 
 class Heating:
 
-    def __init__(self, heatingDirPath="src/Machines/Savannah/data/Heating-Data", heatingFilePath=""):
+    def __init__(self, dataPath):
         # Heater Data (Floats in Celcius) and Time (Float in s)
         self.hTime = []
         self.trap = []
@@ -20,8 +20,10 @@ class Heating:
         self.cycles = []
 
         # File Paths (String)
-        self.heatingFilePath = heatingFilePath
-        self.heatingDirPath = heatingDirPath
+        self.heatingFilePath = ""
+        self.heatingDirPath = dataPath + "/Heating-Data"
+        self.plotpath = dataPath + "/Output_Plots"
+        self.textpath = dataPath + "/Output_Text"
 
         # Recipe Info
         self.currentRecipe = ""
@@ -163,7 +165,7 @@ class Heating:
         self.readFile()
         self.outString += "Recipe: " + self.currentRecipe.upper() + "\n\n----------------------------------------------\n\n"
         # self.readDir()
-        file_path = "src/Machines/Savannah/data/Output_Text/Heating Report.txt"
+        file_path = self.textpath
         with open(file_path, "w") as file:
             file.write(self.outString)
         return self.outString
@@ -171,8 +173,8 @@ class Heating:
 
     # Generates a plot of the data and saves it to the Output_Plots directory
     def plotHeating(self):
-        p_path = "src/Machines/Savannah/data/Output_Plots/Precursor Heating Data.png"
-        np_path = "src/Machines/Savannah/data/Output_Plots/Non-Precursor Heating Data.png"
+        p_path = self.plotpath + "/Precursor Heating Data.png"
+        np_path = self.plotpath + "/Non-Precursor Heating Data.png"
         try:
             os.remove(np_path)
         except FileNotFoundError:
@@ -269,7 +271,7 @@ class Heating:
 
 # Main function to test the Heating class
 def main():
-    heating = Heating("src/Machines/Savannah/data/Heating-Data")
+    heating = Heating("src/Machines/Savannah/data")
     heating.initialize()
     heating.sendData()
 

@@ -24,7 +24,7 @@ def main():
         for machine in runMachine:
             # subprocess.run(f"pwd", shell=True)
             # MAYBE CHANGE THIS TO CALLING MAIN FUNC INSTEAD OF RUNNING THE FILE
-            subprocess.run(f"python3 src/Machines/{machine[0]}/{machine[1]}", shell=True)
+            subprocess.run(f"python3 src/Machines/{machine[0]}/{machine[0]}.py", shell=True)
 
         
     # subdirectories = [name for name in os.listdir('src/Machines') if os.path.isdir(os.path.join('src/Machines', name))]
