@@ -17,10 +17,13 @@ class Savannah:
         h.run()
         # ADD DATE TIME TO NEW DIRECTORY NAME
         dirname = datetime.now().strftime("%m:%d:%Y") + "~" + datetime.now().strftime("%H:%M")
-        print(dirname)
-        up = Uploader("src/Machines/Savannah/data/Output_Text", f"SNF-Root-Test:Home/Savannah/{dirname}")
+        # FIND ROOT DIRECTORY OF CLOUD STORAGE
+        file = open("src/rclone.txt", "r")
+        root = file.readline().strip()
+        # UPLOAD TO CLOUD STORAGE
+        up = Uploader("src/Machines/Savannah/data/Output_Text", f"{root}/Savannah/{dirname}")
         up.rclone()
-        up2 = Uploader("src/Machines/Savannah/data/Output_Plots", f"SNF-Root-Test:Home/Savannah/{dirname}")
+        up2 = Uploader("src/Machines/Savannah/data/Output_Plots", f"{root}/Savannah/{dirname}")
         up2.rclone()
 
 

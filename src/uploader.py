@@ -1,29 +1,4 @@
-import os
-import shutil
-import glob
 import subprocess
-from datetime import datetime
-# import paramiko
-import getpass
-
-# from os import join, dirname
-# from dotenv import load_dotenv
-# from scp import SCPClient
-# from src.Machines.Savannah.Pressure import Pressure
-# from src.Machines.Savannah.Heating import Heating
-
-import time
-    # Uploads the files to the Google Drive
-    # def upload():
-    #     newdir = dir_path + "/" + datetime.now().strftime("%H:%M:%S") + " | " + datetime.now().strftime("%m:%d:%Y")
-    #     os.makedirs(newdir, exist_ok=True)
-    #     shutil.copy("/Users/andrew/Desktop/SNF Projects/Tool-Data/Output_Plots/Precursor Heating Data.png", newdir)
-    #     shutil.copy("/Users/andrew/Desktop/SNF Projects/Tool-Data/Output_Plots/PressureData.png", newdir)
-    #     shutil.copy("/Users/andrew/Desktop/SNF Projects/Tool-Data/Output_Plots/Non-Precursor Heating Data.png", newdir)
-    #     shutil.copy("/Users/andrew/Desktop/SNF Projects/Tool-Data/Output_Text/Pressure Report.txt", newdir)
-    #     shutil.copy("/Users/andrew/Desktop/SNF Projects/Tool-Data/Output_Text/Heating Report.txt", newdir)
-    #     print("Upload Complete")
-
 
 # Class that uploads most recent file from a directory to Google Drive
 class Uploader:
