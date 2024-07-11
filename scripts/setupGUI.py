@@ -4,7 +4,8 @@ import os
 
 from scripts.writeyaml import WriteYaml
 
-# Global list to store user and host inputs
+
+# GUI for setting up the necesaary information to run the program
 class SetupGUI:
 
     # Constructor to initialize the user-host list and Rclone path
@@ -19,14 +20,15 @@ class SetupGUI:
             "Savannah ALD": "Savannah",
             "Fiji ALD": "Fiji"
         }
-
         self.how_many_folders = {
             "Savannah ALD": (2, "Pressure", "Heating"),
             "Fiji ALD": (2, "Pressure", "Heating")
         }
 
+
     # Main runner of the GUI
     def run(self):
+        # Opens a second window where the user puts in machine information
         def open_second_window():
             selected_option = combobox.get()
             if selected_option:
@@ -66,7 +68,8 @@ class SetupGUI:
                     folder_entry.grid(row=4 + idx, column=1, padx=10, pady=5, sticky=(tk.W, tk.E))
                     folder_entries.append((label, folder_entry))
 
-                # Define the submit function for the second window
+
+                # Submit for the second window that will process all data given by user
                 def on_second_submit():
                     machine_name = machine_name_entry.get()
                     if machine_name == "":
@@ -75,16 +78,19 @@ class SetupGUI:
                     host = host_entry.get()
                     folder_data = {label: entry.get() for label, entry in folder_entries}
                     self.user_host_list.append((selected_option, machine_name, user, host, folder_data))
-                    print(f"Machine Name: {machine_name}, User: {user}, Host (IP): {host}, Option: {selected_option}")
-                    print("Folder data:", folder_data)
-                    print("Current user-host list:", self.user_host_list)
+                    # print(f"Machine Name: {machine_name}, User: {user}, Host (IP): {host}, Option: {selected_option}")
+                    # print("Folder data:", folder_data)
+                    # print("Current user-host list:", self.user_host_list)
 
-                    # Error check
+                    # Error check for empty dictionary
                     if not folder_data:
                         print("No folder data entered")
                         self.user_host_list.pop()  # Remove the last entry
                         return
+                    # Process information based on the selected option
                     else:
+                        # Make the dictionary into more usable lists
+                        # Create the proper data folders for the new machine
                         keys = []
                         values = []
                         realname = self.machinedict[selected_option]
@@ -96,11 +102,13 @@ class SetupGUI:
                             values.append(folder_data[x])
                             os.makedirs(f"src/Machines/{realname}/data({machine_name})/{x}-data", exist_ok=True)
 
+                        # Write the YAML file for the new machine
                         write = WriteYaml(host, user, machine_name, values[0], f"src/Machines/{realname}/data({machine_name})")
                         write.write_yaml()
                         for x in range(1, len(keys)):
                             write.add_directory(host, values[x], f"src/Machines/{realname}/data({machine_name})")
 
+                    # Write the user-host list to the register.txt file
                     outstr = ""
                     for machine, machine_name, user, host, folder_data in self.user_host_list:
                         outstr += machine + " " + machine_name + " " + user + " " + host
@@ -111,8 +119,9 @@ class SetupGUI:
                     with open(self.register_file_path, "a+") as file:
                         file.write(outstr)
 
-                    self.user_host_list = []
+                    # Clear the user-host list
                     new_window.destroy()
+
 
                 # Create and place the Submit button for the second window
                 second_submit_button = ttk.Button(new_window, text="Submit", command=on_second_submit)
@@ -123,6 +132,8 @@ class SetupGUI:
             else:
                 print("No option selected")
 
+
+        # Show the content of the register.txt and rclone.txt files
         def show_files_content():
             list_window = tk.Toplevel(root)
             list_window.title("Current Saved details")
@@ -151,6 +162,8 @@ class SetupGUI:
             rclone_text.insert(tk.END, rclone_content)
             rclone_text.config(state=tk.DISABLED)
 
+
+        # Submit the Rclone path if a new path is provided
         def on_submit():
             new_rclone_path = rclone_entry.get()  # Get the Rclone path from the entry
             if new_rclone_path:  # Check if a new path is provided
@@ -160,6 +173,8 @@ class SetupGUI:
                     rclone_file.write(self.rclone_path)
             root.destroy()
 
+
+        # Main window setup
         root = tk.Tk()
         root.title("Smart Lab Setup")
 
@@ -199,9 +214,12 @@ class SetupGUI:
 
         root.mainloop()
 
+
+# Main function to run tests on the GUI
 def main():
     setup = SetupGUI()
     setup.run()
+
 
 if __name__ == "__main__":
     main()
