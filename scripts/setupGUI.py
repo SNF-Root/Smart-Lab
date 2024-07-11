@@ -83,6 +83,7 @@ class SetupGUI:
                     # print("Current user-host list:", self.user_host_list)
 
                     # Error check for empty dictionary
+                    realname = self.machinedict[selected_option]
                     if not folder_data:
                         print("No folder data entered")
                         self.user_host_list.pop()  # Remove the last entry
@@ -93,7 +94,6 @@ class SetupGUI:
                         # Create the proper data folders for the new machine
                         keys = []
                         values = []
-                        realname = self.machinedict[selected_option]
                         os.makedirs(f"src/Machines/{realname}/data({machine_name})", exist_ok=True)
                         os.makedirs(f"src/Machines/{realname}/data({machine_name})/Output_Text", exist_ok=True)
                         os.makedirs(f"src/Machines/{realname}/data({machine_name})/Output_Plots", exist_ok=True)
@@ -111,7 +111,7 @@ class SetupGUI:
                     # Write the user-host list to the register.txt file
                     outstr = ""
                     for machine, machine_name, user, host, folder_data in self.user_host_list:
-                        outstr += machine + " " + machine_name + " " + user + " " + host
+                        outstr += realname + " " + machine_name + " " + user + " " + host
                         for folder in folder_data:
                             outstr += " " + folder_data[folder]
                         outstr += "\n"

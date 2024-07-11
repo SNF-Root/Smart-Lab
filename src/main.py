@@ -21,12 +21,15 @@ def main():
             values = line.strip().split()
             runMachine.append(tuple(values))
 
+        # Each machine named .py file will process all of that type of machine, we don't want to run the same machine twice
+        donepile = []
         for machine in runMachine:
             # subprocess.run(f"pwd", shell=True)
             # MAYBE CHANGE THIS TO CALLING MAIN FUNC INSTEAD OF RUNNING THE FILE
-            subprocess.run(f"python3 src/Machines/{machine[0]}/{machine[0]}.py", shell=True)
+            if machine[0] not in donepile:
+                subprocess.run(f"python3 src/Machines/{machine[0]}/{machine[0]}.py", shell=True)
+                donepile.append(machine[0])
 
-        
     # subdirectories = [name for name in os.listdir('src/Machines') if os.path.isdir(os.path.join('src/Machines', name))]
     # print(subdirectories)
 
