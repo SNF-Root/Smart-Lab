@@ -11,6 +11,8 @@ class SetupGUI:
     def __init__(self):
         self.user_host_list = []
         self.rclone_path = ""
+        self.register_file_path = "src/register.txt"  # Path to register.txt file
+        self.rclone_file_path = "src/rclone.txt"      # Path to rclone.txt file
 
         # ADD MORE LATER
         self.machinedict = {
@@ -22,11 +24,6 @@ class SetupGUI:
             "Savannah ALD": (2, "Pressure", "Heating"),
             "Fiji ALD": (2, "Pressure", "Heating")
         }
-
-        # self.destinations = {
-        #     "Savannah ALD": ["src/Machines/Savannah/data/Output_Text", "src/Machines/Savannah/data/Output_Plots"],
-        #     "Fiji ALD": ""
-        # }
 
     # Main runner of the GUI
     def run(self):
@@ -82,7 +79,6 @@ class SetupGUI:
                     print("Folder data:", folder_data)
                     print("Current user-host list:", self.user_host_list)
 
-
                     # Error check
                     if not folder_data:
                         print("No folder data entered")
@@ -104,18 +100,17 @@ class SetupGUI:
                         write.write_yaml()
                         for x in range(1, len(keys)):
                             write.add_directory(host, values[x], f"src/Machines/{realname}/data({machine_name})")
-                        
-                
 
                     outstr = ""
                     for machine, machine_name, user, host, folder_data in self.user_host_list:
                         outstr += machine + " " + machine_name + " " + user + " " + host
-                    for folder in folder_data:
-                        outstr += " " + folder_data[folder]
-                    outstr += "\n"
-                    file = open("src/register.txt", "a+")
-                    file.write(outstr)
-                    file.close()
+                        for folder in folder_data:
+                            outstr += " " + folder_data[folder]
+                        outstr += "\n"
+
+                    with open(self.register_file_path, "a+") as file:
+                        file.write(outstr)
+
                     self.user_host_list = []
                     new_window.destroy()
 
@@ -128,9 +123,41 @@ class SetupGUI:
             else:
                 print("No option selected")
 
+        def show_files_content():
+            list_window = tk.Toplevel(root)
+            list_window.title("Current Saved details")
+
+            # Read and display register.txt content
+            register_label = ttk.Label(list_window, text="Machines Registered:")
+            register_label.grid(row=0, column=0, padx=10, pady=10, sticky=tk.W)
+
+            with open(self.register_file_path, 'r') as register_file:
+                register_content = register_file.read()
+
+            register_text = tk.Text(list_window, wrap=tk.WORD, height=10, width=50)
+            register_text.grid(row=1, column=0, padx=10, pady=10, sticky=tk.W)
+            register_text.insert(tk.END, register_content)
+            register_text.config(state=tk.DISABLED)
+
+            # Read and display rclone.txt content
+            rclone_label = ttk.Label(list_window, text="Rclone Root Path:")
+            rclone_label.grid(row=2, column=0, padx=10, pady=10, sticky=tk.W)
+
+            with open(self.rclone_file_path, 'r') as rclone_file:
+                rclone_content = rclone_file.read()
+
+            rclone_text = tk.Text(list_window, wrap=tk.WORD, height=10, width=50)
+            rclone_text.grid(row=3, column=0, padx=10, pady=10, sticky=tk.W)
+            rclone_text.insert(tk.END, rclone_content)
+            rclone_text.config(state=tk.DISABLED)
+
         def on_submit():
-            self.rclone_path = rclone_entry.get()  # Get the Rclone path
-            print(f"Rclone root directory path: {self.rclone_path}")
+            new_rclone_path = rclone_entry.get()  # Get the Rclone path from the entry
+            if new_rclone_path:  # Check if a new path is provided
+                self.rclone_path = new_rclone_path
+                print(f"Rclone root directory path: {self.rclone_path}")
+                with open(self.rclone_file_path, 'w') as rclone_file:
+                    rclone_file.write(self.rclone_path)
             root.destroy()
 
         root = tk.Tk()
@@ -158,24 +185,19 @@ class SetupGUI:
         add_machine_button = ttk.Button(frame, text="Add Machine", command=open_second_window)
         add_machine_button.grid(row=2, column=0, pady=10, sticky=tk.W)
 
+        list_button = ttk.Button(frame, text="Current Info", command=show_files_content)
+        list_button.grid(row=3, column=0, pady=10, sticky=tk.W)
+
         rclone_label = ttk.Label(frame, text="Rclone path:")
-        rclone_label.grid(row=3, column=0, padx=5, pady=5, sticky=tk.W)
+        rclone_label.grid(row=4, column=0, padx=5, pady=5, sticky=tk.W)
 
         rclone_entry = ttk.Entry(frame)
-        rclone_entry.grid(row=4, column=0, padx=5, pady=5, sticky=(tk.W, tk.E))
+        rclone_entry.grid(row=5, column=0, padx=5, pady=5, sticky=(tk.W, tk.E))
 
         submit_button = ttk.Button(frame, text="Submit", command=on_submit)
-        submit_button.grid(row=5, column=0, pady=10, sticky=tk.W)
+        submit_button.grid(row=6, column=0, pady=10, sticky=tk.W)
 
         root.mainloop()
-
-    def processInfo(self):
-        print("User-Host List:", self.user_host_list)
-        print("Rclone Path:", self.rclone_path)
-        for machine, machine_name, user, host, folder_data in self.user_host_list:
-            realname = self.machinedict[machine]
-        file = open("src/register.txt", "w")
-        file.write(f"\n{realname} {realname}.py")
 
 def main():
     setup = SetupGUI()
