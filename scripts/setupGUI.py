@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+import os
 
 from scripts.writeyaml import WriteYaml
 
@@ -22,10 +23,10 @@ class SetupGUI:
             "Fiji ALD": (2, "Pressure", "Heating")
         }
 
-        self.destinations = {
-            "Savannah ALD": ["src/Machines/Savannah/data/Output_Text", "src/Machines/Savannah/data/Output_Plots"],
-            "Fiji ALD": ""
-        }
+        # self.destinations = {
+        #     "Savannah ALD": ["src/Machines/Savannah/data/Output_Text", "src/Machines/Savannah/data/Output_Plots"],
+        #     "Fiji ALD": ""
+        # }
 
     # Main runner of the GUI
     def run(self):
@@ -80,6 +81,32 @@ class SetupGUI:
                     print(f"Machine Name: {machine_name}, User: {user}, Host (IP): {host}, Option: {selected_option}")
                     print("Folder data:", folder_data)
                     print("Current user-host list:", self.user_host_list)
+
+
+                    # Error check
+                    if not folder_data:
+                        print("No folder data entered")
+                        self.user_host_list.pop()  # Remove the last entry
+                        return
+                    else:
+                        keys = []
+                        values = []
+                        realname = self.machinedict[selected_option]
+                        os.makedirs(f"src/Machines/{realname}/data({machine_name})", exist_ok=True)
+                        os.makedirs(f"src/Machines/{realname}/data({machine_name})/Output_Text", exist_ok=True)
+                        os.makedirs(f"src/Machines/{realname}/data({machine_name})/Output_Plots", exist_ok=True)
+                        for x in folder_data:
+                            keys.append(x)
+                            values.append(folder_data[x])
+                            os.makedirs(f"src/Machines/{realname}/data({machine_name})/{x}-data", exist_ok=True)
+
+                        write = WriteYaml(host, user, machine_name, values[0], f"src/Machines/{realname}/data({machine_name})")
+                        write.write_yaml()
+                        for x in range(1, len(keys)):
+                            write.add_directory(host, values[x], f"src/Machines/{realname}/data({machine_name})")
+                        
+                
+
                     outstr = ""
                     for machine, machine_name, user, host, folder_data in self.user_host_list:
                         outstr += machine + " " + machine_name + " " + user + " " + host
