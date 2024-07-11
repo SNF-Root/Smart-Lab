@@ -97,6 +97,8 @@ class SetupGUI:
                         os.makedirs(f"src/Machines/{realname}/data({machine_name})", exist_ok=True)
                         os.makedirs(f"src/Machines/{realname}/data({machine_name})/Output_Text", exist_ok=True)
                         os.makedirs(f"src/Machines/{realname}/data({machine_name})/Output_Plots", exist_ok=True)
+                        with open(f"src/Machines/{realname}/data({machine_name})/process_stack.txt", "w") as file:
+                            pass
                         for x in folder_data:
                             keys.append(x)
                             values.append(folder_data[x])

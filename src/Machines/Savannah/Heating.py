@@ -20,6 +20,7 @@ class Heating:
         self.cycles = []
 
         # File Paths (String)
+        self.dataPath = dataPath
         self.heatingFilePath = ""
         self.heatingDirPath = dataPath + "/Heating-Data"
         self.plotpath = dataPath + "/Output_Plots"
@@ -168,7 +169,6 @@ class Heating:
         file_path = self.textpath
         with open(file_path, "w") as file:
             file.write(self.outString)
-        return self.outString
 
 
     # Generates a plot of the data and saves it to the Output_Plots directory
@@ -257,13 +257,27 @@ class Heating:
     # Pops the most recent file from the stack and generates the report
     def sendData(self):
         self.heatingFilePath = self.fileStack.pop()
-        print(self.heatingFilePath)
-        out = self.genReport()
-        # print(self.pTime[0])
+        stack = []
+        with open(self.dataPath + "process_stack.txt", "r") as file:
+            stack = file.read().splitlines()
+            file.close()
+        if stack.__len__() == 0:
+            with open(self.dataPath + "process_stack.txt", "a+") as file:
+                file.write(self.heatingFilePath)
+                file.close()
+        if stack.count(self.heatingFilePath) > 0:
+            return
+        else:
+            with open(self.dataPath + "process_stack.txt", "a+") as file:
+                file.write(self.heatingFilePath + "\n")
+                file.close()
+
+        self.genReport()
         self.plotHeating()
-        return out
+        print("Sent data for:", self.heatingFilePath)
         
 
+    # Runs the Heating algorithm
     def run(self):
         self.initialize()
         self.sendData()

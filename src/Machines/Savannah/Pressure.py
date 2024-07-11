@@ -13,6 +13,7 @@ class Pressure:
         self.cycles = []
 
         # File paths (String)
+        self.dataPath = dataPath
         self.pressureFilePath = ""
         self.pressureDirPath = dataPath + "/Pressure-Data"
         self.plotpath = dataPath + "/Output_Plots/PressureData.png"
@@ -198,12 +199,27 @@ class Pressure:
     # Sends the data to the GUI
     def sendData(self):
         self.pressureFilePath = self.fileStack.pop()
-        print(self.pressureFilePath)
-        out = self.genReport()
-        # print(self.pTime[0])
-        self.plotPressure()
-        return out
+        stack = []
+        with open(self.dataPath + "process_stack.txt", "r") as file:
+            stack = file.read().splitlines()
+            file.close()
+        if stack.__len__() == 0:
+            with open(self.dataPath + "process_stack.txt", "a+") as file:
+                file.write(self.pressureFilePath)
+                file.close()
+        if stack.count(self.pressureFilePath) > 0:
+            return
+        else:
+            with open(self.dataPath + "process_stack.txt", "a+") as file:
+                file.write(self.pressureFilePath + "\n")
+                file.close()
 
+        self.genReport()
+        self.plotPressure()
+        print("Sent data for:", self.pressureFilePath)
+
+
+    # Runs the Pressure algorithm
     def run(self):
         self.initialize()
         self.sendData()
