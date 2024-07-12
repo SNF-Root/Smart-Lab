@@ -15,11 +15,12 @@ class SetupGUI:
         self.register_file_path = "src/register.txt"  # Path to register.txt file
         self.rclone_file_path = "src/rclone.txt"      # Path to rclone.txt file
 
-        # ADD MORE LATER
+        # { machine name on the GUI : simplified machine name }
         self.machinedict = {
             "Savannah ALD": "Savannah",
             "Fiji ALD": "Fiji"
         }
+        # { machine name on the GUI : (number of folders, folder1, folder2, ...) }
         self.how_many_folders = {
             "Savannah ALD": (2, "Pressure", "Heating"),
             "Fiji ALD": (2, "Pressure", "Heating")
@@ -90,10 +91,11 @@ class SetupGUI:
                         return
                     # Process information based on the selected option
                     else:
-                        # Make the dictionary into more usable lists
-                        # Create the proper data folders for the new machine
+                        # Make the dictionary of { data_folder_name : path } into more usable lists
+                        # Create the proper data folders for the new machine { keys : values }
                         keys = []
                         values = []
+                        # Make all the necessary directories for the new machine and its data
                         os.makedirs(f"src/Machines/{realname}/data({machine_name})", exist_ok=True)
                         os.makedirs(f"src/Machines/{realname}/data({machine_name})/Output_Text", exist_ok=True)
                         os.makedirs(f"src/Machines/{realname}/data({machine_name})/Output_Plots", exist_ok=True)
