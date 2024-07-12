@@ -1,6 +1,4 @@
 import src.main
-import subprocess
-import time
 import timeit
 
 from scripts.setupGUI import SetupGUI
