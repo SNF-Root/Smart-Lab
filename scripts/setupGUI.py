@@ -5,7 +5,7 @@ import os
 from scripts.writeyaml import WriteYaml
 
 
-# GUI for setting up the necesaary information to run the program
+# GUI for setting up the necessary information to run the program
 class SetupGUI:
 
     # Constructor to initialize the user-host list and Rclone path
@@ -34,7 +34,7 @@ class SetupGUI:
             selected_option = combobox.get()
             if selected_option:
                 new_window = tk.Toplevel(root)
-                new_window.title(selected_option)
+                new_window.title(f"{selected_option} Setup")
 
                 # Create and place the label for the selected option
                 label = ttk.Label(new_window, text=f"You selected: {selected_option}")
@@ -55,8 +55,29 @@ class SetupGUI:
                 # Create and place the Host label and entry
                 host_label = ttk.Label(new_window, text="Host (IP):")
                 host_label.grid(row=3, column=0, padx=10, pady=5, sticky=tk.E)
-                host_entry = ttk.Entry(new_window)
-                host_entry.grid(row=3, column=1, padx=10, pady=5, sticky=(tk.W, tk.E))
+                
+                # Split the IP address into four parts
+                ip_part1 = ttk.Entry(new_window, width=5)  # Increase width to 5
+                ip_part1.grid(row=3, column=1, padx=(10, 2), pady=5, sticky=tk.W)
+                ip_dot1 = ttk.Label(new_window, text=".")
+                ip_dot1.grid(row=3, column=1, sticky=tk.W, padx=(50, 0))  # Adjust padding
+
+                ip_part2 = ttk.Entry(new_window, width=5)  # Increase width to 5
+                ip_part2.grid(row=3, column=1, padx=(55, 2), pady=5, sticky=tk.W)
+                ip_dot2 = ttk.Label(new_window, text=".")
+                ip_dot2.grid(row=3, column=1, sticky=tk.W, padx=(95, 0))  # Adjust padding
+
+                ip_part3 = ttk.Entry(new_window, width=5)  # Increase width to 5
+                ip_part3.grid(row=3, column=1, padx=(100, 2), pady=5, sticky=tk.W)
+                ip_dot3 = ttk.Label(new_window, text=".")
+                ip_dot3.grid(row=3, column=1, sticky=tk.W, padx=(140, 0))  # Adjust padding
+
+                ip_part4 = ttk.Entry(new_window, width=5)  # Increase width to 5
+                ip_part4.grid(row=3, column=1, padx=(145, 0), pady=5, sticky=tk.W)
+
+                # Add the Remote File Paths label right after the Host (IP) textboxes
+                remote_paths_label = ttk.Label(new_window, text="Remote File Paths")
+                remote_paths_label.grid(row=4, column=0, columnspan=2, padx=10, pady=5, sticky=tk.N)
 
                 # Add folder entries based on the selected option
                 folder_count, *folder_labels = self.how_many_folders[selected_option]
@@ -64,9 +85,9 @@ class SetupGUI:
 
                 for idx, label in enumerate(folder_labels):
                     folder_label = ttk.Label(new_window, text=f"{label}:")
-                    folder_label.grid(row=4 + idx, column=0, padx=10, pady=5, sticky=tk.E)
+                    folder_label.grid(row=5 + idx, column=0, padx=10, pady=5, sticky=tk.E)
                     folder_entry = ttk.Entry(new_window)
-                    folder_entry.grid(row=4 + idx, column=1, padx=10, pady=5, sticky=(tk.W, tk.E))
+                    folder_entry.grid(row=5 + idx, column=1, padx=10, pady=5, sticky=(tk.W, tk.E))
                     folder_entries.append((label, folder_entry))
 
 
@@ -76,7 +97,7 @@ class SetupGUI:
                     if machine_name == "":
                         machine_name = selected_option
                     user = user_entry.get()
-                    host = host_entry.get()
+                    host = f"{ip_part1.get()}.{ip_part2.get()}.{ip_part3.get()}.{ip_part4.get()}"
                     folder_data = {label: entry.get() for label, entry in folder_entries}
                     self.user_host_list.append((selected_option, machine_name, user, host, folder_data))
                     # print(f"Machine Name: {machine_name}, User: {user}, Host (IP): {host}, Option: {selected_option}")
@@ -131,7 +152,7 @@ class SetupGUI:
 
                 # Create and place the Submit button for the second window
                 second_submit_button = ttk.Button(new_window, text="Submit", command=on_second_submit)
-                second_submit_button.grid(row=4 + folder_count, column=0, columnspan=2, pady=10)
+                second_submit_button.grid(row=5 + folder_count, column=0, columnspan=2, pady=10)
 
                 # Configure the grid to resize properly
                 new_window.grid_columnconfigure(1, weight=1)
@@ -232,3 +253,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
