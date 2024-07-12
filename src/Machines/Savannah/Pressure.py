@@ -4,7 +4,8 @@ from datetime import datetime
 
 
 class Pressure:
-
+    # Constructor
+    # dataPath: the path to the directory that contains the data for the machine
     def __init__(self, dataPath):
         # Pressure Data (Float in Torr) and Time (Float in ms)
         self.pTime = []
@@ -195,6 +196,7 @@ class Pressure:
 
 
     # Sends the data to the GUI
+    # returns whether or not there is new data
     def sendData(self):
         stack = []
         with open(self.dataPath + "/process_stack.txt", "r") as file:
@@ -219,6 +221,7 @@ class Pressure:
 
 
     # Runs the Pressure algorithm
+    # returns whether or not there is new data
     def run(self):
         self.initialize()
         return self.sendData()

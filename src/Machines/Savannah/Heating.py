@@ -4,7 +4,8 @@ from datetime import datetime
 
 
 class Heating:
-
+    # Constructor
+    # dataPath: the path to the directory that contains the data for the machine
     def __init__(self, dataPath):
         # Heater Data (Floats in Celcius) and Time (Float in s)
         self.hTime = []
@@ -252,7 +253,8 @@ class Heating:
         print("Initialized Heating Data Stack")
 
 
-    # Pops the most recent file from the stack and generates the report
+    # Pops the most recent file from the stack and generates the full report
+    # returns whether or not there is new data
     def sendData(self):
         stack = []
         with open(self.dataPath + "/process_stack.txt", "r") as file:
@@ -277,6 +279,7 @@ class Heating:
 
 
     # Runs the Heating algorithm
+    # returns whether or not there is new data
     def run(self):
         self.initialize()
         return self.sendData()
