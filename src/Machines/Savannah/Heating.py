@@ -166,7 +166,7 @@ class Heating:
         self.readFile()
         self.outString += "Recipe: " + self.currentRecipe.upper() + "\n\n----------------------------------------------\n\n"
         # self.readDir()
-        file_path = self.textpath
+        file_path = self.textpath + "/Heating Report.txt"
         with open(file_path, "w") as file:
             file.write(self.outString)
         file.close()
@@ -236,7 +236,7 @@ class Heating:
 
 
     # Initializes the data stack with the most recent e files
-    def initialize(self, e=5):
+    def initialize(self):
         # tuples of (filename, creation time)
         times = []
         self.readDir()
@@ -248,40 +248,38 @@ class Heating:
                 
         # sort by creation time
         times.sort(key=lambda x: x[1])
-
-        for _ in range(e):
-            self.heatingFilePath = times[_][0]
-            self.fileStack.insert(0, self.heatingFilePath)
+        self.heatingFilePath = times[-1][0]
         print("Initialized Heating Data Stack")
 
 
     # Pops the most recent file from the stack and generates the report
     def sendData(self):
-        self.heatingFilePath = self.fileStack.pop()
         stack = []
-        with open(self.dataPath + "process_stack.txt", "r") as file:
+        with open(self.dataPath + "/process_stack.txt", "r") as file:
             stack = file.read().splitlines()
             file.close()
         if stack.__len__() == 0:
-            with open(self.dataPath + "process_stack.txt", "a+") as file:
-                file.write(self.heatingFilePath)
+            print("THE P STACK IS EMPTY")
+            with open(self.dataPath + "/process_stack.txt", "a+") as file:
+                file.write(self.heatingFilePath + "\n")
                 file.close()
-        if stack.count(self.heatingFilePath) > 0:
-            return
+        elif stack.count(self.heatingFilePath) > 0:
+            return False
         else:
-            with open(self.dataPath + "process_stack.txt", "a+") as file:
+            with open(self.dataPath + "/process_stack.txt", "a+") as file:
                 file.write(self.heatingFilePath + "\n")
                 file.close()
 
         self.genReport()
         self.plotHeating()
         print("Sent data for:", self.heatingFilePath)
-        
+        return True
+
 
     # Runs the Heating algorithm
     def run(self):
         self.initialize()
-        self.sendData()
+        return self.sendData()
 
 
 # Main function to test the Heating class

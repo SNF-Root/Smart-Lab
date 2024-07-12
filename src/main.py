@@ -1,16 +1,15 @@
 import subprocess
 import os
 
-from src.uploader import Uploader
 
 def main():
     # ANSIBLE
     print("This is the loop main")
     current_directory = os.getcwd()
-    parent_directory = os.path.dirname(current_directory)
+    print(current_directory)
     ansible_command = ['ansible-playbook', '-i', 'ansible/hosts.yml', 'ansible/playbook.yml']
 
-    result = subprocess.run(ansible_command, cwd=parent_directory, capture_output=True, text=True)
+    result = subprocess.run(ansible_command, cwd=current_directory, capture_output=True, text=True)
     print('Errors:', result.stderr)
 
 

@@ -32,7 +32,7 @@
 - name: Copy the most recent file from remote host to local machine if not already present
   fetch:
     src: "{{ most_recent_file.path }}"
-    dest: "{{ dir_info.dest }}/{{ most_recent_file.path | basename }}"
+    dest: "../{{ dir_info.dest }}/{{ most_recent_file.path | basename }}"
     flat: yes
   when:
     - not is_remote_dir_empty

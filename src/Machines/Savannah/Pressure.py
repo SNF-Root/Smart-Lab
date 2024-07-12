@@ -16,8 +16,8 @@ class Pressure:
         self.dataPath = dataPath
         self.pressureFilePath = ""
         self.pressureDirPath = dataPath + "/Pressure-Data"
-        self.plotpath = dataPath + "/Output_Plots/PressureData.png"
-        self.textpath = dataPath + "/Output_Text/Pressure Report.txt"
+        self.plotpath = dataPath + "/Output_Plots"
+        self.textpath = dataPath + "/Output_Text"
 
         # Recipe Info
         self.recipe = ""
@@ -121,7 +121,7 @@ class Pressure:
         self.readFile()
         self.outString += "Recipe: " + self.recipe.upper() + "\n\n----------------------------------------------\n\n"
         # self.readDir()
-        file_path = self.textpath
+        file_path = self.textpath + "/Pressure Report.txt"
         with open(file_path, "w") as file:
             file.write(self.outString)
         file.close()
@@ -177,8 +177,8 @@ class Pressure:
             return
 
 
-    # Initializes the Pressure Data Stack with the most recent e files
-    def initialize(self, e=5):
+    # Initializes the Pressure Data Stack with the most recent files
+    def initialize(self):
         # tuples of (filename, creation time)
         times = []
         self.readDir()
@@ -190,40 +190,38 @@ class Pressure:
                 
         # sort by creation time
         times.sort(key=lambda x: x[1])
-
-        for _ in range(e):
-            self.pressureFilePath = times[_][0]
-            self.fileStack.insert(0, self.pressureFilePath)
+        self.pressureFilePath = times[-1][0]
         print("Initialized Pressure Data Stack")
 
 
     # Sends the data to the GUI
     def sendData(self):
-        self.pressureFilePath = self.fileStack.pop()
         stack = []
-        with open(self.dataPath + "process_stack.txt", "r") as file:
+        with open(self.dataPath + "/process_stack.txt", "r") as file:
             stack = file.read().splitlines()
             file.close()
         if stack.__len__() == 0:
-            with open(self.dataPath + "process_stack.txt", "a+") as file:
-                file.write(self.pressureFilePath)
+            print("THE H STACK IS EMPTY")
+            with open(self.dataPath + "/process_stack.txt", "a+") as file:
+                file.write(self.pressureFilePath + "\n")
                 file.close()
-        if stack.count(self.pressureFilePath) > 0:
-            return
+        elif stack.count(self.pressureFilePath) > 0:
+            return False
         else:
-            with open(self.dataPath + "process_stack.txt", "a+") as file:
+            with open(self.dataPath + "/process_stack.txt", "a+") as file:
                 file.write(self.pressureFilePath + "\n")
                 file.close()
 
         self.genReport()
         self.plotPressure()
         print("Sent data for:", self.pressureFilePath)
+        return True
 
 
     # Runs the Pressure algorithm
     def run(self):
         self.initialize()
-        self.sendData()
+        return self.sendData()
 
 
 # Main function to test the Pressure class

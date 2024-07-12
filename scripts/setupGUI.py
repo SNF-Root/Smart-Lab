@@ -103,13 +103,13 @@ class SetupGUI:
                         for x in folder_data:
                             keys.append(x)
                             values.append(folder_data[x])
-                            os.makedirs(f"src/Machines/{realname}/data({machine_name})/{x}-data", exist_ok=True)
+                            os.makedirs(f"src/Machines/{realname}/data({machine_name})/{x}-Data", exist_ok=True)
 
                         # Write the YAML file for the new machine
-                        write = WriteYaml(host, user, machine_name, values[0], f"src/Machines/{realname}/data({machine_name})")
+                        write = WriteYaml(host, user, machine_name, values[0], f"src/Machines/{realname}/data({machine_name})/{self.how_many_folders[selected_option][1]}-Data")
                         write.write_yaml()
                         for x in range(1, len(keys)):
-                            write.add_directory(host, values[x], f"src/Machines/{realname}/data({machine_name})")
+                            write.add_directory(host, values[x], f"src/Machines/{realname}/data({machine_name})/{self.how_many_folders[selected_option][x+1]}-Data")
 
                     # Write the user-host list to the register.txt file
                     outstr = ""

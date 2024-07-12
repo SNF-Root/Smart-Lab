@@ -1,1 +1,1 @@
-Savannah sav yup 1.2.3.4 some/path some/path2
+Savannah sav andrew 10.32.75.36 /Users/andrew/Desktop/random /Users/andrew/Desktop/random2
