@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Tool-Data repository is designed to manage and organize data related to various tools used in our projects. This includes tool specifications, usage data, maintenance logs, and other relevant information. The repository aims to provide a centralized, easily accessible location for all tool-related data, facilitating better management and decision-making.
+The Smart Lab Project is a lab data management software package designed to collect, process, and store data related to various tools used in our projects. The main goal of this project is to make hard to reach data more readable and accessible in a coherent database for better management and decision-making.
 
 
 ![SmartLab_Flowchart(1)](https://github.com/SNF-Root/Tool-Data/assets/114797850/f6bc6ff8-6643-45f8-8177-fc998c0e0d87)
@@ -17,13 +17,14 @@ The Tool-Data repository is designed to manage and organize data related to vari
 
 ## Getting Started
 
-To get started with the Tool-Data repository, clone the repository to your local machine and follow the setup instructions below.
+To get started with the Smart Lab, clone the repository to your local machine and follow the setup instructions below.
 
 ### Prerequisites
 
 - `Git`
 - `Python3` (version 3.6 or higher)
 - `SSH` **PASSWORDLESS** setup on all hosts (use `OpenSSH` on Windows machines)
+   - For security purposes it's best to not store passwords on the program
 - `Rclone` setup on collector computer with cloud storage of choice
 
 ### Installation
@@ -59,7 +60,7 @@ To edit the entries already saved, navigate to the `ansible/hosts.yml` file and 
 
 ### View Local Output Data
 
-To view the output files of a specific machine stored locally on the collector, navigate to the `src/Machines/Machine-Of-Your-Choice/data` directory. There you will find directories labeled `Output_Plots` and `Output_Text` that contain graphs and reports respectively.
+To view the output files of a specific machine stored locally on the collector, navigate to the `src/Machines/Machine-Type/(data)Machine-Name` directory. There you will find directories labeled `Output_Plots` and `Output_Text` that contain graphs and reports in `.png` and `.txt` form respectively.
 
 
 ## License
