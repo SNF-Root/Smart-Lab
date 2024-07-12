@@ -30,6 +30,7 @@ def main():
                 subprocess.run(f"python3 src/Machines/{machine[0]}/{machine[0]}.py", shell=True)
                 donepile.append(machine[0])
 
+    file.close()
     # subdirectories = [name for name in os.listdir('src/Machines') if os.path.isdir(os.path.join('src/Machines', name))]
     # print(subdirectories)
 

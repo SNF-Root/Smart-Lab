@@ -93,7 +93,7 @@ class Pressure:
                 self.outString += "Completed Cycles: " + str(self.cycles[0]) + "/" + str(self.cycles[0]) + "\n\n"
             else:
                 self.outString += "Completed Cycles: " + str(self.cycles[0] - self.cycles[-1] + 1) + "/" + str(self.cycles[0]) + "\n\n"
-
+        file.close()
 
     # Parses through the titles of the files and counts how many of each recipe is in the directory
     def parseTitles(self):
@@ -124,6 +124,7 @@ class Pressure:
         file_path = self.textpath
         with open(file_path, "w") as file:
             file.write(self.outString)
+        file.close()
         return self.outString
 
 

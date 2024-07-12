@@ -30,6 +30,7 @@ class WriteYaml:
             # File already exists and is not empty
             with open(file_path, 'r') as file:
                 existing_data = yaml.safe_load(file)
+            file.close()
         else:
             print(f"File {file_path} does not exist or is empty")
             existing_data = {'all': {'hosts': {}}}  # Initialize empty data
@@ -60,7 +61,7 @@ class WriteYaml:
         # Write YAML data to file
         with open(file_path, 'w') as yaml_file:
             yaml.dump(existing_data, yaml_file, default_flow_style=False)
-
+        yaml_file.close()
         print(f"YAML data successfully written to {file_path}")
 
 
@@ -81,6 +82,7 @@ class WriteYaml:
             # File already exists and is not empty
             with open(file_path, 'r') as file:
                 existing_data = yaml.safe_load(file)
+            file.close()
         else:
             print(f"File {file_path} does not exist or is empty")
             existing_data = {'all': {'hosts': {}}}  # Initialize empty data
@@ -97,7 +99,7 @@ class WriteYaml:
                 # Write updated data to file
                 with open(file_path, 'w') as yaml_file:
                     yaml.dump(existing_data, yaml_file, default_flow_style=False)
-                
+                yaml_file.close()
                 print(f"New directory mapping added to host {host}")
                 return
         

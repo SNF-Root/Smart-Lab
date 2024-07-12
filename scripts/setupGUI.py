@@ -98,6 +98,7 @@ class SetupGUI:
                         os.makedirs(f"src/Machines/{realname}/data({machine_name})/Output_Text", exist_ok=True)
                         os.makedirs(f"src/Machines/{realname}/data({machine_name})/Output_Plots", exist_ok=True)
                         with open(f"src/Machines/{realname}/data({machine_name})/process_stack.txt", "w") as file:
+                            file.close()
                             pass
                         for x in folder_data:
                             keys.append(x)
@@ -120,6 +121,7 @@ class SetupGUI:
 
                     with open(self.register_file_path, "a+") as file:
                         file.write(outstr)
+                    file.close()
 
                     # Clear the user-host list
                     new_window.destroy()
@@ -146,6 +148,7 @@ class SetupGUI:
 
             with open(self.register_file_path, 'r') as register_file:
                 register_content = register_file.read()
+            register_file.close()
 
             register_text = tk.Text(list_window, wrap=tk.WORD, height=10, width=50)
             register_text.grid(row=1, column=0, padx=10, pady=10, sticky=tk.W)
@@ -158,6 +161,7 @@ class SetupGUI:
 
             with open(self.rclone_file_path, 'r') as rclone_file:
                 rclone_content = rclone_file.read()
+            rclone_file.close()
 
             rclone_text = tk.Text(list_window, wrap=tk.WORD, height=10, width=50)
             rclone_text.grid(row=3, column=0, padx=10, pady=10, sticky=tk.W)
@@ -173,6 +177,7 @@ class SetupGUI:
                 print(f"Rclone root directory path: {self.rclone_path}")
                 with open(self.rclone_file_path, 'w') as rclone_file:
                     rclone_file.write(self.rclone_path)
+                rclone_file.close()
             root.destroy()
 
 

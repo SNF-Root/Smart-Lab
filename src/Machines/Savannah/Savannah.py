@@ -20,6 +20,7 @@ class Savannah:
             m = tuple(line.strip().split())
             if m[0] == "Savannah":
                 runMachine.append(m)
+        file.close()
         for machine in runMachine:
             dataPath = f"src/Machines/{machine[0]}/data({machine[1]})"
             p = Pressure(dataPath)
@@ -31,6 +32,7 @@ class Savannah:
             # FIND ROOT DIRECTORY OF CLOUD STORAGE
             file = open("src/rclone.txt", "r")
             root = file.readline().strip()
+            file.close()
             # UPLOAD TO CLOUD STORAGE
             up = Uploader(f"src/Machines/{machine[0]}/data({machine[1]})/Output_Text", f"{root}/{machine[0]}/{machine[1]}/{dirname}")
             up.rclone()

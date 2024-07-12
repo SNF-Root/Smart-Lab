@@ -127,7 +127,7 @@ class Heating:
             self.outString += "Inner Heater Final Temp: " + str(self.innerHeater[-1]) + "\u00b0 C" + "\n\n"
             self.outString += "Outer Heater Final Temp: " + str(self.outerHeater[-1]) + "\u00b0 C" + "\n\n"
             self.averageTemp()
-
+        file.close()
 
     # Parses through the titles of the files and counts how many of each recipe is in the directory
     def parseTitles(self):
@@ -169,6 +169,7 @@ class Heating:
         file_path = self.textpath
         with open(file_path, "w") as file:
             file.write(self.outString)
+        file.close()
 
 
     # Generates a plot of the data and saves it to the Output_Plots directory
