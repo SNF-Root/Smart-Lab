@@ -231,7 +231,7 @@ class Pressure:
                 file.write(self.pressureFilePath + "\n")
                 file.close()
         elif stack.count(self.pressureFilePath) > 0:
-            return False
+            return None
         else:
             with open(self.dataPath + "/process_stack.txt", "a+") as file:
                 file.write(self.pressureFilePath + "\n")

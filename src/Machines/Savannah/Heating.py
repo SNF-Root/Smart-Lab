@@ -289,7 +289,7 @@ class Heating:
                 file.write(self.heatingFilePath + "\n")
                 file.close()
         elif stack.count(self.heatingFilePath) > 0:
-            return False
+            return None
         else:
             with open(self.dataPath + "/process_stack.txt", "a+") as file:
                 file.write(self.heatingFilePath + "\n")

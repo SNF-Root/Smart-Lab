@@ -12,6 +12,24 @@ class Savannah:
     def __init__(self):
         pass
 
+    
+    # Changes the name of a file
+    # specifically for renaming raw files
+    def changeName(self, filepath, append):
+        # RENAME FILE
+        # CHANGE FILE PATH TO LINUX FORMAT
+        filepath = filepath.replace("\\", "/")
+        filename = filepath.split("/")
+        name = filename[-1]
+        newpath = filepath.replace(name, f"({append}) {name}")
+        # CHANGE FILE NAME
+        try:
+            os.rename(filepath, newpath)
+        except:
+            print("Error: File not found, Rename failed")
+            return
+        return newpath
+
 
     # Runs the Pressure and Heating algorithms for all Savannah machines
     def run(self):
@@ -33,11 +51,14 @@ class Savannah:
             dataPath = f"src/Machines/{machine[0]}/data({machine[1]})"
             p = Pressure(dataPath)
             h = Heating(dataPath)
+            # Uploading raw files
             if raw[runMachine.index(machine)]:
                 newp = p.runRaw()
                 newh = h.runRaw()
-                print(newp, newh)
+                # If new raw files are found, change their names and upload them
                 if newp and newh:
+                    newp = self.changeName(newp, "Pressure")
+                    newh = self.changeName(newh, "Heating")
                     dirname = datetime.now().strftime("%m:%d:%Y") + "~" + datetime.now().strftime("%H:%M")
                     file = open("src/rclone.txt", "r")
                     root = file.readline().strip()
@@ -48,6 +69,7 @@ class Savannah:
                     up2 = Uploader(newh, f"{root}/{machine[0]}/{machine[1]}/{dirname}")
                     up2.rclone()
                     print("Uploaded Heating")
+            # Uploading normal output files
             else:
                 newp = p.run()
                 newh = h.run()
