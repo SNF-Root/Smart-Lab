@@ -4,6 +4,7 @@ from src.uploader import Uploader
 
 from datetime import datetime
 import timeit
+import os
 
 # Iterates through all Savannah Machines and runs all algorithms
 class Savannah:
@@ -18,31 +19,52 @@ class Savannah:
         start = timeit.default_timer()
         file = open("src/register.txt", "r")
         runMachine = []
+        raw = []
         for line in file:
             m = tuple(line.strip().split())
             if m[0] == "Savannah":
                 runMachine.append(m)
+                if m[4] == "raw":
+                    raw.append(True)
+                else:
+                    raw.append(False)
         file.close()
         for machine in runMachine:
             dataPath = f"src/Machines/{machine[0]}/data({machine[1]})"
             p = Pressure(dataPath)
             h = Heating(dataPath)
-            newp = p.run()
-            newh = h.run()
-            stop = timeit.default_timer()
-            print('Data Processing Runtime: ', stop - start)
-            if newp or newh:
-                # ADD DATE TIME TO NEW DIRECTORY NAME
-                dirname = datetime.now().strftime("%m:%d:%Y") + "~" + datetime.now().strftime("%H:%M")
-                # FIND ROOT DIRECTORY OF CLOUD STORAGE
-                file = open("src/rclone.txt", "r")
-                root = file.readline().strip()
-                file.close()
-                # UPLOAD TO CLOUD STORAGE
-                up = Uploader(f"src/Machines/{machine[0]}/data({machine[1]})/Output_Text", f"{root}/{machine[0]}/{machine[1]}/{dirname}")
-                up.rclone()
-                up2 = Uploader(f"src/Machines/{machine[0]}/data({machine[1]})/Output_Plots", f"{root}/{machine[0]}/{machine[1]}/{dirname}")
-                up2.rclone()
+            if raw[runMachine.index(machine)]:
+                newp = p.runRaw()
+                newh = h.runRaw()
+                print(newp, newh)
+                if newp and newh:
+                    dirname = datetime.now().strftime("%m:%d:%Y") + "~" + datetime.now().strftime("%H:%M")
+                    file = open("src/rclone.txt", "r")
+                    root = file.readline().strip()
+                    file.close()
+                    up = Uploader(newp, f"{root}/{machine[0]}/{machine[1]}/{dirname}")
+                    up.rclone()
+                    print("Uploaded Pressure")
+                    up2 = Uploader(newh, f"{root}/{machine[0]}/{machine[1]}/{dirname}")
+                    up2.rclone()
+                    print("Uploaded Heating")
+            else:
+                newp = p.run()
+                newh = h.run()
+                stop = timeit.default_timer()
+                print('Data Processing Runtime: ', stop - start)
+                if newp or newh:
+                    # ADD DATE TIME TO NEW DIRECTORY NAME
+                    dirname = datetime.now().strftime("%m:%d:%Y") + "~" + datetime.now().strftime("%H:%M")
+                    # FIND ROOT DIRECTORY OF CLOUD STORAGE
+                    file = open("src/rclone.txt", "r")
+                    root = file.readline().strip()
+                    file.close()
+                    # UPLOAD TO CLOUD STORAGE
+                    up = Uploader(f"src/Machines/{machine[0]}/data({machine[1]})/Output_Text", f"{root}/{machine[0]}/{machine[1]}/{dirname}")
+                    up.rclone()
+                    up2 = Uploader(f"src/Machines/{machine[0]}/data({machine[1]})/Output_Plots", f"{root}/{machine[0]}/{machine[1]}/{dirname}")
+                    up2.rclone()
 
 
 # Main function for testing

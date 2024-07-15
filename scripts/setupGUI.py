@@ -60,8 +60,12 @@ class SetupGUI:
                 ip_part4 = ttk.Entry(new_window, width=5)
                 ip_part4.grid(row=3, column=1, padx=(145, 0), pady=5, sticky=tk.W)
 
-                remote_paths_label = ttk.Label(new_window, text="Remote File Paths")
-                remote_paths_label.grid(row=4, column=0, columnspan=2, padx=10, pady=5, sticky=tk.N)
+                remote_paths_label = ttk.Label(new_window, text="Remote File Paths:")
+                remote_paths_label.grid(row=4, column=0, padx=10, pady=5, sticky=tk.W)
+
+                raw_var = tk.IntVar()
+                raw_checkbox = ttk.Checkbutton(new_window, text="Raw files", variable=raw_var)
+                raw_checkbox.grid(row=4, column=1, padx=10, pady=5, sticky=tk.W)
 
                 folder_count, *folder_labels = self.how_many_folders[selected_option]
                 folder_entries = []
@@ -83,7 +87,8 @@ class SetupGUI:
                     user = user_entry.get()
                     host = f"{ip_part1.get()}.{ip_part2.get()}.{ip_part3.get()}.{ip_part4.get()}"
                     folder_data = {label: entry.get() for label, entry in folder_entries}
-                    self.user_host_list.append((selected_option, machine_name, user, host, folder_data))
+                    raw_status = "raw" if raw_var.get() == 1 else "processed"
+                    self.user_host_list.append((selected_option, machine_name, user, host, folder_data, raw_status))
                     
                     realname = self.machinedict[selected_option]
                     if not folder_data:
@@ -110,8 +115,8 @@ class SetupGUI:
                             write.add_directory(host, values[x], f"src/Machines/{realname}/data({machine_name})/{self.how_many_folders[selected_option][x+1]}-Data")
 
                     outstr = ""
-                    for machine, machine_name, user, host, folder_data in self.user_host_list:
-                        outstr += realname + " " + machine_name + " " + user + " " + host
+                    for machine, machine_name, user, host, folder_data, raw_status in self.user_host_list:
+                        outstr += realname + " " + machine_name + " " + user + " " + host + " " + raw_status
                         for folder in folder_data:
                             outstr += " " + folder_data[folder]
                         outstr += "\n"

@@ -261,7 +261,7 @@ class Heating:
             stack = file.read().splitlines()
             file.close()
         if stack.__len__() == 0:
-            print("THE P STACK IS EMPTY")
+            print("THE STACK IS EMPTY")
             with open(self.dataPath + "/process_stack.txt", "a+") as file:
                 file.write(self.heatingFilePath + "\n")
                 file.close()
@@ -277,12 +277,39 @@ class Heating:
         print("Sent data for:", self.heatingFilePath)
         return True
 
+    
+    def sendDataRaw(self):
+        stack = []
+        with open(self.dataPath + "/process_stack.txt", "r") as file:
+            stack = file.read().splitlines()
+            file.close()
+        if stack.__len__() == 0:
+            print("THE P STACK IS EMPTY")
+            with open(self.dataPath + "/process_stack.txt", "a+") as file:
+                file.write(self.heatingFilePath + "\n")
+                file.close()
+        elif stack.count(self.heatingFilePath) > 0:
+            return False
+        else:
+            with open(self.dataPath + "/process_stack.txt", "a+") as file:
+                file.write(self.heatingFilePath + "\n")
+                file.close()
+
+        print("Sent data for:", self.heatingFilePath)
+        return self.heatingFilePath
+
 
     # Runs the Heating algorithm
     # returns whether or not there is new data
     def run(self):
         self.initialize()
         return self.sendData()
+    
+
+    def runRaw(self):
+        self.initialize()
+        return self.sendDataRaw()
+
 
 
 # Main function to test the Heating class
