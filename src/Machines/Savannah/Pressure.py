@@ -4,9 +4,73 @@ from datetime import datetime
 
 
 class Pressure:
-    # Constructor
-    # dataPath: the path to the directory that contains the data for the machine
+    """
+        A class to represent the Pressure algorithm for the Savannah Machine.
+        
+        Attributes:
+        ------------
+        pTime : list
+            Pressure Data (Float in Torr) and Time (Float in ms)
+        Pressure : list
+            Pressure Data (Float in Torr) and Time (Float in ms)
+        cycles : list
+            Cycles (int)
+        dataPath : string
+            Path from Tool-Data to the data folder of the machine
+        pressureFilePath : string
+            File path of the pressure data
+        pressureDirPath : string
+            File path of the pressure data directory
+        plotpath : string
+            File path of the plot directory
+        textpath : string
+            File path of the text directory
+        recipe : string
+            Recipe Info
+        recipes : list
+            List of recipes
+        ingredientStack : list
+            List of ingredients
+        fileStack : list
+            List of files
+        dir_list : list
+            List of directories
+        outString : string
+            Output string
+
+        Methods:
+        --------
+        readDir():
+            Reads through directory and prints out how many of each recipe is in the directory.
+        readFile():
+            Reads through the txt file and prints out the recipe, pressure, time, and cycles.
+        parseTitles():
+            Parses through the titles of the files and counts how many of each recipe is in the directory.
+        genReport():
+            Generates a report of the pressure data into output text file.
+        plotPressure():
+            Plots the Pressure vs Time and saves it as a png file.
+        initialize():
+            Initializes the Pressure Data Stack with the most recent files.
+        sendData():
+            Sends the data to the GUI and returns whether or not there is new data.
+        sendDataRaw():
+            Sends the data to the GUI and returns the file path.
+        run():
+            Runs the Pressure algorithm and returns whether or not there is new data.
+        runRaw():
+            Runs the Pressure algorithm and returns the file path.
+        """
+    
     def __init__(self, dataPath):
+        """
+        Constructor for the Pressure class.
+        
+            Parameters
+            ----------
+                dataPath : str
+                    Path from Tool-Data to the data folder of the machine
+        """
         # Pressure Data (Float in Torr) and Time (Float in ms)
         self.pTime = []
         self.Pressure = []
@@ -30,8 +94,19 @@ class Pressure:
         self.outString = ""
 
 
-    # Reads through directory and prints out how many of each recipe is in the directory
     def readDir(self):
+        """
+        Reads through directory and prints out how many of each recipe is in the directory.
+        Calls parseTitles() to parse through the titles of the files and count how many of each recipe is in the directory.
+        
+            Parameters
+            ----------
+                dataPath (string): Path from Tool-Data to the data folder of the machine
+
+            Returns
+            -------
+                None
+        """
         path = self.pressureDirPath
         try:
             self.dir_list = os.listdir(path)
@@ -41,8 +116,18 @@ class Pressure:
             return
 
 
-    # Reads through the txt file and prints out the recipe, pressure, time, and cycles
     def readFile(self):
+        """
+        Reads through the txt file and reads data into the pTime, Pressure, outString, and cycles lists.
+        
+            Parameters
+            ----------
+                None
+            
+            Returns
+            -------
+                None
+        """
         path = self.pressureFilePath
         self.pTime = []
         self.Pressure = []
@@ -96,8 +181,19 @@ class Pressure:
                 self.outString += "Completed Cycles: " + str(self.cycles[0] - self.cycles[-1] + 1) + "/" + str(self.cycles[0]) + "\n\n"
         file.close()
 
-    # Parses through the titles of the files and counts how many of each recipe is in the directory
+
     def parseTitles(self):
+        """
+        Parses through the titles of the files and counts how many of each recipe is in the directory.
+        
+            Parameters
+            ----------
+                None
+            
+            Returns
+            -------
+                None
+        """
         try:
             foobar = self.dir_list[0]
         except IndexError:
@@ -116,8 +212,18 @@ class Pressure:
         # self.outString += "Most Recent: " + str(self.ingredientStack) + "\n\n"
 
 
-    # Generates a report of the pressure data and returns it as a string
     def genReport(self):
+        """
+        Generates a report of the pressure data into output text file.
+
+            Parameters
+            ----------
+                None
+            
+            Returns
+            -------
+                None
+        """
         self.outString = self.outString = "----------------------------------------------\n\nPRESSURE REPORT AT " + datetime.now().strftime("%H:%M:%S") + " ON " + datetime.now().strftime("%m/%d/%Y") + "\n\n----------------------------------------------\n\n"
         self.readFile()
         self.outString += "Recipe: " + self.recipe.upper() + "\n\n----------------------------------------------\n\n"
@@ -126,11 +232,20 @@ class Pressure:
         with open(file_path, "w") as file:
             file.write(self.outString)
         file.close()
-        return self.outString
 
 
-    # Plots the Pressure vs Time and saves it as a png file
     def plotPressure(self):
+        """
+        Plots the Pressure vs Time and saves it as a png file at self.plotpath.
+            
+            Parameters
+            ----------
+                None
+            
+            Returns
+            -------
+                None
+        """
         path = self.plotpath + "/PressureData.png"
         try:
             os.remove(path)
@@ -178,8 +293,18 @@ class Pressure:
             return
 
 
-    # Initializes the Pressure Data Stack with the most recent files
     def initialize(self):
+        """
+        Initializes the Pressure Data Stack with the most recent files.
+
+            Parameters
+            ----------
+                None
+
+            Returns
+            -------
+                None
+        """
         # tuples of (filename, creation time)
         times = []
         self.readDir()
@@ -195,9 +320,20 @@ class Pressure:
         print("Initialized Pressure Data Stack")
 
 
-    # Sends the data to the GUI
-    # returns whether or not there is new data
     def sendData(self):
+        """
+        Saves the data to proper output folders if there is new data.
+        Returns whether or not there is new data.
+
+            Parameters
+            ----------
+                None
+            
+            Returns
+            -------
+                True (bool): If there is new data
+                False (bool): If there is no new data
+        """
         stack = []
         with open(self.dataPath + "/process_stack.txt", "r") as file:
             stack = file.read().splitlines()
@@ -221,6 +357,18 @@ class Pressure:
 
 
     def sendDataRaw(self):
+        """
+        Saves the data to proper output folders if there is new data.
+        Returns the file path.
+
+            Parameters
+            ----------
+                None
+            
+            Returns
+            -------
+                pressureFilePath (string): The file path of the pressure data
+        """
         stack = []
         with open(self.dataPath + "/process_stack.txt", "r") as file:
             stack = file.read().splitlines()
@@ -241,14 +389,35 @@ class Pressure:
         return self.pressureFilePath
 
 
-    # Runs the Pressure algorithm
-    # returns whether or not there is new data
     def run(self):
+        """
+        Runs the Pressure algorithm and returns whether or not there is new data.
+            
+            Parameters
+            ----------
+                None
+            
+            Returns
+            -------
+                True (bool): If there is new data
+                False (bool): If there is no new data
+        """
         self.initialize()
         return self.sendData()
     
 
     def runRaw(self):
+        """
+        Runs the Pressure algorithm and returns the file path if there is new data.
+                
+            Parameters
+            ----------
+                None
+            
+            Returns
+            -------
+                pressureFilePath (str): The file path of the pressure data
+        """
         self.initialize()
         return self.sendDataRaw()
 

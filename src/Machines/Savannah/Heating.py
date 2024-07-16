@@ -4,9 +4,89 @@ from datetime import datetime
 
 
 class Heating:
-    # Constructor
-    # dataPath: the path to the directory that contains the data for the machine
+    """
+    A class to represent the Heating algorithm for the Savannah Machine
+
+    Attributes
+    ----------
+    hTime : list
+        a list of the time data for the heater
+    trap : list
+        a list of the trap data for the heater
+    stopValve : list
+        a list of the stop valve data for the heater
+    outerHeater : list
+        a list of the outer heater data for the heater
+    innerHeater : list
+        a list of the inner heater data for the heater
+    pManifold : list
+        a list of the precursor manifold data for the heater
+    precursors : list
+        a list of lists of the precursor data for the heater
+    mfc1 : list
+        a list of the mfc1 data for the heater
+    numPrecursors : int
+        the number of precursors in the data
+    cycles : list
+        a list of the cycles data for the heater
+    dataPath : str
+        the path to the directory that contains the data for the machine
+    heatingFilePath : str
+        the path to the file that contains the heating data for the machine
+    heatingDirPath : str
+        the path to the directory that contains the heating data for the machine
+    plotpath : str
+        the path to the directory that contains the output plots for the machine
+    textpath : str
+        the path to the directory that contains the output text for the machine
+    currentRecipe : str
+        the name of the recipe for the machine
+    recipes : list
+        a list of the names of the recipes for the machine
+    ingredientStack : list
+        a list of the names of the ingredients for the machine
+    fileStack : list
+        a list of the file paths for the machine
+    dir_list : list
+        a list of the file names in the directory for the machine
+    outString : str
+        the string that contains the output text for the machine
+
+    Methods
+    -------
+    readDir()
+        Reads through directory and prints out how many of each recipe is in the directory
+    readFile()
+        Reads through the txt file and prints out the recipe, pressure, time, and cycles
+    parseTitles()
+        Parses through the titles of the files and counts how many of each recipe is in the directory
+    averageTemp()
+        Helper method to calculate the average temperature of each precursor
+    genReport()
+        Generates the report and returns it as a string
+    plotHeating()
+        Generates a plot of the data and saves it to the Output_Plots directory
+    initialize()
+        Initializes the data stack with the most recent e files
+    sendData()
+        Pops the most recent file from the stack and generates the full report
+    sendDataRaw()
+        Pops the most recent file from the stack and generates the full report
+    run()
+        Runs the Heating algorithm
+    runRaw()
+        Runs the Heating algorithm
+    """
+    
     def __init__(self, dataPath):
+        """
+        Constructor for the Heating class
+
+            Parameters
+            ----------
+                dataPath : str
+                    Path from Tool-Data to the data folder of the machine
+        """
         # Heater Data (Floats in Celcius) and Time (Float in s)
         self.hTime = []
         self.trap = []
@@ -37,8 +117,19 @@ class Heating:
         self.outString = ""
 
 
-    # Reads through directory and prints out how many of each recipe is in the directory
     def readDir(self):
+        """
+        Reads through directory and prints out how many of each recipe is in the directory.
+        Calls parseTitles() to parse through the titles of the files and count how many of each recipe is in the directory.
+
+            Parameters
+            ----------
+                None
+            
+            Returns
+            -------
+                None
+        """
         path = self.heatingDirPath
         try:
             self.dir_list = os.listdir(path)
@@ -48,8 +139,18 @@ class Heating:
             return
 
 
-    # Reads through the txt file and prints out the recipe, pressure, time, and cycles
     def readFile(self):
+        """
+        Reads through the txt file and reads data for the heater.
+        
+            Parameters
+            ----------
+                None
+
+            Returns
+            -------
+                None
+        """
         path = self.heatingFilePath
         self.hTime = []
         self.trap = []
@@ -130,8 +231,19 @@ class Heating:
             self.averageTemp()
         file.close()
 
-    # Parses through the titles of the files and counts how many of each recipe is in the directory
+
     def parseTitles(self):
+        """
+        Parses through the titles of the files and counts how many of each recipe is in the directory.
+        
+            Parameters
+            ----------
+                None
+            
+            Returns
+            -------
+                None
+        """
         try:
             foobar = self.dir_list[0]
         except IndexError:
@@ -150,8 +262,18 @@ class Heating:
         # self.outString += "Most Recent: " + str(self.ingredientStack) + "\n\n"
 
 
-    # Helper method to calculate the average temperature of each precursor
     def averageTemp(self):
+        """
+        Helper method to calculate the average temperature of each precursor.
+
+            Parameters
+            ----------
+                None
+
+            Returns
+            -------
+                None
+        """
         self.outString
         for i in range(self.numPrecursors):
             sum = 0
@@ -161,8 +283,18 @@ class Heating:
             # print("Average Temp of Precursor", i+1, ":", str(round(sum/precursors[i].__len__(), 1)) +  "\u00b0 C")
 
 
-    # Generates the report and returns it as a string
     def genReport(self):
+        """
+        Generates a report of the heating data into output text file.
+
+            Parameters
+            ----------
+                None
+            
+            Returns
+            -------
+                None
+        """
         self.outString = "----------------------------------------------\n\nHEATING REPORT AT " + datetime.now().strftime("%H:%M:%S") + " ON " + datetime.now().strftime("%m/%d/%Y") + "\n\n----------------------------------------------\n\n"
         self.readFile()
         self.outString += "Recipe: " + self.currentRecipe.upper() + "\n\n----------------------------------------------\n\n"
@@ -173,8 +305,18 @@ class Heating:
         file.close()
 
 
-    # Generates a plot of the data and saves it to the Output_Plots directory
     def plotHeating(self):
+        """
+        Generates a plot of the heating data and saves it to the Output_Plots directory.
+
+            Parameters
+            ----------
+                None
+            
+            Returns
+            -------
+                None
+        """
         p_path = self.plotpath + "/Precursor Heating Data.png"
         np_path = self.plotpath + "/Non-Precursor Heating Data.png"
         try:
@@ -236,8 +378,18 @@ class Heating:
             print("Graphing Aborted: No Precursor Data")
 
 
-    # Initializes the data stack with the most recent e files
     def initialize(self):
+        """
+        Initializes the Heating Data Stack with the most recent files
+
+            Parameters
+            ----------
+                None
+            
+            Returns
+            -------
+                None
+        """
         # tuples of (filename, creation time)
         times = []
         self.readDir()
@@ -253,9 +405,19 @@ class Heating:
         print("Initialized Heating Data Stack")
 
 
-    # Pops the most recent file from the stack and generates the full report
-    # returns whether or not there is new data
     def sendData(self):
+        """
+        Pops the most recent file from the stack and generates the full report.
+            
+            Parameters
+            ----------
+                None
+            
+            Returns
+            -------
+                True (bool): if there is new data
+                False (bool): if there is no new data
+        """
         stack = []
         with open(self.dataPath + "/process_stack.txt", "r") as file:
             stack = file.read().splitlines()
@@ -279,6 +441,18 @@ class Heating:
 
     
     def sendDataRaw(self):
+        """
+        Saves the data to proper output folders if there is new data.
+        Returns the file path.
+        
+            Parameters
+            ----------
+                None
+
+            Returns
+            -------
+                None
+        """
         stack = []
         with open(self.dataPath + "/process_stack.txt", "r") as file:
             stack = file.read().splitlines()
@@ -299,14 +473,35 @@ class Heating:
         return self.heatingFilePath
 
 
-    # Runs the Heating algorithm
-    # returns whether or not there is new data
     def run(self):
+        """
+        Runs the Heating algorithm and returns whether or not there is new data.
+
+            Parameters
+            ----------
+                None
+
+            Returns
+            -------
+                True (bool): if there is new data
+                False (bool): if there is no new data
+        """
         self.initialize()
         return self.sendData()
     
 
     def runRaw(self):
+        """
+        Runs the Heating algorithm and returns the file path if there is new data.
+
+            Parameters
+            ----------
+                None
+
+            Returns
+            -------
+                heatingFilePath (str): the file path of the new data
+        """
         self.initialize()
         return self.sendDataRaw()
 
