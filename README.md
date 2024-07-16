@@ -48,7 +48,7 @@ To get started with the Smart Lab, clone the repository to your local machine an
 
 ### Setting Up
 
-To set up the program at any time, use the `setupGUI.py` script. This script will open a GUI that will guide you to adding new machines/hosts to the existing list.
+To set up the program at any time, use the `setupGUI.sh` script. This script will open a GUI that will guide you to adding new machines/hosts to the existing list.
 
 ```sh
 chmod +x setupGUI.sh
