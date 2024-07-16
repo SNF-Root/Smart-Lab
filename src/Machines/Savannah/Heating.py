@@ -54,27 +54,27 @@ class Heating:
 
     Methods
     -------
-    readDir()
+    readDir():
         Reads through directory and prints out how many of each recipe is in the directory
-    readFile()
+    readFile():
         Reads through the txt file and prints out the recipe, pressure, time, and cycles
-    parseTitles()
+    parseTitles():
         Parses through the titles of the files and counts how many of each recipe is in the directory
-    averageTemp()
+    averageTemp():
         Helper method to calculate the average temperature of each precursor
-    genReport()
+    genReport():
         Generates the report and returns it as a string
-    plotHeating()
+    plotHeating():
         Generates a plot of the data and saves it to the Output_Plots directory
-    initialize()
+    initialize():
         Initializes the data stack with the most recent e files
-    sendData()
+    sendData():
         Pops the most recent file from the stack and generates the full report
-    sendDataRaw()
+    sendDataRaw():
         Pops the most recent file from the stack and generates the full report
-    run()
+    run():
         Runs the Heating algorithm
-    runRaw()
+    runRaw():
         Runs the Heating algorithm
     """
     
@@ -451,7 +451,7 @@ class Heating:
 
             Returns
             -------
-                None
+                heatingFilePath (str): the file path of the new data
         """
         stack = []
         with open(self.dataPath + "/process_stack.txt", "r") as file:

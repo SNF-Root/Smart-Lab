@@ -8,7 +8,7 @@ class Pressure:
         A class to represent the Pressure algorithm for the Savannah Machine.
         
         Attributes:
-        ------------
+        -----------
         pTime : list
             Pressure Data (Float in Torr) and Time (Float in ms)
         Pressure : list
@@ -101,7 +101,7 @@ class Pressure:
         
             Parameters
             ----------
-                dataPath (string): Path from Tool-Data to the data folder of the machine
+                None
 
             Returns
             -------
@@ -367,7 +367,7 @@ class Pressure:
             
             Returns
             -------
-                pressureFilePath (string): The file path of the pressure data
+                pressureFilePath (str): The file path of the pressure data
         """
         stack = []
         with open(self.dataPath + "/process_stack.txt", "r") as file:
