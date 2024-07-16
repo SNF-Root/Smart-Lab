@@ -4,6 +4,7 @@ import os
 import re
 from scripts.writeyaml import WriteYaml
 
+
 class SetupGUI:
 
     def __init__(self):
@@ -11,6 +12,7 @@ class SetupGUI:
         self.rclone_path = ""
         self.register_file_path = "src/register.txt"
         self.rclone_file_path = "src/rclone.txt"
+        self.machinelist = ["Savannah ALD", "Fiji ALD"]
         self.machinedict = {
             "Savannah ALD": "Savannah",
             "Fiji ALD": "Fiji"
@@ -183,9 +185,11 @@ class SetupGUI:
         def on_submit():
             new_rclone_path = rclone_entry.get()
             if new_rclone_path:
-                if not is_valid_directory_name(new_rclone_path):
+                if not is_valid_path(new_rclone_path):
                     show_error_window("Invalid Rclone directory/path name. Please enter a valid Rclone directory name.")
                     return
+                if new_rclone_path[-1] == '/':
+                    new_rclone_path = new_rclone_path[:-1]
                 self.rclone_path = new_rclone_path
                 print(f"Rclone root directory path: {self.rclone_path}")
                 with open(self.rclone_file_path, 'w') as rclone_file:
@@ -287,7 +291,7 @@ class SetupGUI:
         combobox_label = ttk.Label(frame, text="Select an option:")
         combobox_label.grid(row=0, column=0, padx=5, pady=5, sticky=tk.W)
 
-        options = ["Savannah ALD", "Fiji ALD"]
+        options = self.machinelist
 
         combobox = ttk.Combobox(frame, values=options, state="readonly")
         combobox.grid(row=1, column=0, padx=5, pady=5, sticky=(tk.W, tk.E))
@@ -314,6 +318,7 @@ class SetupGUI:
 def main():
     setup = SetupGUI()
     setup.run()
+
 
 if __name__ == "__main__":
     main()
