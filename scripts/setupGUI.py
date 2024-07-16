@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 import os
+import re
 from scripts.writeyaml import WriteYaml
 
 class SetupGUI:
@@ -18,6 +19,7 @@ class SetupGUI:
             "Savannah ALD": (2, "Pressure", "Heating"),
             "Fiji ALD": (2, "Pressure", "Heating")
         }
+
 
     def run(self):
         def open_second_window():
@@ -77,16 +79,31 @@ class SetupGUI:
                     folder_entry.grid(row=5 + idx, column=1, padx=10, pady=5, sticky=(tk.W, tk.E))
                     folder_entries.append((label, folder_entry))
 
+
                 def on_second_submit():
                     machine_name = machine_name_entry.get()
                     if machine_name == "":
                         machine_name = selected_option
+                    if not is_valid_directory_name(machine_name):
+                        show_error_window("Invalid machine directory name. Please enter a valid machine name.")
+                        return
                     if machine_name_exists(machine_name):
                         show_error_window("Machine name already exists. Please enter a different name.")
                         return
                     user = user_entry.get()
+                    if not user or user.isspace():
+                        show_error_window("User name cannot be empty. Please enter a user name.")
+                        return
                     host = f"{ip_part1.get()}.{ip_part2.get()}.{ip_part3.get()}.{ip_part4.get()}"
+                    if not is_valid_ip_address(host):
+                        show_error_window("Invalid IP address. Please enter a valid IP address.")
+                        return
                     folder_data = {label: entry.get() for label, entry in folder_entries}
+                    for folder in folder_data:
+                        if not is_valid_path(folder_data[folder]):
+                            show_error_window(f"Invalid path for {folder}. Please enter a valid path.")
+                            return
+                        
                     raw_status = "raw" if raw_var.get() == 1 else "processed"
                     self.user_host_list.append((selected_option, machine_name, user, host, folder_data, raw_status))
                     
@@ -133,6 +150,7 @@ class SetupGUI:
             else:
                 print("No option selected")
 
+
         def show_files_content():
             list_window = tk.Toplevel(root)
             list_window.title("Current Saved details")
@@ -161,15 +179,20 @@ class SetupGUI:
             rclone_text.insert(tk.END, rclone_content)
             rclone_text.config(state=tk.DISABLED)
 
+
         def on_submit():
             new_rclone_path = rclone_entry.get()
             if new_rclone_path:
+                if not is_valid_directory_name(new_rclone_path):
+                    show_error_window("Invalid Rclone directory/path name. Please enter a valid Rclone directory name.")
+                    return
                 self.rclone_path = new_rclone_path
                 print(f"Rclone root directory path: {self.rclone_path}")
                 with open(self.rclone_file_path, 'w') as rclone_file:
                     rclone_file.write(self.rclone_path)
                 rclone_file.close()
             root.destroy()
+
 
         def machine_name_exists(machine_name):
             if not os.path.exists(self.register_file_path):
@@ -181,13 +204,74 @@ class SetupGUI:
                         return True
             return False
 
+
         def show_error_window(message):
             error_window = tk.Toplevel(root)
-            error_window.title("Error")
+            error_window.title("ERROR")
             label = ttk.Label(error_window, text=message, foreground="red")
             label.pack(padx=10, pady=10)
             button = ttk.Button(error_window, text="OK", command=error_window.destroy)
             button.pack(pady=5)
+
+
+        def is_valid_directory_name(name):
+            # Regular expression for invalid characters in Linux directory names
+            invalid_characters = r'[/?<>\\:*|"\0]'
+            
+            # Check if the name contains invalid characters
+            if re.search(invalid_characters, name):
+                return False
+            
+            # Additional checks
+            if name in (".", ".."):  # Avoid using . or .. as directory names
+                return False
+            
+            if not name:  # Name should not be empty
+                return False
+            
+            return True
+        
+
+        def is_valid_path(path):
+            # Regular expression for invalid characters in Linux paths
+            invalid_characters = r'[<>:"|?*\0]'
+
+            # Check if the path contains invalid characters
+            if re.search(invalid_characters, path):
+                return False
+
+            # Check for empty path
+            if not path:
+                return False
+    
+            # Split the path into parts and check each part
+            parts = path.split('/')
+            for part in parts:
+                if part in ('.', '..'):  # Avoid using . or .. in path segments
+                    return False
+                if not part:  # Avoid empty segments (e.g., double slashes //)
+                    continue
+                if re.search(invalid_characters, part):
+                    return False
+            
+            return True
+        
+
+        def is_valid_ip_address(ip):
+            # Check if the IP address contains only digits and periods
+            if not all(char.isdigit() or char == '.' for char in ip):
+                return False
+            
+            # Split the IP address by periods and check each part
+            parts = ip.split('.')
+            for part in parts:
+                if len(part) > 3:
+                    return False
+                if not part.isdigit():
+                    return False
+
+            return True
+
 
         root = tk.Tk()
         root.title("Smart Lab Setup")
@@ -225,6 +309,7 @@ class SetupGUI:
         submit_button.grid(row=6, column=0, pady=10, sticky=tk.W)
 
         root.mainloop()
+
 
 def main():
     setup = SetupGUI()
