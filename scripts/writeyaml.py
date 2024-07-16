@@ -1,11 +1,54 @@
 import os
 import yaml
 
-# Setup class that writes to the hosts.yml file to add a new host machine
-class WriteYaml:
 
-    # Constructor to initialize the host, user, toolname, source, and destination
+class WriteYaml:
+    """
+    A class that writes YAML data to the hosts.yml file to add a new host machine
+
+    Attributes:
+    -----------
+    host: str
+        the IP address of the host machine
+    user: str
+        the username to login to the host machine
+    toolname: str
+        the name of the tool running on the host machine
+    source: str
+        the source directory on the host machine
+    destination: str
+        the destination directory on the host machine
+
+    Methods:
+    --------
+    write_yaml():
+        Writes the YAML data to the hosts.yml file
+    add_directory(host, source, destination):
+        Adds a new directory mapping to an existing host
+    """
+
+
     def __init__(self, host, user, toolname="", source="", destination=""):
+        """
+        Constructor for the WriteYaml class
+        
+            Parameters
+            -----------
+                host: str
+                    the IP address of the host machine
+                user: str
+                    the username to login to the host machine
+                toolname: str
+                    the name of the tool running on the host machine
+                source: str
+                    the source directory on the host machine
+                destination: str
+                    the destination directory on the host machine
+            
+            Returns
+            -------
+                None
+        """
         self.host = host
         self.user = user
         self.toolname = toolname
@@ -13,8 +56,18 @@ class WriteYaml:
         self.destination = destination
 
 
-    # Write YAML data to the hosts.yml file
     def write_yaml(self):
+        """
+        Writes the YAML data to the hosts.yml file
+            
+            Parameters
+            -----------
+                None
+            
+            Returns
+            -------
+                None
+        """
         # Assuming the script is located in Tool-Data/scripts/
         current_directory = os.path.dirname(__file__)  # Get current script directory
         # Navigate up one level to Tool-Data/
@@ -65,8 +118,23 @@ class WriteYaml:
         print(f"YAML data successfully written to {file_path}")
 
 
-    # Add a new directory mapping to an existing host
     def add_directory(self, host, source, destination):
+        """
+        Adds a new directory mapping to an existing host
+
+            Parameters
+            ----------
+                host: str
+                    the IP address of the host machine
+                source: str
+                    the source directory on the host machine
+                destination: str
+                    the destination directory on the host machine
+
+            Returns
+            -------
+                None
+        """
         # Assuming the script is located in Tool-Data/scripts/
         current_directory = os.path.dirname(__file__)  # Get current script directory
         # Navigate up one level to Tool-Data/
