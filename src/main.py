@@ -2,8 +2,18 @@ import subprocess
 import os
 
 
-# Main loop for data collection, processing, and uploading
 def main():
+    """
+    Main function to run the entire data collection, processing, and uploading pipeline
+
+        Parameters
+        ----------
+            None
+
+        Returns
+        -------
+            None
+    """
     # ANSIBLE
     current_directory = os.getcwd()
     ansible_command = ['ansible-playbook', '-i', 'ansible/hosts.yml', 'ansible/playbook.yml']
