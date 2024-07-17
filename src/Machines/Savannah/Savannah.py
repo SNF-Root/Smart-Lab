@@ -47,6 +47,7 @@ class Savannah:
                 else:
                     raw.append(False)
         file.close()
+        # Raw file handling
         for machine in runMachine:
             dataPath = f"src/Machines/{machine[0]}/data({machine[1]})"
             p = Pressure(dataPath)

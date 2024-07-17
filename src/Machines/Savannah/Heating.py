@@ -43,6 +43,8 @@ class Heating:
         the name of the recipe for the machine
     recipes : list
         a list of the names of the recipes for the machine
+    recipeIgnores : list
+        a list of the names of the recipes to ignore for the machine
     ingredientStack : list
         a list of the names of the ingredients for the machine
     fileStack : list
@@ -110,6 +112,7 @@ class Heating:
         # Recipe Info
         self.currentRecipe = ""
         self.recipes = ["Al2O3", "TiO2", "HfO2", "ZrO2", "ZnO", "Ru", "Pt", "Ta2O5"]
+        self.recipeIgnores = ["standby", "pulse"]
         self.ingredientStack = []
         self.fileStack = []
         self.dir_list = []
@@ -405,6 +408,27 @@ class Heating:
         print("Initialized Heating Data Stack")
 
 
+    def ignoreRecipe(self):
+        """
+        Helper method that checks if the current recipe is in the ignore list.
+
+            Parameters
+            ----------
+                None
+            
+            Returns
+            -------
+                True (bool): if the recipe is in the ignore list
+                False (bool): if the recipe is not in the ignore list
+        """
+        filename = self.heatingFilePath.replace("\\", "/").lower()
+        filename =filename.split("/")
+        filename = filename[-1]
+        for i in self.recipeIgnores:
+            if filename.find(i) != -1:
+                return True
+        return False
+
     def sendData(self):
         """
         Pops the most recent file from the stack and generates the full report.
@@ -422,8 +446,10 @@ class Heating:
         with open(self.dataPath + "/process_stack.txt", "r") as file:
             stack = file.read().splitlines()
             file.close()
-        if stack.__len__() == 0:
-            print("THE STACK IS EMPTY")
+        if self.ignoreRecipe():
+            return False
+        elif stack.__len__() == 0:
+            print("process stack empty")
             with open(self.dataPath + "/process_stack.txt", "a+") as file:
                 file.write(self.heatingFilePath + "\n")
                 file.close()
@@ -454,10 +480,13 @@ class Heating:
                 heatingFilePath (str): the file path of the new data
         """
         stack = []
+        print("RECIPE:", self.currentRecipe)
         with open(self.dataPath + "/process_stack.txt", "r") as file:
             stack = file.read().splitlines()
             file.close()
-        if stack.__len__() == 0:
+        if self.ignoreRecipe():
+            return None
+        elif stack.__len__() == 0:
             print("THE P STACK IS EMPTY")
             with open(self.dataPath + "/process_stack.txt", "a+") as file:
                 file.write(self.heatingFilePath + "\n")

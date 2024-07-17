@@ -29,6 +29,8 @@ class Pressure:
             Recipe Info
         recipes : list
             List of recipes
+        recipeIgnores : list
+            a list of the names of the recipes to ignore for the machine
         ingredientStack : list
             List of ingredients
         fileStack : list
@@ -87,6 +89,7 @@ class Pressure:
         # Recipe Info
         self.recipe = ""
         self.recipes = ["Al2O3", "TiO2", "HfO2", "ZrO2", "ZnO", "Ru", "Pt", "Ta2O5"]
+        self.recipeIgnores = ["standby", "pulse"]
         self.ingredientStack = []
         self.fileStack = []
         self.dir_list = []
@@ -320,6 +323,28 @@ class Pressure:
         print("Initialized Pressure Data Stack")
 
 
+    def ignoreRecipe(self):
+        """
+        Helper method that checks if the current recipe is in the ignore list.
+
+            Parameters
+            ----------
+                None
+            
+            Returns
+            -------
+                True (bool): if the recipe is in the ignore list
+                False (bool): if the recipe is not in the ignore list
+        """
+        filename = self.pressureFilePath.replace("\\", "/").lower()
+        filename =filename.split("/")
+        filename = filename[-1]
+        for i in self.recipeIgnores:
+            if filename.find(i) != -1:
+                return True
+        return False
+    
+
     def sendData(self):
         """
         Saves the data to proper output folders if there is new data.
@@ -338,8 +363,10 @@ class Pressure:
         with open(self.dataPath + "/process_stack.txt", "r") as file:
             stack = file.read().splitlines()
             file.close()
-        if stack.__len__() == 0:
-            print("THE H STACK IS EMPTY")
+        if self.ignoreRecipe():
+            return False
+        elif stack.__len__() == 0:
+            print("process stack empty")
             with open(self.dataPath + "/process_stack.txt", "a+") as file:
                 file.write(self.pressureFilePath + "\n")
                 file.close()
@@ -373,7 +400,9 @@ class Pressure:
         with open(self.dataPath + "/process_stack.txt", "r") as file:
             stack = file.read().splitlines()
             file.close()
-        if stack.__len__() == 0:
+        if self.ignoreRecipe():
+            return None
+        elif stack.__len__() == 0:
             print("THE STACK IS EMPTY")
             with open(self.dataPath + "/process_stack.txt", "a+") as file:
                 file.write(self.pressureFilePath + "\n")

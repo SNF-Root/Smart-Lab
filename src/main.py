@@ -1,6 +1,6 @@
 import subprocess
 import os
-
+import timeit
 
 def main():
     """
@@ -23,6 +23,7 @@ def main():
 
 
     # Loops through all machines registered in the register.txt file
+    start = timeit.default_timer()
     with open('src/register.txt', 'r') as file:
         runMachine = []
         for line in file:
@@ -39,6 +40,8 @@ def main():
                 donepile.append(machine[0])
 
     file.close()
+    stop = timeit.default_timer()
+    print('Runtime of Algs: ', stop - start)
     # subdirectories = [name for name in os.listdir('src/Machines') if os.path.isdir(os.path.join('src/Machines', name))]
     # print(subdirectories)
 
