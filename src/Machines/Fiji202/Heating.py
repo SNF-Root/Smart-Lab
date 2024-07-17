@@ -204,7 +204,6 @@ class Heating:
                 self.aldValves.append(float(data[6]))
                 
                 # Find the number of precursors
-                index = 7
                 for i in range(5):
                     self.precursors[i].append(float(data[i + 7]))
 

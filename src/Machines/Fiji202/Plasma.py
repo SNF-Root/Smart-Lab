@@ -9,10 +9,12 @@ class Plasma:
         
         Attributes:
         -----------
-        pTime : list
-            Plasma Data (Float in Torr) and Time (Float in ms)
+        rfTime : list
+            Plasma Data (Float in Watts) and Time (Float in ms)
         Plasma : list
-            Plasma Data (Float in Torr) and Time (Float in ms)
+            Plasma Data (Float in Watts) and Time (Float in ms)
+        PlasmaReflect : list
+            Plasma Reflect Data (Float in Watts) and Time (Float in ms)
         cycles : list
             Cycles (int)
         dataPath : string
@@ -73,9 +75,10 @@ class Plasma:
                 dataPath : str
                     Path from Tool-Data to the data folder of the machine
         """
-        # Plasma Data (Float in Torr) and Time (Float in ms)
-        self.pTime = []
+        # Plasma Data (Float in Watts) and Time (Float in ms)
+        self.rfTime = []
         self.Plasma = []
+        self.PlasmaReflect = []
         # Cycles (int)
         self.cycles = []
 
@@ -121,7 +124,7 @@ class Plasma:
 
     def readFile(self):
         """
-        Reads through the txt file and reads data into the pTime, Plasma, outString, and cycles lists.
+        Reads through the txt file and reads data into the rfTime, Plasma, outString, and cycles lists.
         
             Parameters
             ----------
@@ -132,8 +135,9 @@ class Plasma:
                 None
         """
         path = self.plasmaFilePath
-        self.pTime = []
+        self.rfTime = []
         self.Plasma = []
+        self.PlasmaReflect = []
         self.cycles = []
         self.recipe = ""
        
@@ -161,15 +165,16 @@ class Plasma:
 
                 # If the file is not empty, record the data
                 empty = False
-                self.pTime.append(float(data[0]))
+                self.rfTime.append(float(data[0]))
                 self.Plasma.append(float(data[1]))
-                self.cycles.append(int(data[2]))
+                self.PlasmaReflect.append(float(data[2]))
+                self.cycles.append(int(data[3]))
 
                 iter += 1
                 # Find the recipe name
                 if iter == 1:
-                    for i in range(data.__len__() - 3):
-                        self.recipe += data[i+3] + " "
+                    for i in range(data.__len__() - 4):
+                        self.recipe += data[i+4] + " "
                     self.recipe = self.recipe.strip()
                     for key in self.ingredientStack:
                         if self.recipe.find(key) != -1:
@@ -255,40 +260,44 @@ class Plasma:
         except FileNotFoundError:
             pass
 
-        # Plotting the Plasma vs Time
-        if (self.pTime.__len__() > 0):
-            if (self.pTime.__len__() < 1500):
-                fig, ax = plt.subplots()
+        # Plotting the Plasma vs Time and Plasma Reflect vs Time
+        if (self.rfTime.__len__() > 0):
+            if (self.rfTime.__len__() < 1500):
+                fig, ax = plt.subplots(2, 1)
                 fig.suptitle('Plasma Data')
                 fig.set_size_inches(8, 8)
                 fig.supxlabel('Time (ms)')
-                fig.supylabel('Plasma (Torr)')
-                ax.plot(self.pTime, self.Plasma)
+                fig.supylabel('Plasma (Watts)')
+                ax[0].plot(self.rfTime, self.Plasma, 'tab:blue')
+                ax[1].set_title('Plasma Reflect Data')
+                ax[1].plot(self.rfTime, self.PlasmaReflect, 'tab:orange')
                 fig.tight_layout()
                 # plt.show()
                 fig.savefig(path)
 
             else:
                 lastP = self.Plasma[-1500:]
-                lastT = self.pTime[-1500:]
-                fig, ax = plt.subplots(2, 1)
+                lastT = self.rfTime[-1500:]
+                fig, ax = plt.subplots(3, 1)
                 fig.suptitle('Plasma Data')
                 fig.set_size_inches(8, 8)
                 fig.supxlabel('Time (ms)')
-                fig.supylabel('Plasma (Torr)')
-                ax[0].plot(self.pTime, self.Plasma, 'tab:blue')
-                ax[1].set_title('Plasma Last 1500ms')
-                ax[1].plot(lastT, lastP, 'tab:orange', linestyle='solid')
+                fig.supylabel('Plasma (Watts)')
+                ax[0].plot(self.rfTime, self.Plasma, 'tab:blue')
+                ax[1].set_title('Plasma Reflect Data')
+                ax[1].plot(self.rfTime, self.PlasmaReflect, 'tab:orange')
+                ax[2].set_title('Plasma Last 1500ms')
+                ax[2].plot(lastT, lastP, 'tab:green', linestyle='solid')
                 fig.tight_layout()
                 # plt.show()
                 fig.savefig(path)
 
         else:
             fig = plt.figure()
-            fig.suptitle('Precursor Heating Data')
+            fig.suptitle('Plasma Data')
             fig.set_size_inches(8, 8)
             fig.supxlabel('Time (s)')
-            fig.supylabel('Plasma (Torr)')
+            fig.supylabel('Plasma (Watts)')
             fig.tight_layout()
             fig.savefig(path)
             # plt.show()
@@ -453,7 +462,7 @@ class Plasma:
 
 # Main function to test the Plasma class
 def main():
-    plasma = Plasma("src/Machines/Fiji202/data")
+    plasma = Plasma("src/Machines/Fiji202/data(fiji1)")
     plasma.initialize()
     plasma.sendData()
 
