@@ -12,14 +12,14 @@ class SetupGUI:
         self.rclone_path = ""
         self.register_file_path = "src/register.txt"
         self.rclone_file_path = "src/rclone.txt"
-        self.machinelist = ["Savannah ALD", "Fiji ALD"]
+        self.machinelist = ["Savannah ALD", "Fiji ALD (F202)"]
         self.machinedict = {
             "Savannah ALD": "Savannah",
-            "Fiji ALD": "Fiji"
+            "Fiji ALD (F202)": "Fiji202"
         }
         self.how_many_folders = {
             "Savannah ALD": (2, "Pressure", "Heating"),
-            "Fiji ALD": (2, "Pressure", "Heating")
+            "Fiji ALD (F202)": (3, "Pressure", "Heating", "Plasma")
         }
 
 
