@@ -1,9 +1,8 @@
-# fetch_files.yml
 ---
 - name: Check if the remote directory is empty
-  command: "ls -A {{ dir_info.src }}"
+  command: "ls -A \"{{ dir_info.src }}\""
   register: dir_contents
-  ignore_errors: yes
+  failed_when: dir_contents.rc != 0 and dir_contents.stderr.find('No such file or directory') == -1
 
 - name: Set fact indicating if the directory is empty
   set_fact:
@@ -25,7 +24,7 @@
   stat:
     path: "{{ dir_info.dest }}/{{ most_recent_file.path | basename }}"
   register: stat_result
-  when: 
+  when:
     - not is_remote_dir_empty
     - most_recent_file is defined
 

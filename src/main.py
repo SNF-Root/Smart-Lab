@@ -20,6 +20,7 @@ def main():
 
     result = subprocess.run(ansible_command, cwd=current_directory, capture_output=True, text=True)
     print('Errors:', result.stderr)
+    print('Output:', result.stdout)
 
 
     # Loops through all machines registered in the register.txt file
