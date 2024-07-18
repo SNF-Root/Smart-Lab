@@ -120,6 +120,7 @@ class SetupGUI:
                         os.makedirs(f"src/Machines/{realname}/data({machine_name})", exist_ok=True)
                         os.makedirs(f"src/Machines/{realname}/data({machine_name})/Output_Text", exist_ok=True)
                         os.makedirs(f"src/Machines/{realname}/data({machine_name})/Output_Plots", exist_ok=True)
+                        os.makedirs(f"src/Machines/{realname}/data({machine_name})/Output_Data", exist_ok=True)
                         with open(f"src/Machines/{realname}/data({machine_name})/process_stack.txt", "w") as file:
                             file.close()
                             pass

@@ -5,6 +5,7 @@ from src.uploader import Uploader
 from datetime import datetime
 import timeit
 import os
+import shutil
 
 # Iterates through all Savannah Machines and runs all algorithms
 class Savannah:
@@ -29,6 +30,89 @@ class Savannah:
             print("Error: File not found, Rename failed")
             return
         return newpath
+    
+
+    def copy_item(self, src, dst):
+        """Copy an item (file or directory) from src to dst."""
+        if os.path.isdir(src):
+            shutil.copytree(src, dst, dirs_exist_ok=True)
+        else:
+            shutil.copy2(src, dst)
+
+
+    def copy_sources_to_new_folder(self, src_items, base_dst_folder):
+        """
+        Copies the contents of source items (files or folders) to a new folder in base_dst_folder.
+        The new folder is named according to the current date and time.
+        """
+        # Create the new folder name
+        dirname = datetime.now().strftime("%m:%d:%Y") + "~" + datetime.now().strftime("%H:%M")
+        dst_folder = os.path.join(base_dst_folder, dirname)
+        
+        try:
+            # Create destination folder
+            os.makedirs(dst_folder, exist_ok=True)
+            
+            # Copy the contents of the source items to the destination folder
+            for src in src_items:
+                if not os.path.exists(src):
+                    raise FileNotFoundError(f"Source item '{src}' does not exist.")
+                
+                item_name = os.path.basename(src)
+                dst_item = os.path.join(dst_folder, item_name)
+                self.copy_item(src, dst_item)
+            
+            print(f"Contents of {src_items} have been copied to '{dst_folder}'.")
+            return dirname
+
+        except Exception as e:
+            print(f"An error occurred: {e}")
+
+
+    def copy_folder_contents(self, src_folder1, src_folder2, base_dst_folder):
+        """
+        Copies the contents of src_folder1 and src_folder2 to a new folder in base_dst_folder.
+        The new folder is named according to the current date and time.
+        """
+        # Create the new folder name
+        dirname = datetime.now().strftime("%m:%d:%Y") + "~" + datetime.now().strftime("%H:%M")
+        dst_folder = os.path.join(base_dst_folder, dirname)
+        
+        try:
+            # Check if source folders exist
+            if not os.path.exists(src_folder1):
+                raise FileNotFoundError(f"Source folder '{src_folder1}' does not exist.")
+            if not os.path.exists(src_folder2):
+                raise FileNotFoundError(f"Source folder '{src_folder2}' does not exist.")
+            
+            # Create destination folder
+            os.makedirs(dst_folder, exist_ok=True)
+            
+            # Copy the contents of the first source folder to the destination folder
+            for item in os.listdir(src_folder1):
+                src_item = os.path.join(src_folder1, item)
+                dst_item = os.path.join(dst_folder, item)
+                
+                if os.path.isdir(src_item):
+                    shutil.copytree(src_item, dst_item, dirs_exist_ok=True)
+                else:
+                    shutil.copy2(src_item, dst_item)
+            
+            # Copy the contents of the second source folder to the destination folder
+            for item in os.listdir(src_folder2):
+                src_item = os.path.join(src_folder2, item)
+                dst_item = os.path.join(dst_folder, item)
+                
+                if os.path.isdir(src_item):
+                    shutil.copytree(src_item, dst_item, dirs_exist_ok=True)
+                else:
+                    shutil.copy2(src_item, dst_item)
+            
+            print(f"Contents of '{src_folder1}' and '{src_folder2}' have been copied to '{dst_folder}'.")
+            return dirname
+
+        except Exception as e:
+            print(f"An error occurred: {e}")
 
 
     # Runs the Pressure and Heating algorithms for all Savannah machines
@@ -60,34 +144,41 @@ class Savannah:
                 if newp and newh:
                     newp = self.changeName(newp, "Pressure")
                     newh = self.changeName(newh, "Heating")
-                    dirname = datetime.now().strftime("%m:%d:%Y") + "~" + datetime.now().strftime("%H:%M")
+                    src_items = [newp, newh]
+                    dirname = self.copy_sources_to_new_folder(src_items, f"src/Machines/{machine[0]}/data({machine[1]})/Output_Data")
+                    # FIND ROOT DIRECTORY OF CLOUD STORAGE
                     file = open("src/rclone.txt", "r")
                     root = file.readline().strip()
+                    if root == "":
+                        print("Cloud Storage Not Found, Skipping Upload...")
+                        file.close()
+                        return
                     file.close()
-                    up = Uploader(newp, f"{root}/{machine[0]}/{machine[1]}/{dirname}")
+                    # UPLOAD TO CLOUD STORAGE
+                    up = Uploader(f"src/Machines/{machine[0]}/data({machine[1]})/Output_Data/{dirname}", f"{root}/{machine[0]}/{machine[1]}/{dirname}")
                     up.rclone()
-                    print("Uploaded Pressure")
-                    up2 = Uploader(newh, f"{root}/{machine[0]}/{machine[1]}/{dirname}")
-                    up2.rclone()
-                    print("Uploaded Heating")
             # Uploading normal output files
             else:
                 newp = p.run()
                 newh = h.run()
                 stop = timeit.default_timer()
                 print('Data Processing Runtime: ', stop - start)
-                if newp or newh:
+                if newp and newh:
                     # ADD DATE TIME TO NEW DIRECTORY NAME
-                    dirname = datetime.now().strftime("%m:%d:%Y") + "~" + datetime.now().strftime("%H:%M")
+                    out_plot = dataPath + "/Output_Plots"
+                    out_text = dataPath + "/Output_Text"
+                    dirname = self.copy_folder_contents(out_plot, out_text, f"src/Machines/{machine[0]}/data({machine[1]})/Output_Data")
                     # FIND ROOT DIRECTORY OF CLOUD STORAGE
                     file = open("src/rclone.txt", "r")
                     root = file.readline().strip()
+                    if root == "":
+                        print("Cloud Storage Not Found, Skipping Upload...")
+                        file.close()
+                        return
                     file.close()
                     # UPLOAD TO CLOUD STORAGE
-                    up = Uploader(f"src/Machines/{machine[0]}/data({machine[1]})/Output_Text", f"{root}/{machine[0]}/{machine[1]}/{dirname}")
+                    up = Uploader(f"src/Machines/{machine[0]}/data({machine[1]})/Output_Data/{dirname}", f"{root}/{machine[0]}/{machine[1]}/{dirname}")
                     up.rclone()
-                    up2 = Uploader(f"src/Machines/{machine[0]}/data({machine[1]})/Output_Plots", f"{root}/{machine[0]}/{machine[1]}/{dirname}")
-                    up2.rclone()
 
 
 # Main function for testing
