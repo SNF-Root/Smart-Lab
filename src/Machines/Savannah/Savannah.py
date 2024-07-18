@@ -145,7 +145,8 @@ class Savannah:
                     newp = self.changeName(newp, "Pressure")
                     newh = self.changeName(newh, "Heating")
                     src_items = [newp, newh]
-                    dirname = self.copy_sources_to_new_folder(src_items, f"src/Machines/{machine[0]}/data({machine[1]})/Output_Data")
+                    dirname = self.copy_sources_to_new_folder(src_items,
+                                                              f"src/Machines/{machine[0]}/data({machine[1]})/Output_Data")
                     # FIND ROOT DIRECTORY OF CLOUD STORAGE
                     file = open("src/rclone.txt", "r")
                     root = file.readline().strip()
@@ -155,7 +156,8 @@ class Savannah:
                         return
                     file.close()
                     # UPLOAD TO CLOUD STORAGE
-                    up = Uploader(f"src/Machines/{machine[0]}/data({machine[1]})/Output_Data/{dirname}", f"{root}/{machine[0]}/{machine[1]}/{dirname}")
+                    up = Uploader(f"src/Machines/{machine[0]}/data({machine[1]})/Output_Data/{dirname}",
+                                    f"{root}/{machine[0]}/{machine[1]}/{dirname}")
                     up.rclone()
             # Uploading normal output files
             else:
@@ -167,7 +169,8 @@ class Savannah:
                     # ADD DATE TIME TO NEW DIRECTORY NAME
                     out_plot = dataPath + "/Output_Plots"
                     out_text = dataPath + "/Output_Text"
-                    dirname = self.copy_folder_contents(out_plot, out_text, f"src/Machines/{machine[0]}/data({machine[1]})/Output_Data")
+                    dirname = self.copy_folder_contents(out_plot, out_text,
+                                                        f"src/Machines/{machine[0]}/data({machine[1]})/Output_Data")
                     # FIND ROOT DIRECTORY OF CLOUD STORAGE
                     file = open("src/rclone.txt", "r")
                     root = file.readline().strip()
@@ -177,7 +180,8 @@ class Savannah:
                         return
                     file.close()
                     # UPLOAD TO CLOUD STORAGE
-                    up = Uploader(f"src/Machines/{machine[0]}/data({machine[1]})/Output_Data/{dirname}", f"{root}/{machine[0]}/{machine[1]}/{dirname}")
+                    up = Uploader(f"src/Machines/{machine[0]}/data({machine[1]})/Output_Data/{dirname}",
+                                    f"{root}/{machine[0]}/{machine[1]}/{dirname}")
                     up.rclone()
 
 

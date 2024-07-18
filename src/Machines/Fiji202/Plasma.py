@@ -91,7 +91,7 @@ class Plasma:
 
         # Recipe Info
         self.recipe = ""
-        self.recipes = ["Al2O3", "TiO2", "HfO2", "ZrO2", "ZnO", "Ru", "Pt", "Ta2O5"]
+        self.recipes = ["Al2O3", "HfO2", "InOx", "NiO", "Pt", "Ru", "SiO2", "Ta2O5", "TaN", "TiN", "TiO2", "WN", "ZrO2"]
         self.recipeIgnores = ["standby", "pulse"]
         self.ingredientStack = []
         self.fileStack = []
@@ -140,7 +140,10 @@ class Plasma:
         self.PlasmaReflect = []
         self.cycles = []
         self.recipe = ""
-       
+   
+        checkPlasma = True
+        plasmaCycles = 0
+
         # If the file is empty
         empty = True
         # Iterator to find line 1 of file, which contains the recipe name at the end
@@ -170,6 +173,11 @@ class Plasma:
                 self.PlasmaReflect.append(float(data[2]))
                 self.cycles.append(int(data[3]))
 
+                # Find the cycles before plasma starts
+                if self.Plasma[-1] != 0 and checkPlasma:
+                    plasmaCycles = self.cycles[0] - self.cycles[-1] + 1
+                    checkPlasma = False
+                    
                 iter += 1
                 # Find the recipe name
                 if iter == 1:
@@ -187,6 +195,7 @@ class Plasma:
                 self.outString += "Completed Cycles: " + str(self.cycles[0]) + "/" + str(self.cycles[0]) + "\n\n"
             else:
                 self.outString += "Completed Cycles: " + str(self.cycles[0] - self.cycles[-1] + 1) + "/" + str(self.cycles[0]) + "\n\n"
+            self.outString += "Cycles Before Plasma Starts: " + str(plasmaCycles) + "\n\n"
         file.close()
 
 

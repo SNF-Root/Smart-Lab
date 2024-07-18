@@ -114,7 +114,7 @@ class Heating:
 
         # Recipe Info
         self.currentRecipe = ""
-        self.recipes = ["Al2O3", "TiO2", "HfO2", "ZrO2", "ZnO", "Ru", "Pt", "Ta2O5"]
+        self.recipes = ["Al2O3", "HfO2", "InOx", "NiO", "Pt", "Ru", "SiO2", "Ta2O5", "TaN", "TiN", "TiO2", "WN", "ZrO2"]
         self.recipeIgnores = ["standby", "pulse"]
         self.ingredientStack = []
         self.fileStack = []
@@ -171,6 +171,10 @@ class Heating:
         self.cycles = []
         self.currentRecipe = ""
 
+        chuckMax = 0
+        reactor1Max = 0
+        reactor2Max = 0
+        precursorsMax = [0, 0, 0, 0, 0]
         # If the file is empty
         empty = True
         # Iterator to find line 1 of file, which contains the recipe name at the end
@@ -203,9 +207,18 @@ class Heating:
                 self.pDelivery.append(float(data[5]))
                 self.aldValves.append(float(data[6]))
                 
+                if data[2] > reactor1Max:
+                    reactor1Max = data[2]
+                if data[3] > reactor2Max:
+                    reactor2Max = data[3]
+                if data[4] > chuckMax:
+                    chuckMax = data[4]
+
                 # Find the number of precursors
                 for i in range(5):
                     self.precursors[i].append(float(data[i + 7]))
+                    if data[i + 7] > precursorsMax[i]:
+                        precursorsMax[i] = data[i + 7]
 
                 # record mfc1 and cycles data which is after the precursor data
                 self.mfc1.append(float(data[14]))
@@ -222,16 +235,37 @@ class Heating:
                             self.currentRecipe = key
 
 
+        errorMessage = ""
+
+        if reactor1Max >= 275:
+            errorMessage += f"Reactor 1 Max Temp Exceeded At {reactor1Max}" + "\u00b0 C" + "\n\n"
+        if reactor2Max >= 275:
+            errorMessage += f"Reactor 2 Max Temp Exceeded At {reactor2Max}" + "\u00b0 C" + "\n\n"
+        if chuckMax >= 275:
+            errorMessage += f"Chuck Max Temp Exceeded At {chuckMax}" + "\u00b0 C" + "\n\n"
+        for i in range(5):
+            if precursorsMax[i] >= 275:
+                errorMessage += f"Precursor {i+1} Max Temp Exceeded At {precursorsMax[i]}" + "\u00b0 C" + "\n\n"
+            if precursorsMax[i] != 0.0:
+                self.numPrecursors += 1
+                
+            
         # if the file is not empty, print out the data
         if not empty:
             if (self.cycles[0] - self.cycles[-1] + 1) > self.cycles[0]:
                 self.outString += "Completed Cycles: " + str(self.cycles[0]) + "/" + str(self.cycles[0]) + "\n\n"
             else:
                 self.outString += "Completed Cycles: " + str(self.cycles[0] - self.cycles[-1] + 1) + "/" + str(self.cycles[0]) + "\n\n"
-            self.outString += "Number of Precursors: " + str(self.numPrecursors) + "\n\n"
-            self.outString += "Inner Heater Final Temp: " + str(self.innerHeater[-1]) + "\u00b0 C" + "\n\n"
-            self.outString += "Outer Heater Final Temp: " + str(self.outerHeater[-1]) + "\u00b0 C" + "\n\n"
-            self.averageTemp()
+            self.outString += "Number of Precursors Heated: " + str(self.numPrecursors) + "\n\n"
+            self.outString += "Cone Final Temp: " + str(self.cone[-1]) + "\u00b0 C" + "\n\n"
+            self.outString += "Reactor 1 Final Temp: " + str(self.reactor1[-1]) + "\u00b0 C" + "\n\n"
+            self.outString += "Reactor 2 Final Temp: " + str(self.reactor2[-1]) + "\u00b0 C" + "\n\n"
+            self.outString += "Chuck Final Temp: " + str(self.chuck[-1]) + "\u00b0 C" + "\n\n"
+            self.outString += "Precursor Delivery Final Temp: " + str(self.pDelivery[-1]) + "\u00b0 C" + "\n\n"
+            self.outString += "ALD Valves Final Temp: " + str(self.aldValves[-1]) + "\u00b0 C" + "\n\n"
+            self.averageTemp(precursorsMax)
+            if errorMessage != "":
+                self.outString += "ERRORS: \n" + errorMessage
         file.close()
 
 
@@ -265,7 +299,7 @@ class Heating:
         # self.outString += "Most Recent: " + str(self.ingredientStack) + "\n\n"
 
 
-    def averageTemp(self):
+    def averageTemp(self, precursorMax):
         """
         Helper method to calculate the average temperature of each precursor.
 
@@ -277,11 +311,13 @@ class Heating:
             -------
                 None
         """
-        self.outString
-        for i in range(self.numPrecursors):
-            sum = 0
-            for j in range(self.precursors[i].__len__()):
-                sum += self.precursors[i][j]
+        for i in range(5):
+            if precursorMax[i] == 0.0:
+                continue
+            else:
+                sum = 0
+                for j in self.precursors[i]:
+                    sum += j
             self.outString += "Average Temp of Precursor " + str(i+1) + ": " + str(round(sum/self.precursors[i].__len__(), 1)) + "\u00b0 C" + "\n\n"
             # print("Average Temp of Precursor", i+1, ":", str(round(sum/precursors[i].__len__(), 1)) +  "\u00b0 C")
 
