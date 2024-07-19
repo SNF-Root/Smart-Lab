@@ -147,7 +147,7 @@ class Heating:
 
     def readFile(self):
         """
-        Reads through the txt file and reads data for the heater.
+        Reads through the txt file and reads data from files for the heater.
         
             Parameters
             ----------
@@ -171,6 +171,7 @@ class Heating:
         self.cycles = []
         self.currentRecipe = ""
 
+        # Track Max Temp Values for each component
         chuckMax = 0
         reactor1Max = 0
         reactor2Max = 0
@@ -194,10 +195,11 @@ class Heating:
                     foobar = data[0]
                 except IndexError:
                     continue
+                # Skip the first line of the file (only contains the header)
                 if data[0] == "Heater":
                     continue
                 
-                # If the file is not empty, record the data
+                # If the file is not empty, record the data line by line
                 empty = False
                 self.hTime.append(float(data[0]))
                 self.cone.append(float(data[1]))
@@ -207,6 +209,7 @@ class Heating:
                 self.pDelivery.append(float(data[5]))
                 self.aldValves.append(float(data[6]))
                 
+                # Check max temp values for each component
                 if float(data[2]) > reactor1Max:
                     reactor1Max = float(data[2])
                 if float(data[3]) > reactor2Max:
@@ -214,7 +217,7 @@ class Heating:
                 if float(data[4]) > chuckMax:
                     chuckMax = float(data[4])
 
-                # Find the number of precursors
+                # Record precursor temperature data
                 for i in range(5):
                     self.precursors[i].append(float(data[i + 7]))
                     if float(data[i + 7]) > precursorsMax[i]:
@@ -235,6 +238,7 @@ class Heating:
                             self.currentRecipe = key
 
 
+        # Error Message for Max Temp Exceeded for some components
         errorMessage = ""
 
         if reactor1Max >= 275:
@@ -250,7 +254,7 @@ class Heating:
                 self.numPrecursors += 1
                 
             
-        # if the file is not empty, print out the data
+        # if the file is not empty, structure the report in outString
         if not empty:
             if (self.cycles[0] - self.cycles[-1] + 1) > self.cycles[0]:
                 self.outString += "Completed Cycles: " + str(self.cycles[0]) + "/" + str(self.cycles[0]) + "\n\n"
@@ -295,8 +299,6 @@ class Heating:
                     break
             if (title.find("standby") == -1) and (title.find("pulse") == -1):
                 self.ingredientStack.append("Unknown")
-        
-        # self.outString += "Most Recent: " + str(self.ingredientStack) + "\n\n"
 
 
     def averageTemp(self, precursorMax):

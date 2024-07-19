@@ -156,6 +156,7 @@ class Pressure:
                     foobar = data[0]
                 except IndexError:
                     continue
+                # Skip the first line of the file
                 if data[0] == "Pressure":
                     continue
 
@@ -176,7 +177,7 @@ class Pressure:
                             self.recipe = key
 
 
-        # if the file is not empty, print out the data
+        # if the file is not empty, structure the report in outString
         if not empty:
             if (self.cycles[0] - self.cycles[-1] + 1) > self.cycles[0]:
                 self.outString += "Completed Cycles: " + str(self.cycles[0]) + "/" + str(self.cycles[0]) + "\n\n"
@@ -211,8 +212,6 @@ class Pressure:
                     break
             if (title.find("standby") == -1) and (title.find("pulse") == -1):
                 self.ingredientStack.append("Unknown")
-        
-        # self.outString += "Most Recent: " + str(self.ingredientStack) + "\n\n"
 
 
     def genReport(self):
