@@ -115,7 +115,7 @@ class Pressure:
             self.dir_list = os.listdir(path)
             self.parseTitles()
         except NotADirectoryError:
-            print("DIRECTORY NOT FOUND, PROCESS ABORTED. \n Hint: Try putting in a valid directory path.")
+            print("DIRECTORY NOT FOUND, PROCESS ABORTED AT: \"src/Machines/Savannah/Pressure.py\" AT METHOD: readDir(). \n Hint: Try putting in a valid directory path.")
             return
 
 
@@ -145,7 +145,7 @@ class Pressure:
         try:
             foobar = open(path)
         except FileNotFoundError:
-            print("FILE NOT FOUND, PROCESS ABORTED. \n Hint: Try putting in a valid file path.")
+            print("FILE NOT FOUND, PROCESS ABORTED AT: \"src/Machines/Savannah/Pressure.py\" AT METHOD: readFile(). \n Hint: Try putting in a valid file path.")
             return
 
         # main loop to read through the file line by line
@@ -200,7 +200,7 @@ class Pressure:
         try:
             foobar = self.dir_list[0]
         except IndexError:
-            print("DIRECTORY IS EMPTY, PROCESS ABORTED. \n Hint: Try putting in a directory with files.")
+            print("DIRECTORY IS EMPTY, PROCESS ABORTED AT: \"src/Machines/Savannah/Pressure.py\" AT METHOD: parseTitles(). \n Hint: Try putting in a directory with files.")
             return
 
         for i in self.dir_list:
@@ -292,7 +292,7 @@ class Pressure:
             fig.tight_layout()
             fig.savefig(path)
             # plt.show()
-            print("NO DATA TO PLOT, PROCESS ABORTED. \n Hint: Try putting in a file with data.")
+            print("NO DATA TO PLOT, PROCESS ABORTED AT: \"src/Machines/Savannah/Pressure.py\" AT METHOD: plotPressure(). \n Hint: Try putting in a file with data.")
             return
 
 
@@ -316,11 +316,13 @@ class Pressure:
             filepath = self.pressureDirPath + "/" + i
             # get creation time
             times.append((filepath, os.path.getctime(filepath)))
-                
+        if times.__len__() == 0:
+            print("NO FILES FOUND, PROCESS ABORTED AT: \"src/Machines/Savannah/Pressure.py\" AT METHOD: initialize(). \n Hint: Ansible may have trouble copying files.")
+            return
         # sort by creation time
         times.sort(key=lambda x: x[1])
         self.pressureFilePath = times[-1][0]
-        print("Initialized Pressure Data Stack")
+        print("Initialized Pressure Data Stack Successfully")
 
 
     def ignoreRecipe(self):
@@ -366,7 +368,6 @@ class Pressure:
         if self.ignoreRecipe():
             return False
         elif stack.__len__() == 0:
-            print("process stack empty")
             with open(self.dataPath + "/process_stack.txt", "a+") as file:
                 file.write(self.pressureFilePath + "\n")
                 file.close()
@@ -379,7 +380,7 @@ class Pressure:
 
         self.genReport()
         self.plotPressure()
-        print("Sent data for:", self.pressureFilePath)
+        print("Sent data successfully for:", self.pressureFilePath)
         return True
 
 
@@ -403,7 +404,6 @@ class Pressure:
         if self.ignoreRecipe():
             return None
         elif stack.__len__() == 0:
-            print("THE STACK IS EMPTY")
             with open(self.dataPath + "/process_stack.txt", "a+") as file:
                 file.write(self.pressureFilePath + "\n")
                 file.close()
@@ -414,7 +414,7 @@ class Pressure:
                 file.write(self.pressureFilePath + "\n")
                 file.close()
 
-        print("Sent data for:", self.pressureFilePath)
+        print("Sent data successfully for:", self.pressureFilePath)
         return self.pressureFilePath
 
 

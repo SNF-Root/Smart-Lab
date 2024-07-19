@@ -141,7 +141,7 @@ class Heating:
             self.dir_list = os.listdir(path)
             self.parseTitles()
         except NotADirectoryError:
-            print("DIRECTORY NOT FOUND, PROCESS ABORTED. \n Hint: Try putting in a valid directory path.")
+            print("DIRECTORY NOT FOUND, PROCESS ABORTED AT: \"src/Machines/Fiji202/Heating.py\" AT METHOD: readDir(). \n Hint: Try putting in a valid directory path.")
             return
 
 
@@ -184,7 +184,7 @@ class Heating:
         try:
             foobar = open(path)
         except FileNotFoundError:
-            print("FILE NOT FOUND, PROCESS ABORTED. \n Hint: Try putting in a valid file path.")
+            print("FILE NOT FOUND, PROCESS ABORTE AT: \"src/Machines/Fiji202/Heating.py\" AT METHOD: readFile(). \n Hint: Try putting in a valid file path.")
             return
 
         # main loop to read through the file line by line
@@ -288,7 +288,7 @@ class Heating:
         try:
             foobar = self.dir_list[0]
         except IndexError:
-            print("DIRECTORY IS EMPTY, PROCESS ABORTED. \n Hint: Try putting in a directory with files.")
+            print("DIRECTORY IS EMPTY, PROCESS ABORTED AT: \"src/Machines/Fiji202/Heating.py\" AT METHOD: parseTitles(). \n Hint: Try putting in a directory with files.")
             return
         
         for i in self.dir_list:
@@ -419,7 +419,7 @@ class Heating:
             fig.tight_layout()
             fig.savefig(p_path)
             # plt.show()
-            print("Graphing Aborted: No Precursor Data")
+            print("GRAPHING ABORTED AT: \"src/Machines/Fiji202/Heating.py\" AT METHOD: plotHeating(), No Precursor Data")
 
 
     def initialize(self):
@@ -442,11 +442,13 @@ class Heating:
             filepath = self.heatingDirPath + "/" + i
             # get creation time
             times.append((filepath, os.path.getctime(filepath)))
-                
+        if times.__len__() == 0:
+            print("NO FILES FOUND, PROCESS ABORTED AT: \"src/Machines/Fiji202/Heating.py\" AT METHOD: initialize(). \n Hint: Ansible may have trouble copying files")
+            return    
         # sort by creation time
         times.sort(key=lambda x: x[1])
         self.heatingFilePath = times[-1][0]
-        print("Initialized Heating Data Stack")
+        print("Initialized Heating Data Stack Successfully")
 
 
     def ignoreRecipe(self):
@@ -490,7 +492,6 @@ class Heating:
         if self.ignoreRecipe():
             return False
         elif stack.__len__() == 0:
-            print("process stack empty")
             with open(self.dataPath + "/process_stack.txt", "a+") as file:
                 file.write(self.heatingFilePath + "\n")
                 file.close()
@@ -503,7 +504,7 @@ class Heating:
 
         self.genReport()
         self.plotHeating()
-        print("Sent data for:", self.heatingFilePath)
+        print("Sent data Successfully for:", self.heatingFilePath)
         return True
 
     
@@ -528,7 +529,6 @@ class Heating:
         if self.ignoreRecipe():
             return None
         elif stack.__len__() == 0:
-            print("THE P STACK IS EMPTY")
             with open(self.dataPath + "/process_stack.txt", "a+") as file:
                 file.write(self.heatingFilePath + "\n")
                 file.close()
@@ -539,7 +539,7 @@ class Heating:
                 file.write(self.heatingFilePath + "\n")
                 file.close()
 
-        print("Sent data for:", self.heatingFilePath)
+        print("Sent data Successfully for:", self.heatingFilePath)
         return self.heatingFilePath
 
 
