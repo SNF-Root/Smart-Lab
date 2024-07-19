@@ -163,7 +163,7 @@ class Plasma:
                     foobar = data[0]
                 except IndexError:
                     continue
-                if data[0] == "Plasma":
+                if data[0] == "RF":
                     continue
 
                 # If the file is not empty, record the data

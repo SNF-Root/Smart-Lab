@@ -207,18 +207,18 @@ class Heating:
                 self.pDelivery.append(float(data[5]))
                 self.aldValves.append(float(data[6]))
                 
-                if data[2] > reactor1Max:
-                    reactor1Max = data[2]
-                if data[3] > reactor2Max:
-                    reactor2Max = data[3]
-                if data[4] > chuckMax:
-                    chuckMax = data[4]
+                if float(data[2]) > reactor1Max:
+                    reactor1Max = float(data[2])
+                if float(data[3]) > reactor2Max:
+                    reactor2Max = float(data[3])
+                if float(data[4]) > chuckMax:
+                    chuckMax = float(data[4])
 
                 # Find the number of precursors
                 for i in range(5):
                     self.precursors[i].append(float(data[i + 7]))
-                    if data[i + 7] > precursorsMax[i]:
-                        precursorsMax[i] = data[i + 7]
+                    if float(data[i + 7]) > precursorsMax[i]:
+                        precursorsMax[i] =float(data[i + 7])
 
                 # record mfc1 and cycles data which is after the precursor data
                 self.mfc1.append(float(data[14]))
@@ -369,38 +369,41 @@ class Heating:
         
         # Plotting the Heating Data
         # Graph the Non-Precursor Temperature Data
-        fig, axs = plt.subplots(3, 2)
+        fig, axs = plt.subplots(4, 2)
         fig.suptitle('Non-Precursor Heating Data')
         fig.supxlabel('Time (s)')
         fig.supylabel('Temperature (C)')
         fig.set_size_inches(8, 8)
-        axs[0, 0].plot(self.hTime, self.trap, 'tab:blue')
-        axs[0, 0].set_title('Trap/Pump')
-        axs[0, 1].plot(self.hTime, self.stopValve, 'tab:orange')
-        axs[0, 1].set_title('Stop Valve')
-        axs[1, 0].plot(self.hTime, self.outerHeater, 'tab:green')
-        axs[1, 0].set_title('Outer Heater')
-        axs[1, 1].plot(self.hTime, self.innerHeater, 'tab:red')
-        axs[1, 1].set_title('Inner Heater')
-        axs[2, 0].plot(self.hTime, self.pManifold, 'tab:purple')
-        axs[2, 0].set_title('Precursor Manifold')
-        axs[2, 1].plot(self.hTime, self.mfc1, 'tab:brown')
-        axs[2, 1].set_title('MFC1')
+        axs[0, 0].plot(self.hTime, self.cone, 'tab:blue')
+        axs[0, 0].set_title('Cone')
+        axs[0, 1].plot(self.hTime, self.reactor1, 'tab:orange')
+        axs[0, 1].set_title('Reactor1')
+        axs[1, 0].plot(self.hTime, self.reactor2, 'tab:green')
+        axs[1, 0].set_title('Reactor2')
+        axs[1, 1].plot(self.hTime, self.chuck, 'tab:red')
+        axs[1, 1].set_title('Chuck')
+        axs[2, 0].plot(self.hTime, self.pDelivery, 'tab:purple')
+        axs[2, 0].set_title('Precursor Delivery')
+        axs[2, 1].plot(self.hTime, self.aldValves, 'tab:cyan')
+        axs[2, 1].set_title('ALD Valves')
+        axs[3, 0].plot(self.hTime, self.mfc1, 'tab:brown')
+        axs[3, 0].set_title('MFC1')
         fig.tight_layout()
         fig.savefig(np_path)
         # plt.show()
         
         # Plotting the Precursor Data
         if self.numPrecursors > 0:
-            fig, axs = plt.subplots(self.numPrecursors, 1)
+            fig, axs = plt.subplots(3, 2)
             fig.suptitle('Precursor Heating Data')
             fig.supxlabel('Time (s)')
             fig.supylabel('Temperature (C)')
             fig.set_size_inches(8, 8)
             colors = ['tab:blue', 'tab:orange', 'tab:green', 'tab:red', 'tab:purple']
-            for i in range(self.numPrecursors):
-                axs[i].plot(self.hTime, self.precursors[i], colors[i])
-                axs[i].set_title('Precursor ' + str(i + 1))
+            for i in range(5):
+                if self.precursors[i].__len__() > 0:
+                    axs[i // 2, i % 2].plot(self.hTime, self.precursors[i], colors[i])
+                    axs[i // 2, i % 2].set_title('Precursor ' + str(i+1))
             fig.tight_layout()
             fig.savefig(p_path)
             # plt.show()

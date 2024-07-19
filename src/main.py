@@ -38,6 +38,7 @@ def main():
             # MAYBE CHANGE THIS TO CALLING MAIN FUNC INSTEAD OF RUNNING THE FILE
             if machine[0] not in donepile:
                 subprocess.run(f"python3 src/Machines/{machine[0]}/{machine[0]}.py", shell=True)
+                print(f"Finished {machine[0]}")
                 donepile.append(machine[0])
 
     file.close()
