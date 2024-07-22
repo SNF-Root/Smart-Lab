@@ -1,0 +1,30 @@
+----------------------------------------------
+
+HEATING REPORT AT 08:55:58 ON 07/22/2024
+
+----------------------------------------------
+
+Completed Cycles: 185/185
+
+Number of Precursors Heated: 2
+
+Cone Final Temp: 199.9° C
+
+Reactor 1 Final Temp: 200.0° C
+
+Reactor 2 Final Temp: 200.0° C
+
+Chuck Final Temp: 200.0° C
+
+Precursor Delivery Final Temp: 35.5° C
+
+ALD Valves Final Temp: 35.7° C
+
+Average Temp of Precursor 1: 27.1° C
+
+Average Temp of Precursor 4: 27.9° C
+
+Recipe: AL2O3
+
+----------------------------------------------
+

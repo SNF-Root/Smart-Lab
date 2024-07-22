@@ -1,0 +1,24 @@
+----------------------------------------------
+
+HEATING REPORT AT 09:08:32 ON 07/22/2024
+
+----------------------------------------------
+
+Completed Cycles: 460/460
+
+Number of Precursors: 3
+
+Inner Heater Final Temp: 80.0° C
+
+Outer Heater Final Temp: 80.1° C
+
+Average Temp of Precursor 1: 75.0° C
+
+Average Temp of Precursor 2: 25.3° C
+
+Average Temp of Precursor 3: 25.3° C
+
+Recipe: MV 80DEG P40-A-T 4X WATER SECOND
+
+----------------------------------------------
+
