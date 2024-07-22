@@ -115,7 +115,7 @@ class Heating:
         # Recipe Info
         self.currentRecipe = ""
         self.recipes = ["Al2O3", "HfO2", "InOx", "NiO", "Pt", "Ru", "SiO2", "Ta2O5", "TaN", "TiN", "TiO2", "WN", "ZrO2"]
-        self.recipeIgnores = ["standby", "pulse"]
+        self.recipeIgnores = ["standby", "pulse", "purge"]
         self.ingredientStack = []
         self.fileStack = []
         self.dir_list = []
