@@ -3,9 +3,21 @@ import timeit
 
 from scripts.setupGUI import SetupGUI
 import logging
+import os
 
 
 if __name__ == '__main__':
+    file_path = 'src/register.txt'
+    file_path2 = 'src/rclone.txt'
+    os.makedirs(os.path.dirname(file_path), exist_ok=True)
+    os.makedirs(os.path.dirname(file_path2), exist_ok=True)
+    if not os.path.exists(file_path):
+        with open(file_path, 'w') as file:
+            pass  # Create an empty file
+    if not os.path.exists(file_path2):
+        with open(file_path2, 'w') as file:
+            pass
+
     g = SetupGUI()
     g.run()
     logging.basicConfig(filename='error.log', level=logging.ERROR,

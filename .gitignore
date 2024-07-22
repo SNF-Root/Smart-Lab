@@ -10,3 +10,11 @@ venv/
 __pycache__/
 .ipynb_checkpoints
 junk/
+src/rclone.txt
+src/register.txt
+src/Machines/Fiji202/data(fiji2)/
+src/Machines/Fiji202/data(fiji3)/
+src/Machines/Savannah/data(sav2)/
+src/Machines/Savannah/data(sav)/
+src/Machines/Savannah/data/
+testSuite.py

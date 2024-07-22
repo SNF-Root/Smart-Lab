@@ -1,3 +1,0 @@
-	RF Time	For Pwr (W) 	Refl Pwr (W)	Cycles Remaining	Recipe	Loop
-	 2.3	 0.0	 0.0	0	20 - STANDBY 200C	
-	 5.3	 0.0	 0.0	0	20 - STANDBY 200C	

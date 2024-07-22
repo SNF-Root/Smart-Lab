@@ -1,3 +1,0 @@
-	Heater Time	Heater 6 	Heater 7	Heater 8	Heater 9	Heater 10	Heater 11	Heater 12	Heater 13	Heater 14	Heater 15	Heater 16	Heater 17	Program Time	MFC 1	MFC Time	Cycles Remaining	Recipe	Loop
-	 1.6	200.0	201.1	200.1	200.1	38.1	29.6	28.9	 0.0	 0.0	28.9	 0.0	 0.0	13373.8	19.751	 2.347	0	20 - STANDBY 200C	
-	 3.6	200.0	201.1	200.0	200.1	38.3	29.6	28.9	 0.0	 0.0	29.0	 0.0	 0.0	13376.8	19.946	 5.344	0	20 - STANDBY 200C	
