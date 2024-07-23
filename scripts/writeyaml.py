@@ -118,6 +118,70 @@ class WriteYaml:
         print(f"YAML data successfully written to {file_path}")
 
 
+    @staticmethod
+    def delete_yaml(toolname):
+        """
+        Deletes a host entry based on the toolname from the hosts.yml file. 
+        If it is the only host, deletes everything from the whole file.
+        
+        Parameters
+        ----------
+            toolname: str
+                the name of the tool running on the host machine to be deleted
+        
+        Returns
+        -------
+            None
+        """
+        # Assuming the script is located in Tool-Data/scripts/
+        current_directory = os.path.dirname(__file__)  # Get current script directory
+        # Navigate up one level to Tool-Data/
+        project_directory = os.path.abspath(os.path.join(current_directory, '..'))
+
+        # Specify the relative path to the ansible directory
+        ansible_directory = os.path.join(project_directory, 'ansible')
+
+        # File path within the ansible directory
+        file_path = os.path.join(ansible_directory, 'hosts.yml')
+
+        if os.path.exists(file_path) and os.path.getsize(file_path) > 0:
+            # File already exists and is not empty
+            with open(file_path, 'r') as file:
+                existing_data = yaml.safe_load(file)
+        else:
+            print(f"File {file_path} does not exist or is empty")
+            return
+        
+        # Flag to check if any host with the toolname was found and deleted
+        host_deleted = False
+
+        # Check if the toolname exists in any host
+        if 'all' in existing_data and 'hosts' in existing_data['all']:
+            hosts_to_delete = []
+            for host_key, host_data in existing_data['all']['hosts'].items():
+                if host_data.get('toolname') == toolname:
+                    hosts_to_delete.append(host_key)
+                    host_deleted = True
+
+            # Delete hosts with the specified toolname
+            for host_key in hosts_to_delete:
+                del existing_data['all']['hosts'][host_key]
+
+            # If no hosts remain, clear the entire file
+            if not existing_data['all']['hosts']:
+                with open(file_path, 'w') as yaml_file:
+                    yaml_file.write('')
+            else:
+                # Write updated data to file
+                with open(file_path, 'w') as yaml_file:
+                    yaml.dump(existing_data, yaml_file, default_flow_style=False)
+
+        if host_deleted:
+            print(f"Host(s) with toolname '{toolname}' deleted from {file_path}")
+        else:
+            print(f"No host found with toolname '{toolname}' in {file_path}")
+
+
     def add_directory(self, host, source, destination):
         """
         Adds a new directory mapping to an existing host
@@ -184,6 +248,7 @@ def main():
     yml = WriteYaml(host, user, toolname, source, destination)
     yml.write_yaml()
     yml.add_directory(host, "/Users/andrew/Desktop/", "/Users/andrew/Desktop/SNF Projects/Tool-Data/src/Machines/Savannah/data/Output_Plots/")
+    WriteYaml.delete_yaml("Savannah")
 
 
 if __name__ == "__main__":

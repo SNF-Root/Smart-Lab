@@ -4,7 +4,6 @@ import os
 import re
 from scripts.writeyaml import WriteYaml
 
-
 class SetupGUI:
 
     def __init__(self):
@@ -21,7 +20,6 @@ class SetupGUI:
             "Savannah ALD": (2, "Pressure", "Heating"),
             "Fiji ALD (F202)": (3, "Pressure", "Heating", "Plasma")
         }
-
 
     def run(self):
         def open_second_window():
@@ -81,7 +79,6 @@ class SetupGUI:
                     folder_entry.grid(row=5 + idx, column=1, padx=10, pady=5, sticky=(tk.W, tk.E))
                     folder_entries.append((label, folder_entry))
 
-
                 def on_second_submit():
                     machine_name = machine_name_entry.get()
                     if machine_name == "":
@@ -127,38 +124,30 @@ class SetupGUI:
                         for x in folder_data:
                             keys.append(x)
                             values.append(folder_data[x])
-                            os.makedirs(f"src/Machines/{realname}/data({machine_name})/{x}-Data", exist_ok=True)
+                            os.makedirs(f"src/Machines/{realname}/data({machine_name})/{folder_data[x]}", exist_ok=True)
+                            with open(f"src/Machines/{realname}/data({machine_name})/{folder_data[x]}/runfile.txt", "w") as file:
+                                file.close()
+                                pass
 
-                        write = WriteYaml(host, user, machine_name, values[0], f"src/Machines/{realname}/data({machine_name})/{self.how_many_folders[selected_option][1]}-Data")
+                        write = WriteYaml(host, user, machine_name)
                         write.write_yaml()
-                        for x in range(1, len(keys)):
-                            write.add_directory(host, values[x], f"src/Machines/{realname}/data({machine_name})/{self.how_many_folders[selected_option][x+1]}-Data")
+                        for i in range(0, len(keys)):
+                            write.add_directory(host, f"/home/{user}/{self.rclone_path}/", f"/{values[i]}")
+                        write.add_directory(host, f"/home/{user}/{self.rclone_path}/", f"/{raw_status}")
 
-                    outstr = ""
-                    for machine, machine_name, user, host, folder_data, raw_status in self.user_host_list:
-                        outstr += realname + " " + machine_name + " " + user + " " + host + " " + raw_status
-                        for folder in folder_data:
-                            outstr += " " + folder_data[folder]
-                        outstr += "\n"
+                        with open(self.register_file_path, 'a') as register_file:
+                            register_file.write(f"{realname} {machine_name} {user} {host}\n")
 
-                    with open(self.register_file_path, "a+") as file:
-                        file.write(outstr)
-                    file.close()
+                        new_window.destroy()
 
-                    new_window.destroy()
-
-                second_submit_button = ttk.Button(new_window, text="Submit", command=on_second_submit)
-                second_submit_button.grid(row=5 + folder_count, column=0, columnspan=2, pady=10)
-                new_window.grid_columnconfigure(1, weight=1)
-            else:
-                print("No option selected")
-
+                submit_button = ttk.Button(new_window, text="Submit", command=on_second_submit)
+                submit_button.grid(row=7 + len(folder_entries), column=0, columnspan=2, pady=10)
 
         def show_files_content():
             list_window = tk.Toplevel(root)
-            list_window.title("Current Saved details")
+            list_window.title("Current Info")
 
-            register_label = ttk.Label(list_window, text="Machines Registered:")
+            register_label = ttk.Label(list_window, text="Contents of register.txt:")
             register_label.grid(row=0, column=0, padx=10, pady=10, sticky=tk.W)
 
             with open(self.register_file_path, 'r') as register_file:
@@ -170,7 +159,7 @@ class SetupGUI:
             register_text.insert(tk.END, register_content)
             register_text.config(state=tk.DISABLED)
 
-            rclone_label = ttk.Label(list_window, text="Rclone Root Path:")
+            rclone_label = ttk.Label(list_window, text="Contents of rclone.txt:")
             rclone_label.grid(row=2, column=0, padx=10, pady=10, sticky=tk.W)
 
             with open(self.rclone_file_path, 'r') as rclone_file:
@@ -182,6 +171,30 @@ class SetupGUI:
             rclone_text.insert(tk.END, rclone_content)
             rclone_text.config(state=tk.DISABLED)
 
+        def open_remove_window():
+            remove_window = tk.Toplevel(root)
+            remove_window.title("Remove a Machine")
+
+            remove_label = ttk.Label(remove_window, text="Select a machine to remove:")
+            remove_label.grid(row=0, column=0, padx=10, pady=10, sticky=tk.W)
+
+            with open(self.register_file_path, 'r') as register_file:
+                machines = [line.split()[1] for line in register_file]
+            register_file.close()
+
+            remove_combobox = ttk.Combobox(remove_window, values=machines, state="readonly")
+            remove_combobox.grid(row=1, column=0, padx=10, pady=10, sticky=(tk.W, tk.E))
+            if machines:
+                remove_combobox.current(0)
+
+            def on_remove():
+                selected_machine = remove_combobox.get()
+                if selected_machine:
+                    remove_machine(selected_machine)
+                    remove_window.destroy()
+
+            remove_button = ttk.Button(remove_window, text="Remove", command=on_remove)
+            remove_button.grid(row=2, column=0, pady=10, sticky=tk.W)
 
         def on_submit():
             new_rclone_path = rclone_entry.get()
@@ -198,7 +211,6 @@ class SetupGUI:
                 rclone_file.close()
             root.destroy()
 
-
         def machine_name_exists(machine_name):
             if not os.path.exists(self.register_file_path):
                 return False
@@ -209,7 +221,6 @@ class SetupGUI:
                         return True
             return False
 
-
         def show_error_window(message):
             error_window = tk.Toplevel(root)
             error_window.title("ERROR")
@@ -218,38 +229,22 @@ class SetupGUI:
             button = ttk.Button(error_window, text="OK", command=error_window.destroy)
             button.pack(pady=5)
 
-
         def is_valid_directory_name(name):
-            # Regular expression for invalid characters in Linux directory names
             invalid_characters = r'[/?<>\\:*|"\0]'
-            
-            # Check if the name contains invalid characters
             if re.search(invalid_characters, name):
                 return False
-            
-            # Additional checks
             if name in (".", ".."):  # Avoid using . or .. as directory names
                 return False
-            
             if not name:  # Name should not be empty
                 return False
-            
             return True
-        
 
         def is_valid_path(path):
-            # Regular expression for invalid characters in Linux paths
             invalid_characters = r'[<>:"|?*\0]'
-
-            # Check if the path contains invalid characters
             if re.search(invalid_characters, path):
                 return False
-
-            # Check for empty path
             if not path:
                 return False
-    
-            # Split the path into parts and check each part
             parts = path.split('/')
             for part in parts:
                 if part in ('.', '..'):  # Avoid using . or .. in path segments
@@ -258,25 +253,36 @@ class SetupGUI:
                     continue
                 if re.search(invalid_characters, part):
                     return False
-            
             return True
-        
 
         def is_valid_ip_address(ip):
-            # Check if the IP address contains only digits and periods
             if not all(char.isdigit() or char == '.' for char in ip):
                 return False
-            
-            # Split the IP address by periods and check each part
             parts = ip.split('.')
             for part in parts:
                 if len(part) > 3:
                     return False
                 if not part.isdigit():
                     return False
-
             return True
 
+        def remove_machine(machine_name):
+            with open(self.register_file_path, 'r') as file:
+                lines = file.readlines()
+            with open(self.register_file_path, 'w') as file:
+                for line in lines:
+                    if line.split()[1] != machine_name:
+                        file.write(line)
+                    # else:
+                    #     # Extracting necessary details for WriteYaml's delete_yaml
+                    #     details = line.split()
+            file.close()
+
+            # Call the static delete_yaml method
+            WriteYaml.delete_yaml(machine_name)
+
+            # Implement additional cleanup if needed (e.g., removing directories)
+            # Here, implement the removal of the machine from hosts.yml if needed
 
         root = tk.Tk()
         root.title("Smart Lab Setup")
@@ -304,22 +310,23 @@ class SetupGUI:
         list_button = ttk.Button(frame, text="Current Info", command=show_files_content)
         list_button.grid(row=3, column=0, pady=10, sticky=tk.W)
 
+        remove_machine_button = ttk.Button(frame, text="Remove a Machine", command=open_remove_window)
+        remove_machine_button.grid(row=4, column=0, pady=10, sticky=tk.W)
+
         rclone_label = ttk.Label(frame, text="Rclone path:")
-        rclone_label.grid(row=4, column=0, padx=5, pady=5, sticky=tk.W)
+        rclone_label.grid(row=5, column=0, padx=5, pady=5, sticky=tk.W)
 
         rclone_entry = ttk.Entry(frame)
-        rclone_entry.grid(row=5, column=0, padx=5, pady=5, sticky=(tk.W, tk.E))
+        rclone_entry.grid(row=6, column=0, padx=5, pady=5, sticky=(tk.W, tk.E))
 
         submit_button = ttk.Button(frame, text="Submit", command=on_submit)
-        submit_button.grid(row=6, column=0, pady=10, sticky=tk.W)
+        submit_button.grid(row=7, column=0, pady=10, sticky=tk.W)
 
         root.mainloop()
-
 
 def main():
     setup = SetupGUI()
     setup.run()
-
 
 if __name__ == "__main__":
     main()
