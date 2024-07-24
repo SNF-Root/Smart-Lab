@@ -9,11 +9,11 @@ import os
 if __name__ == '__main__':
     file_paths = ['src/register.txt', 'src/rclone.txt', 'ansible/hosts.yml']
 
-for file_path in file_paths:
-    os.makedirs(os.path.dirname(file_path), exist_ok=True)
-    if not os.path.exists(file_path):
-        with open(file_path, 'w') as file:
-            pass  # Create an empty file
+    for file_path in file_paths:
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+        if not os.path.exists(file_path):
+            with open(file_path, 'w') as file:
+                pass  # Create an empty file
 
     g = SetupGUI()
     g.run()

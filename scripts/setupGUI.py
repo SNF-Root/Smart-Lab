@@ -124,21 +124,27 @@ class SetupGUI:
                         for x in folder_data:
                             keys.append(x)
                             values.append(folder_data[x])
-                            os.makedirs(f"src/Machines/{realname}/data({machine_name})/{folder_data[x]}", exist_ok=True)
-                            with open(f"src/Machines/{realname}/data({machine_name})/{folder_data[x]}/runfile.txt", "w") as file:
-                                file.close()
-                                pass
+                            os.makedirs(f"src/Machines/{realname}/data({machine_name})/{x}-Data", exist_ok=True)
 
-                        write = WriteYaml(host, user, machine_name)
+                        write = WriteYaml(host, user, machine_name, values[0], 
+                                          f"src/Machines/{realname}/data({machine_name})/{self.how_many_folders[selected_option][1]}-Data")
                         write.write_yaml()
-                        for i in range(0, len(keys)):
-                            write.add_directory(host, f"/home/{user}/{self.rclone_path}/", f"/{values[i]}")
-                        write.add_directory(host, f"/home/{user}/{self.rclone_path}/", f"/{raw_status}")
+                        for x in range(1, len(keys)):
+                            write.add_directory(host, values[x], 
+                                                f"src/Machines/{realname}/data({machine_name})/{self.how_many_folders[selected_option][x+1]}-Data")
+                    
+                    outstr = ""
+                    for machine, machine_name, user, host, folder_data, raw_status in self.user_host_list:
+                        outstr += realname + " " + machine_name + " " + user + " " + host + " " + raw_status
+                        for folder in folder_data:
+                            outstr += " " + folder_data[folder]
+                        outstr += "\n"
 
-                        with open(self.register_file_path, 'a') as register_file:
-                            register_file.write(f"{realname} {machine_name} {user} {host}\n")
+                    with open(self.register_file_path, "a+") as file:
+                        file.write(outstr)
+                    file.close()
 
-                        new_window.destroy()
+                    new_window.destroy()
 
                 submit_button = ttk.Button(new_window, text="Submit", command=on_second_submit)
                 submit_button.grid(row=7 + len(folder_entries), column=0, columnspan=2, pady=10)
@@ -240,12 +246,16 @@ class SetupGUI:
             return True
 
         def is_valid_path(path):
-            invalid_characters = r'[<>:"|?*\0]'
+            print(path)
+            invalid_characters = r'[<>"|?*\0]'
             if re.search(invalid_characters, path):
+                print("Invalid characters")
                 return False
             if not path:
                 return False
             parts = path.split('/')
+            if not parts:
+                parts = path.split('\\')
             for part in parts:
                 if part in ('.', '..'):  # Avoid using . or .. in path segments
                     return False
