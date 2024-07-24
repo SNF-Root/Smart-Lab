@@ -54,6 +54,21 @@ class Uploader:
         """
         subprocess.run(f"rclone copy \"{self.dir_path}\" {self.drive_path} --progress", shell=True)
         return
+    
+    def sync(self):
+        """
+        Syncs the files to the Google Drive using rclone terminal command
+
+            Parameters
+            -----------
+                None
+            
+            Returns
+            -------
+                None
+        """
+        subprocess.run(f"rclone sync --interactive \"{self.dir_path}\" {self.drive_path} --progress", shell=True)
+        return
 
 
 def main():
