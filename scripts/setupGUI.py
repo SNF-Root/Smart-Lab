@@ -152,16 +152,17 @@ class SetupGUI:
         def show_files_content():
             list_window = tk.Toplevel(root)
             list_window.title("Current Info")
+            list_window.geometry("400x400")  # Set an initial size for the window
+            list_window.resizable(True, True)  # Make the window resizable
 
             register_label = ttk.Label(list_window, text="Contents of register.txt:")
             register_label.grid(row=0, column=0, padx=10, pady=10, sticky=tk.W)
 
             with open(self.register_file_path, 'r') as register_file:
                 register_content = register_file.read()
-            register_file.close()
-
-            register_text = tk.Text(list_window, wrap=tk.WORD, height=10, width=50)
-            register_text.grid(row=1, column=0, padx=10, pady=10, sticky=tk.W)
+            
+            register_text = tk.Text(list_window, wrap=tk.WORD)
+            register_text.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
             register_text.insert(tk.END, register_content)
             register_text.config(state=tk.DISABLED)
 
@@ -170,12 +171,16 @@ class SetupGUI:
 
             with open(self.rclone_file_path, 'r') as rclone_file:
                 rclone_content = rclone_file.read()
-            rclone_file.close()
-
-            rclone_text = tk.Text(list_window, wrap=tk.WORD, height=10, width=50)
-            rclone_text.grid(row=3, column=0, padx=10, pady=10, sticky=tk.W)
+            
+            rclone_text = tk.Text(list_window, wrap=tk.WORD)
+            rclone_text.grid(row=3, column=0, padx=10, pady=10, sticky="nsew")
             rclone_text.insert(tk.END, rclone_content)
             rclone_text.config(state=tk.DISABLED)
+
+            # Configure rows and columns to be resizable
+            list_window.grid_rowconfigure(1, weight=1)
+            list_window.grid_rowconfigure(3, weight=1)
+            list_window.grid_columnconfigure(0, weight=1)
 
         def open_remove_window():
             remove_window = tk.Toplevel(root)
@@ -199,8 +204,11 @@ class SetupGUI:
                     remove_machine(selected_machine)
                     remove_window.destroy()
 
-            remove_button = ttk.Button(remove_window, text="Remove", command=on_remove)
-            remove_button.grid(row=2, column=0, pady=10, sticky=tk.W)
+            remove_button = ttk.Button(remove_window, text="Remove", command=on_remove, width=10)
+            remove_button.grid(row=2, column=0, pady=10, padx=(50, 50))
+
+            # Configure grid column to center the button
+            remove_window.grid_columnconfigure(0, weight=1)
 
         def on_submit():
             new_rclone_path = rclone_entry.get()
