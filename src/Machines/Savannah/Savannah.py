@@ -28,16 +28,22 @@ class Savannah:
             os.rename(filepath, newpath)
         except:
             print("Error: File not found, Rename failed")
-            return
+            raise FileNotFoundError("File not found, Rename failed")
         return newpath
     
 
     def copy_item(self, src, dst):
         """Copy an item (file or directory) from src to dst."""
         if os.path.isdir(src):
-            shutil.copytree(src, dst, dirs_exist_ok=True)
+            try:
+                shutil.copytree(src, dst, dirs_exist_ok=True)
+            except FileNotFoundError as e:
+                raise e
         else:
-            shutil.copy2(src, dst)
+            try:
+                shutil.copy2(src, dst)
+            except FileNotFoundError as e:
+                raise e
 
 
     def copy_sources_to_new_folder(self, src_items, base_dst_folder):
@@ -67,6 +73,7 @@ class Savannah:
 
         except Exception as e:
             print(f"An error occurred: {e}")
+            raise e
 
 
     def copy_folder_contents(self, src_folder1, src_folder2, base_dst_folder):
@@ -113,6 +120,7 @@ class Savannah:
 
         except Exception as e:
             print(f"An error occurred: {e}")
+            raise e
 
 
     # Runs the Pressure and Heating algorithms for all Savannah machines

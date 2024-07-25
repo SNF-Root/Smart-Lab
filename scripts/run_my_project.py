@@ -29,6 +29,11 @@ if __name__ == '__main__':
     
     logging.basicConfig(filename='error.log', filemode="a", level=logging.ERROR,
                         format='%(asctime)s %(levelname)s %(message)s')
+    
+    last_error = None
+    last_logged_time = 0
+    cooldown_period = 60  # seconds
+
     while True:
         try:
             start = timeit.default_timer()
@@ -36,5 +41,11 @@ if __name__ == '__main__':
             stop = timeit.default_timer()
             print('Whole Loop Runtime: ', stop - start)
         except Exception as e:
-            logging.error(f"Exception occured: {e}", exc_info=True)
+            current_time = time.time()
+            error_message = str(e)
+            
+            if error_message != last_error or (current_time - last_logged_time) > cooldown_period:
+                logging.error(f"Exception occured: {e}", exc_info=True)
+                last_error = error_message
+                last_logged_time = current_time
     
