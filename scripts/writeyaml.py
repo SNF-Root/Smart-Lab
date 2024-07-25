@@ -85,7 +85,7 @@ class WriteYaml:
                 existing_data = yaml.safe_load(file)
             file.close()
         else:
-            print(f"File {file_path} does not exist or is empty")
+            # print(f"File {file_path} does not exist or is empty")
             existing_data = {'all': {'hosts': {}}}  # Initialize empty data
 
         if 'all' in existing_data and 'hosts' in existing_data['all']:
@@ -150,6 +150,7 @@ class WriteYaml:
                 existing_data = yaml.safe_load(file)
         else:
             print(f"File {file_path} does not exist or is empty")
+            raise FileNotFoundError(f"File {file_path} does not exist or is empty")
             return
         
         # Flag to check if any host with the toolname was found and deleted
@@ -216,7 +217,7 @@ class WriteYaml:
                 existing_data = yaml.safe_load(file)
             file.close()
         else:
-            print(f"File {file_path} does not exist or is empty")
+            # print(f"File {file_path} does not exist or is empty")
             existing_data = {'all': {'hosts': {}}}  # Initialize empty data
 
         # Check if the host exists

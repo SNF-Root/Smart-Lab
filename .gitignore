@@ -19,3 +19,4 @@ src/Machines/Savannah/data(sav)/
 src/Machines/Savannah/data/
 testSuite.py
 ansible/hosts.yml
+error.log

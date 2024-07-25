@@ -52,7 +52,10 @@ class Uploader:
             -------
                 None
         """
-        subprocess.run(f"rclone copy \"{self.dir_path}\" {self.drive_path} --progress", shell=True)
+        try:
+            subprocess.run(f"rclone copy \"{self.dir_path}\" {self.drive_path} --progress", shell=True)
+        except Exception as e:
+            raise e
         return
     
     def sync(self):
@@ -67,7 +70,10 @@ class Uploader:
             -------
                 None
         """
-        subprocess.run(f"rclone sync --interactive \"{self.dir_path}\" {self.drive_path} --progress", shell=True)
+        try:
+            subprocess.run(f"rclone sync --interactive \"{self.dir_path}\" {self.drive_path} --progress", shell=True)
+        except Exception as e:
+            raise e
         return
 
 
