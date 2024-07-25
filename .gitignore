@@ -1,22 +1,22 @@
-# Ignore .env files
+# Ignore dot files
 .env
 .DS_Store
-bin/
-include/
-lib/
+
+# Ignore python cache files
 pyvenv.cfg
-share/
-venv/
 __pycache__/
-.ipynb_checkpoints
-junk/
+
+# Ignore compiled python files
+venv/
+
+# Ignore important data files
 src/rclone.txt
 src/register.txt
-src/Machines/Fiji202/data(fiji2)/
-src/Machines/Fiji202/data(fiji3)/
-src/Machines/Savannah/data(sav2)/
-src/Machines/Savannah/data(sav)/
-src/Machines/Savannah/data/
-testSuite.py
+src/Machines/Fiji202/*data*
+src/Machines/Savannah/*data*
 ansible/hosts.yml
 error.log
+
+# Ignore test files
+testSuite.py
+junk/

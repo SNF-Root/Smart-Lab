@@ -142,7 +142,7 @@ class Heating:
             self.parseTitles()
         except NotADirectoryError:
             print("DIRECTORY NOT FOUND, PROCESS ABORTED AT: \"src/Machines/Fiji202/Heating.py\" AT METHOD: readDir(). \n Hint: Try putting in a valid directory path.")
-            return
+            raise NotADirectoryError
 
 
     def readFile(self):
@@ -185,7 +185,7 @@ class Heating:
             foobar = open(path)
         except FileNotFoundError:
             print("FILE NOT FOUND, PROCESS ABORTE AT: \"src/Machines/Fiji202/Heating.py\" AT METHOD: readFile(). \n Hint: Try putting in a valid file path.")
-            return
+            raise FileNotFoundError
 
         # main loop to read through the file line by line
         with open(path, "r") as file:
@@ -289,7 +289,7 @@ class Heating:
             foobar = self.dir_list[0]
         except IndexError:
             print("DIRECTORY IS EMPTY, PROCESS ABORTED AT: \"src/Machines/Fiji202/Heating.py\" AT METHOD: parseTitles(). \n Hint: Try putting in a directory with files.")
-            return
+            raise IndexError
         
         for i in self.dir_list:
             title = i.lower()
