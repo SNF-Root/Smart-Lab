@@ -8,7 +8,8 @@
   when: ansible_facts['os_family'] != 'Windows'
 
 - name: Check if the remote directory is empty (Windows)
-  win_command: "Get-ChildItem -Path \"{{ dir_info.src }}\""
+  win_shell: |
+    Get-ChildItem -Path "{{ dir_info.src }}"
   register: win_dir_contents
   failed_when: win_dir_contents.rc != 0
   when: ansible_facts['os_family'] == 'Windows'
