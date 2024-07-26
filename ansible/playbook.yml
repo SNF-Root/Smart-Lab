@@ -9,5 +9,3 @@
       loop: "{{ directories }}"
       loop_control:
         loop_var: dir_info
-  
-
