@@ -65,6 +65,9 @@
     - most_recent_file.path is defined
     - ansible_facts['os_family'] != 'Windows'
 
+- debug:
+    msg: "Most Recent File Basename!! {{ most_recent_file | basename }}"
+
 - name: Check if the file already exists locally (Windows)
   win_stat:
     path: "{{ dir_info.dest }}/{{ most_recent_file | basename }}"
