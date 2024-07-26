@@ -1,39 +1,93 @@
----
-- name: Check if the remote directory is empty
+- name: Gather facts
+  setup:
+
+
+
+- name: Check if the remote directory is empty (Unix)
   command: "ls -A \"{{ dir_info.src }}\""
   register: dir_contents
   failed_when: dir_contents.rc != 0 and dir_contents.stderr.find('No such file or directory') == -1
+  when: ansible_facts['os_family'] != 'Windows'
+
+- name: Check if the remote directory is empty (Windows)
+  win_command: "Get-ChildItem -Path \"{{ dir_info.src }}\""
+  failed_when: dir_contents.rc != 0
+  when: ansible_facts['os_family'] == 'Windows'
 
 - name: Set fact indicating if the directory is empty
   set_fact:
     is_remote_dir_empty: "{{ dir_contents.stdout == '' }}"
 
-- name: Find the most recent file from a remote directory
+
+
+- name: Find the most recent file from a remote directory (Unix)
   find:
     paths: "{{ dir_info.src }}"
     recurse: no
     age_stamp: mtime
     file_type: file
   register: find_result
+  when: ansible_facts['os_family'] != 'Windows'
+
+- name: Find the most recent file from a remote directory (Windows)
+  win_shell: |
+    $files = Get-ChildItem -Path "{{ dir_info.src }}" -File | Sort-Object LastWriteTime -Descending
+    if ($files) {
+      $files[0].FullName
+    }
+  when: ansible_facts['os_family'] == 'Windows'
+
+
 
 - name: Set the most recent file as a fact
   set_fact:
-    most_recent_file: "{{ (find_result.files | sort(attribute='mtime', reverse=True) | first) if find_result.files else None }}"
+    most_recent_file: "{{ (find_result.files | sort(attribute='mtime', reverse=True) | first) if ansible_facts['os_family'] != 'Windows' and find_result.files else (find_result.stdout | default(None)) }}"
 
-- name: Check if the file already exists locally
+
+- debug:
+    msg: "Most recent file: {{most_recent_file}}"
+
+
+- name: Check if the file already exists locally (Unix)
   stat:
     path: "{{ dir_info.dest }}/{{ most_recent_file.path | basename }}"
   register: stat_result
   when:
     - not is_remote_dir_empty
-    - most_recent_file is defined
+    - most_recent_file.path is defined
+    - ansible_facts['os_family'] != 'Windows'
 
-- name: Copy the most recent file from remote host to local machine if not already present
+- name: Check if the file already exists locally (Windows)
+  win_stat:
+    path: "{{ dir_info.dest }}/{{ most_recent_file.path | basename }}"
+  when:
+    - not is_remote_dir_empty
+    - most_recent_file.path is defined
+    - ansible_facts['os_family'] == 'Windows'
+
+
+
+- name: Copy the most recent file from remote host to local machine if not already present (Unix)
   fetch:
     src: "{{ most_recent_file.path }}"
     dest: "../{{ dir_info.dest }}/{{ most_recent_file.path | basename }}"
     flat: yes
   when:
     - not is_remote_dir_empty
-    - most_recent_file is defined
+    - most_recent_file.path is defined
     - not stat_result.stat.exists
+    - ansible_facts['os_family'] != 'Windows'
+
+- debug:
+    msg: "Most recent file AGAIN: {{most_recent_file}}"
+
+
+- name: Copy the most recent file from remote host to local machine if not already present (Windows)
+  win_copy:
+    src: "{{ most_recent_file.path }}"
+    dest: "../{{ dir_info.dest }}/{{ most_recent_file.path | basename }}"
+  when:
+    - not is_remote_dir_empty
+    - most_recent_file.path is defined
+    - not stat_result.stat.exists
+    - ansible_facts['os_family'] == 'Windows'

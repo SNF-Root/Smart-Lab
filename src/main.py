@@ -39,7 +39,7 @@ def main():
         # Each machine named .py file will process all of that type of machine, we don't want to run the same machine twice
         donepile = []
         for machine in runMachine:
-            # subprocess.run(f"pwd", shell=True)
+            subprocess.run(f"pwd", shell=True)
             # MAYBE CHANGE THIS TO CALLING MAIN FUNC INSTEAD OF RUNNING THE FILE
             if machine[0] not in donepile:
                 try:
@@ -52,8 +52,6 @@ def main():
     file.close()
     stop = timeit.default_timer()
     print('Runtime of Algs: ', stop - start)
-    # subdirectories = [name for name in os.listdir('src/Machines') if os.path.isdir(os.path.join('src/Machines', name))]
-    # print(subdirectories)
 
 
 if __name__ == "__main__":
