@@ -56,6 +56,30 @@ class WriteYaml:
         self.destination = destination
 
 
+    def detect_path_style(self, path):
+        """
+        Helper: Detects the path style (Windows or Linux) based on the path string
+            
+            Parameters
+            ----------
+                str
+                    the path string to be analyzed
+            
+            Returns
+            -------
+                str
+                    the path style (Windows or Linux) or Unknown if not detected
+        """
+        if '\\' in path and not '/' in path:
+            return "Windows"
+        elif '/' in path and not '\\' in path:
+            return "Linux"
+        elif (path.startswith('C:\\') or (len(path) > 2 and path[1] == ':' and path[2] == '\\')):
+            return "Windows"
+        else:
+            return "Unknown"
+
+
     def write_yaml(self):
         """
         Writes the YAML data to the hosts.yml file
@@ -96,18 +120,34 @@ class WriteYaml:
         # Increment the host number
         new_host_number = last_host_number + 1
         
-        # Data to write
-        new_host_data = {
-            f'host{new_host_number}': {
-                'ansible_host': self.host,
-                'ansible_user': self.user,
-                'toolname': self.toolname,
-                'directories': [{
-                    'src': self.source,
-                    'dest': self.destination
-                }]
+        if self.detect_path_style(self.source) == "Windows":
+            # Data to write
+            new_host_data = {
+                f'host{new_host_number}': {
+                    'ansible_host': self.host,
+                    'ansible_user': self.user,
+                    'ansible_connection': 'ssh',
+                    'ansible_shell_type': 'powershell',
+                    'toolname': self.toolname,
+                    'directories': [{
+                        'src': self.source,
+                        'dest': self.destination
+                    }]
+                }
             }
-        }
+        else:
+            # Data to write
+            new_host_data = {
+                f'host{new_host_number}': {
+                    'ansible_host': self.host,
+                    'ansible_user': self.user,
+                    'toolname': self.toolname,
+                    'directories': [{
+                        'src': self.source,
+                        'dest': self.destination
+                    }]
+                }
+            }
 
         existing_data.setdefault('all', {}).setdefault('hosts', {}).update(new_host_data)
 
