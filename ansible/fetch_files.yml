@@ -90,9 +90,10 @@
     - ansible_facts['os_family'] != 'Windows'
 
 - name: Copy the most recent file from remote host to local machine if not already present (Windows)
-  win_copy:
+  fetch:
     src: "{{ most_recent_file }}"
     dest: "../{{ dir_info.dest }}/{{ most_recent_file | win_basename }}"
+    flat: yes
   when:
     - not is_remote_dir_empty
     - most_recent_file is defined
