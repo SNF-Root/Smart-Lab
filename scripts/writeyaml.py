@@ -223,7 +223,7 @@ class WriteYaml:
             print(f"No host found with toolname '{toolname}' in {file_path}")
 
 
-    def add_directory(self, host, source, destination):
+    def add_directory(self, host, toolname, source, destination):
         """
         Adds a new directory mapping to an existing host
 
@@ -231,6 +231,8 @@ class WriteYaml:
             ----------
                 host: str
                     the IP address of the host machine
+                toolname: str
+                    the nickname of the tool running on the host machine
                 source: str
                     the source directory on the host machine
                 destination: str
@@ -255,14 +257,13 @@ class WriteYaml:
             # File already exists and is not empty
             with open(file_path, 'r') as file:
                 existing_data = yaml.safe_load(file)
-            file.close()
         else:
             # print(f"File {file_path} does not exist or is empty")
             existing_data = {'all': {'hosts': {}}}  # Initialize empty data
 
         # Check if the host exists
         for host_key, host_data in existing_data.get('all', {}).get('hosts', {}).items():
-            if host_data.get('ansible_host') == host:
+            if host_data.get('ansible_host') == host and host_data.get('toolname') == toolname:
                 # Append new directory mapping
                 if 'directories' in host_data:
                     host_data['directories'].append({'src': source, 'dest': destination})
@@ -273,10 +274,10 @@ class WriteYaml:
                 with open(file_path, 'w') as yaml_file:
                     yaml.dump(existing_data, yaml_file, default_flow_style=False)
                 yaml_file.close()
-                print(f"New directory mapping added to host {host}")
+                print(f"New directory mapping added to host {host} with toolname {toolname}")
                 return
         
-        print(f"Host {host} not found in {file_path}")
+        print(f"Host {host} with toolname {toolname} not found in {file_path}")
 
 
 # Main function to demonstrate usage and test

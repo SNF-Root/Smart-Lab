@@ -130,7 +130,7 @@ class SetupGUI:
                                           f"src/Machines/{realname}/data({machine_name})/{self.how_many_folders[selected_option][1]}-Data")
                         write.write_yaml()
                         for x in range(1, len(keys)):
-                            write.add_directory(host, values[x], 
+                            write.add_directory(host, machine_name, values[x],
                                                 f"src/Machines/{realname}/data({machine_name})/{self.how_many_folders[selected_option][x+1]}-Data")
                     
                     outstr = ""
