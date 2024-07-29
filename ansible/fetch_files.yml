@@ -52,9 +52,6 @@
     most_recent_file: "{{ win_find_result.stdout_lines[0] | default(None) }}"
   when: ansible_facts['os_family'] == 'Windows'
 
-- debug:
-    msg: "Most recent file: {{ most_recent_file }}"
-
 - name: Check if the file already exists locally (Unix)
   stat:
     path: "{{ dir_info.dest }}/{{ most_recent_file.path | basename }}"
@@ -64,9 +61,6 @@
     - most_recent_file is defined
     - most_recent_file.path is defined
     - ansible_facts['os_family'] != 'Windows'
-
-- debug:
-    msg: "Most Recent File Basename!! {{ most_recent_file | win_basename }}"
 
 - name: Check if the file already exists locally (Windows)
   win_stat:
@@ -99,6 +93,3 @@
     - most_recent_file is defined
     - stat_result.exists is not defined or not stat_result.exists
     - ansible_facts['os_family'] == 'Windows'
-
-- debug:
-    msg: "Most recent file AGAIN: {{ most_recent_file }}"
