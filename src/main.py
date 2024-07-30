@@ -45,8 +45,8 @@ def main():
             if machine[0] not in donepile:
                 try:
                     subprocess.run(f"python3 src/Machines/{machine[0]}/{machine[0]}.py", shell=True)
-                    print("--------------------------------------- + \n")
-                    print(f"Finished {machine[0]} at {datetime.now().strftime("%m:%d:%Y") + "~" + datetime.now().strftime("%H:%M:%S")} + \n")
+                    print("---------------------------------------\n")
+                    print(f"Finished {machine[0]} at {datetime.now().strftime("%m:%d:%Y")}  ~  {datetime.now().strftime("%H:%M:%S")}\n")
                     print("---------------------------------------")
                     donepile.append(machine[0])
                 except Exception as e:
