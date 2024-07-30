@@ -6,7 +6,7 @@ The Smart Lab Project is a lab data management software package designed to coll
 
 This software package includes built-in methods and algorithms for commonly used nanofabrication machines, allowing users to select which machines they want to retrieve data from. Setup is facilitated through a quick and easy GUI that opens upon program execution, as well as through a script that can be executed at any time.
 
-![SmartLab Flowchart](https://github.com/SNF-Root/Tool-Data/assets/114797850/f6bc6ff8-6643-45f8-8177-fc998c0e0d87)
+![SmartLab_Flowchart](https://github.com/user-attachments/assets/f7f04656-9825-4226-8dd7-7646ddcf4272)
 
 ## Table of Contents
 - [Getting Started](#getting-started)
