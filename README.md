@@ -17,7 +17,7 @@ This software package includes built-in methods and algorithms for commonly used
 
 ## Getting Started
 
-### Prerequisite Hardware
+### Prerequisite Hardware :hammer_and_wrench:
 
 - **Wireless Access Point (Router)**
   - Set up a private network that only the collector machine and the hosts can connect to.
@@ -27,12 +27,13 @@ This software package includes built-in methods and algorithms for commonly used
 
 - **Linux Computer (Collector Machine)**
   - Set up for dual-homing (able to connect to two networks at once).
+    - One connection to the router, other to outbound network.
   - Any Linux distribution should work (tested on [Ubuntu](https://ubuntu.com/download)).
 
 > [!NOTE]
 > We use Linux as our main OS for this project to ensure customizability and robustness.
 
-### Prerequisite Software
+### Prerequisite Software :floppy_disk:
 
 - `Git`
 - `Python 3` (version 3.6 or higher) with the `tkinter` package installed.
