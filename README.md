@@ -2,9 +2,9 @@
 
 ## Overview
 
-The Smart Lab Project is a lab data management software package designed to collect, process, and store data related to various tools used in nanofrabrication facilities. The main goal of this project is to make hard to reach data more readable and accessible in a coherent database for better management, monitoring, and decision-making.
+The Smart Lab Project is a lab data management software package designed to collect, process, and store data related to various tools used in nanofabrication facilities. The primary goal of this project is to make hard-to-reach data more accessible and readable in a coherent database for better management, monitoring, and decision-making.
 
-The software includes builtin methods and algorithms for commonly used nanofabrication machines, allowing the user to pick and choose which machines they want reports from. Setup is done from a quick and easy GUI that can be accessed anytime through a script, and run everytime the program begins.
+This software package includes built-in methods and algorithms for commonly used nanofabrication machines, allowing users to select which machines they want to retrieve data from. Setup is facilitated through a quick and easy GUI that opens upon program execution, as well as through a script that can be executed at any time.
 
 
 ![SmartLab_Flowchart(1)](https://github.com/SNF-Root/Tool-Data/assets/114797850/f6bc6ff8-6643-45f8-8177-fc998c0e0d87)
@@ -19,22 +19,32 @@ The software includes builtin methods and algorithms for commonly used nanofabri
 
 ## Getting Started
 
-To get started with the Smart Lab, clone the repository to your local `Linux` machine and follow the setup instructions below.
-> [!IMPORTANT]
+### Prerequisite Hardware
+
+- **Wireless Access Point (Router)**
+   - Set up a private network that only the collector machine and the hosts can connect to
+   - Only specific machines can connect to maintain security
+   - >[!IMPORTANT] **MUST SET UP STATIC IP**
+- **Linux Computer (Collector Machine)**
+   - Set up for dual-homing (able to connect to two networks at once)
+   - Any Linux distribution should work (tested on [Ubuntu](https://ubuntu.com/download))
+
+> [!NOTE]
 > We use `Linux` as our main OS for this project to ensure customizability and robustness.
 
-### Prerequisites
+### Prerequisite Software
 
 - `Git`
 - `Python3` (version 3.6 or higher) with the `tkinter` package installed
 - `SSH` **PASSWORDLESS** setup on all hosts (use `OpenSSH` on Windows machines)
    - For security purposes it's best to not store passwords on the program
 - `Rclone` setup on collector computer with cloud storage of choice
+   - Note down the root with prefered path of your cloud storage
 
 > [!TIP]
-> * To install Python3 on Linux, navigate to [this article](https://docs.python-guide.org/starting/install3/linux/)
-> * To Set up Passwordless SSH, navigate to [this article](https://linuxize.com/post/how-to-setup-passwordless-ssh-login/)
-> * To set up Rclone for your specific usecase, navigate to [Rclone's Website](https://rclone.org/install/)
+> * To install `Python3` on `Linux`, navigate to [this article](https://docs.python-guide.org/starting/install3/linux/)
+> * To Set up Passwordless `SSH`, navigate to [this article](https://linuxize.com/post/how-to-setup-passwordless-ssh-login/)
+> * To set up `Rclone` for your specific usecase, navigate to [Rclone's Website](https://rclone.org/install/)
 >    - Here is the setup for [Rclone Google Drive](https://rclone.org/drive/)
 
 > [!NOTE]
@@ -44,11 +54,11 @@ To get started with the Smart Lab, clone the repository to your local `Linux` ma
 
 1. Clone the repository:
    ```sh
-   git clone https://github.com/SNF-Root/Tool-Data.git
+   git clone https://github.com/SNF-Root/Smart-Lab.git
    ```
 2. Navigate to the repository directory:
    ```sh
-   cd Tool-Data
+   cd Smart-Lab
    ```
 3. Create and run the setup `startvenv.sh`:
    ```sh
@@ -74,7 +84,7 @@ source ./setupGUI.sh
 * To edit the entries already saved, navigate to the `ansible/hosts.yml` file and feel free to edit existing host information using the same format.
 * For each entry edited in `ansible/hosts.yml`, edit the same entry in `src/register.txt` using the same format.
 > [!CAUTION]
-> Users editing the files directly instead of using the GUI must be exact about formatting and syntax to ensure program integrity!
+> **Users editing the files directly instead of using the GUI must be exact about formatting and syntax to ensure program integrity!**
 
 ### View Local Output Data
 
