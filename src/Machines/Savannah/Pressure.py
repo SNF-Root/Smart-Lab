@@ -322,7 +322,7 @@ class Pressure:
         # sort by creation time
         times.sort(key=lambda x: x[1])
         self.pressureFilePath = times[-1][0]
-        print("Initialized Pressure Data Stack Successfully")
+        print("Initialized Pressure Data Stack")
 
 
     def ignoreRecipe(self):
