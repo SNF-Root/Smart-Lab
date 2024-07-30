@@ -1,7 +1,7 @@
 import subprocess
 import os
 import timeit
-import datetime
+from datetime import datetime
 
 def main():
     """
@@ -46,7 +46,7 @@ def main():
                 try:
                     subprocess.run(f"python3 src/Machines/{machine[0]}/{machine[0]}.py", shell=True)
                     print("---------------------------------------\n")
-                    print(f"Finished {machine[0]} at {datetime.now().strftime("%m:%d:%Y")}  ~  {datetime.now().strftime("%H:%M:%S")}\n")
+                    print(f"Finished {machine[0]} at: " + datetime.now().strftime("%m:%d:%Y") +  "~" + datetime.now().strftime("%H:%M:%S") + "\n")
                     print("---------------------------------------")
                     donepile.append(machine[0])
                 except Exception as e:
