@@ -24,7 +24,8 @@ This software package includes built-in methods and algorithms for commonly used
 - **Wireless Access Point (Router)**
    - Set up a private network that only the collector machine and the hosts can connect to
    - Only specific machines can connect to maintain security
-   - >[!IMPORTANT] **MUST SET UP STATIC IP**
+> [!IMPORTANT]
+> **MUST SET UP STATIC IP ON WIRELESS ACCESS POINT**
 - **Linux Computer (Collector Machine)**
    - Set up for dual-homing (able to connect to two networks at once)
    - Any Linux distribution should work (tested on [Ubuntu](https://ubuntu.com/download))
