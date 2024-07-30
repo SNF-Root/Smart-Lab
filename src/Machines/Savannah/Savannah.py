@@ -131,11 +131,11 @@ class Savannah:
         """
         p = Pressure(dataPath)
         h = Heating(dataPath)
-        if os.path.basename(p.mostRecent()) != os.path.basename(h.mostRecent()):
-            return False
-        else:
+        if os.path.basename(p.mostRecent()) == os.path.basename(h.mostRecent()):
             print(f"Machine data files are currently synced on local for data path: {dataPath}")
             return True
+        else:
+            return False
         
 
     # Runs the Pressure and Heating algorithms for all Savannah machines

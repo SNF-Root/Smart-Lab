@@ -307,21 +307,36 @@ class Pressure:
             -------
                 None
         """
+        self.pressureFilePath = self.mostRecent()
+        print("Initialized Pressure Data Stack")
+
+    
+    def mostRecent(self):
+        """
+        Returns the most recent file in the directory.
+            
+            Parameters
+            ----------
+                None
+            
+            Returns
+            -------
+                times[-1][0] (str): the file path of the most recent file
+        """
         # tuples of (filename, creation time)
-        times = []
         self.readDir()
+        times = []
         listFiles = self.dir_list
         for i in listFiles:
             filepath = self.pressureDirPath + "/" + i
             # get creation time
             times.append((filepath, os.path.getctime(filepath)))
         if times.__len__() == 0:
-            print("ERROR: NO FILES FOUND LOCALLY, ALGORITHM SKIPPED AT: \"src/Machines/Fiji202/Pressure.py\" AT METHOD: initialize(). \n Hint: Ansible may have trouble copying files.")
-            return
+            print("NO FILES FOUND, PROCESS ABORTED AT: \"src/Machines/Fiji202/Pressure.py\" AT METHOD: mostRecent(). \n Hint: Ansible may have trouble copying files.")
+            return None
         # sort by creation time
         times.sort(key=lambda x: x[1])
-        self.pressureFilePath = times[-1][0]
-        print("Initialized Pressure Data Stack Successfully")
+        return times[-1][0]
 
 
     def ignoreRecipe(self):

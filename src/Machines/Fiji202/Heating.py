@@ -434,22 +434,36 @@ class Heating:
             -------
                 None
         """
+        self.heatingFilePath = self.mostRecent()
+        print("Initialized Heating Data Stack")
+
+    
+    def mostRecent(self):
+        """
+        Returns the most recent file in the directory.
+            
+            Parameters
+            ----------
+                None
+            
+            Returns
+            -------
+                times[-1][0] (str): the file path of the most recent file
+        """
         # tuples of (filename, creation time)
-        times = []
         self.readDir()
+        times = []
         listFiles = self.dir_list
         for i in listFiles:
             filepath = self.heatingDirPath + "/" + i
             # get creation time
             times.append((filepath, os.path.getctime(filepath)))
         if times.__len__() == 0:
-            print("NO FILES FOUND, PROCESS ABORTED AT: \"src/Machines/Fiji202/Heating.py\" AT METHOD: initialize(). \n Hint: Ansible may have trouble copying files")
-            return    
+            print("NO FILES FOUND, PROCESS ABORTED AT: \"src/Machines/Fiji202/Heating.py\" AT METHOD: mostRecent(). \n Hint: Ansible may have trouble copying files.")
+            return None
         # sort by creation time
         times.sort(key=lambda x: x[1])
-        self.heatingFilePath = times[-1][0]
-        print("Initialized Heating Data Stack Successfully")
-
+        return times[-1][0]
 
     def ignoreRecipe(self):
         """

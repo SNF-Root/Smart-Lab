@@ -398,6 +398,17 @@ class Heating:
 
 
     def mostRecent(self):
+        """
+        Returns the most recent file in the directory.
+            
+            Parameters
+            ----------
+                None
+            
+            Returns
+            -------
+                times[-1][0] (str): the file path of the most recent file
+        """
         # tuples of (filename, creation time)
         self.readDir()
         times = []

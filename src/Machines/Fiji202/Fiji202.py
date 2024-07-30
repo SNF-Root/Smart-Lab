@@ -124,6 +124,21 @@ class Fiji202:
             raise e
 
 
+    # This depends on the machine. On Savannah, the files have matching names for pressure and heating
+    def verify_transfer(self, dataPath):
+        """
+        Verifies that the transfer of source items to the destination folder was successful.
+        """
+        p = Pressure(dataPath)
+        h = Heating(dataPath)
+        pl = Plasma(dataPath)
+        if os.path.basename(p.mostRecent()) == os.path.basename(h.mostRecent()) == os.path.basename(pl.mostRecent()):
+            print(f"Machine data files are currently synced on local for data path: {dataPath}")
+            return True
+        else:
+            return False
+
+
     # Runs the Pressure, Heating, and Plasma algorithms for all Fiji202 machines
     def run(self):
         # RUN ALGS
@@ -146,6 +161,11 @@ class Fiji202:
             p = Pressure(dataPath)
             h = Heating(dataPath)
             pl = Plasma(dataPath)
+
+            if not self.verify_transfer(dataPath):
+                print(f"[WARNING]: Machine data files are NOT synced on local\n skipping algs for data path: {dataPath}")
+                continue
+
             # Uploading raw files
             if raw[runMachine.index(machine)]:
                 newp = p.runRaw()
