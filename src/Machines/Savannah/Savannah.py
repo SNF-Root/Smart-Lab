@@ -11,6 +11,7 @@ import shutil
 class Savannah:
     # Constructor
     def __init__(self):
+        data_folders = ["Heating-Data", "Pressure-Data"]
         pass
 
     
@@ -123,6 +124,20 @@ class Savannah:
             raise e
 
 
+    # This depends on the machine. On Savannah, the files have matching names for pressure and heating
+    def verify_transfer(self, dataPath):
+        """
+        Verifies that the transfer of source items to the destination folder was successful.
+        """
+        p = Pressure(dataPath)
+        h = Heating(dataPath)
+        if os.path.basename(p.mostRecent()) != os.path.basename(h.mostRecent()):
+            return False
+        else:
+            print(f"Machine data files are currently synced on local for data path: {dataPath}")
+            return True
+        
+
     # Runs the Pressure and Heating algorithms for all Savannah machines
     def run(self):
         # RUN ALGS
@@ -142,6 +157,11 @@ class Savannah:
         # Raw file handling
         for machine in runMachine:
             dataPath = f"src/Machines/{machine[0]}/data({machine[1]})"
+
+            if not self.verify_transfer(dataPath):
+                print(f"[WARNING]: Machine data files are NOT synced on local\n skipping algs for data path: {dataPath}")
+                continue
+
             p = Pressure(dataPath)
             h = Heating(dataPath)
             # Uploading raw files

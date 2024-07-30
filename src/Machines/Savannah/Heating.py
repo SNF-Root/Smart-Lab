@@ -393,21 +393,25 @@ class Heating:
             -------
                 None
         """
+        self.heatingFilePath = self.mostRecent()
+        print("Initialized Heating Data Stack")
+
+
+    def mostRecent(self):
         # tuples of (filename, creation time)
-        times = []
         self.readDir()
+        times = []
         listFiles = self.dir_list
         for i in listFiles:
             filepath = self.heatingDirPath + "/" + i
             # get creation time
             times.append((filepath, os.path.getctime(filepath)))
         if times.__len__() == 0:
-            print("ERROR: NO FILES FOUND LOCALLY, ALGORITHM SKIPPED AT: \"src/Machines/Savannah/Heating.py\" AT METHOD: initialize(). \n Hint: Ansible may have trouble copying files.")
-            return
+            print("NO FILES FOUND, PROCESS ABORTED AT: \"src/Machines/Savannah/Heating.py\" AT METHOD: mostRecent(). \n Hint: Ansible may have trouble copying files.")
+            return None
         # sort by creation time
         times.sort(key=lambda x: x[1])
-        self.heatingFilePath = times[-1][0]
-        print("Initialized Heating Data Stack")
+        return times[-1][0]
 
 
     def ignoreRecipe(self):
