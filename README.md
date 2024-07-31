@@ -11,6 +11,7 @@ This software package includes built-in methods and algorithms for commonly used
 ## Table of Contents
 - [Getting Started](#getting-started)
 - [Usage](#usage)
+- [Supported Machines](#supported-machines)
 - [Packages Used](#packages-used)
 - [License](#license)
 - [Contact](#contact)
@@ -91,6 +92,13 @@ source ./setupGUI.sh
 ### View Local Output Data
 
 To view the output files of a specific machine stored locally on the collector, navigate to the `src/Machines/Machine-Type/(data)Machine-Name` folder. There you will find a folder named `Output_Data` which contains all the full reports created by that machine.
+
+## Supported Machines
+
+| Machine Name | Supported Algorithms | Support Status |
+| --- | :---: | :---: |
+| Cambridge Savannah ALD | Pressure, Heating | Beta |
+| Veeco Fiji 202 ALD | Pressure, Heating, Plasma (RF) | Beta |
 
 ## Packages Used
 
