@@ -9,6 +9,8 @@ import sys
 
 
 if __name__ == '__main__':
+    # Create necessary files and directories
+    # Are not overrided by pulling updates
     file_paths = ['src/register.txt', 'src/rclone.txt', 'ansible/hosts.yml']
 
     for file_path in file_paths:
@@ -17,8 +19,11 @@ if __name__ == '__main__':
             with open(file_path, 'w') as file:
                 pass  # Create an empty file
 
+    # Run the setup GUI to configure the project
     g = SetupGUI()
     g.run()
+
+    # Set up logging errors with logging and sys
     def handle_exception(exc_type, exc_value, exc_traceback):
         if issubclass(exc_type, KeyboardInterrupt):
             sys.__excepthook__(exc_type, exc_value, exc_traceback)
@@ -29,11 +34,12 @@ if __name__ == '__main__':
     
     logging.basicConfig(filename='error.log', filemode="a", level=logging.ERROR,
                         format='%(asctime)s %(levelname)s %(message)s')
-    
+    # Have a cooldown to avoid spamming errors
     last_error = None
     last_logged_time = 0
     cooldown_period = 60  # seconds
 
+    # Run the whole program in a loop
     while True:
         try:
             start = timeit.default_timer()

@@ -121,6 +121,9 @@ class SetupGUI:
                         with open(f"src/Machines/{realname}/data({machine_name})/process_stack.txt", "w") as file:
                             file.close()
                             pass
+                        with open(f"src/Machines/{realname}/data({machine_name})/metadata.txt", "w") as file:
+                            file.close()
+                            pass
                         for x in folder_data:
                             keys.append(x)
                             values.append(folder_data[x])
