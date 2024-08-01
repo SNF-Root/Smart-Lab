@@ -7,20 +7,62 @@ import timeit
 import os
 import shutil
 
-# Iterates through all Savannah Machines and runs all algorithms
+
 class Savannah:
-    # Constructor
+    """
+    Iterates through all Savannah Machines and runs all algorithms.
+
+    Attributes
+    ----------
+    None
+
+    Methods
+    -------
+    changeName(filepath, append)
+        Changes the name of a file by appending a string to the file name. 
+    copy_item(src, dst)
+        Copy an item (file or directory) from src to dst.
+    copy_sources_to_new_folder(src_items, base_dst_folder)
+        Copies the contents of source items (files or folders) to a new folder in base_dst_folder.
+    copy_folder_contents(src_folder1, src_folder2, base_dst_folder)
+        Copies the contents of src_folder1 and src_folder2 to a new folder in base_dst_folder.
+    verify_transfer(dataPath)
+        Verifies that the transfer of source items to the destination folder was successful.
+    run()
+        Runs the Pressure and Heating algorithms for all Savannah machines and uploads the results to the cloud storage.
+    """
+
     def __init__(self):
-        data_folders = ["Heating-Data", "Pressure-Data"]
+        """
+        Constructor for the Savannah class.
+
+            Parameters
+            -----------
+                None
+            
+            Returns
+            -------
+                None
+        """
         pass
 
     
-    # Changes the name of a file
-    # specifically for renaming raw files
     def changeName(self, filepath, append):
+        """
+        Changes the name of a file by appending a string to the file name.
+            
+            Parameters
+            -----------
+                filepath: str
+                    the path to the file to be renamed
+                append: str
+                    the string to append to the file name
+            Returns
+            -------
+                str
+                    the new path to the renamed file
+        """
         # RENAME FILE
-        # CHANGE FILE PATH TO LINUX FORMAT
-        filepath = filepath.replace("\\", "/")
         filename = filepath.split("/")
         name = filename[-1]
         newpath = filepath.replace(name, f"({append}) {name}")
@@ -34,7 +76,18 @@ class Savannah:
     
 
     def copy_item(self, src, dst):
-        """Copy an item (file or directory) from src to dst."""
+        """
+        Copy an item (file or directory) from src to dst.
+        
+            Parameters
+            -----------
+                src (str): the path to the source item
+                dst (str): the path to the destination item
+
+            Returns
+            -------
+                None
+        """
         if os.path.isdir(src):
             try:
                 shutil.copytree(src, dst, dirs_exist_ok=True)
@@ -51,6 +104,15 @@ class Savannah:
         """
         Copies the contents of source items (files or folders) to a new folder in base_dst_folder.
         The new folder is named according to the current date and time.
+
+            Parameters
+            -----------
+                src_items (list): a list of paths to the source items
+                base_dst_folder (str): the path to the base destination folder
+
+            Returns
+            -------
+                str: the name of the new folder created
         """
         # Create the new folder name
         dirname = datetime.now().strftime("%m:%d:%Y") + "~" + datetime.now().strftime("%H:%M")
@@ -81,6 +143,16 @@ class Savannah:
         """
         Copies the contents of src_folder1 and src_folder2 to a new folder in base_dst_folder.
         The new folder is named according to the current date and time.
+
+            Parameters
+            -----------
+                src_folder1 (str): the path to the first source folder
+                src_folder2 (str): the path to the second source folder
+                base_dst_folder (str): the path to the base destination folder
+            
+            Returns
+            -------
+                str: the name of the new folder created
         """
         # Create the new folder name
         dirname = datetime.now().strftime("%m:%d:%Y") + "~" + datetime.now().strftime("%H:%M")
@@ -124,10 +196,17 @@ class Savannah:
             raise e
 
 
-    # This depends on the machine. On Savannah, the files have matching names for pressure and heating
     def verify_transfer(self, dataPath):
         """
         Verifies that the transfer of source items to the destination folder was successful.
+
+            Parameters
+            -----------
+                dataPath (str): the path to the data folder for the machine
+
+            Returns
+            -------
+                bool: True if the files are synced, False otherwise
         """
         p = Pressure(dataPath)
         h = Heating(dataPath)
@@ -138,8 +217,18 @@ class Savannah:
             return False
         
 
-    # Runs the Pressure and Heating algorithms for all Savannah machines
     def run(self):
+        """
+        Runs the Pressure and Heating algorithms for all Savannah machines and uploads the results to the cloud storage.
+
+            Parameters
+            -----------
+                None
+            
+            Returns
+            -------
+                None
+        """
         # RUN ALGS
         start = timeit.default_timer()
         file = open("src/register.txt", "r")
