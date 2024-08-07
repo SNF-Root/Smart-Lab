@@ -267,7 +267,7 @@ class Savannah:
             file.write(hSum + "\n")
 
         with open(metadataPath, 'r') as file:
-            lines = [line for line in file.readlines() if line.strip()]
+            lines = [line.strip() for line in file.readlines() if line.strip()]
             if len(lines) < (2 * max_no_change_cycles):
                 return False
             lastSix = lines[(-2 * max_no_change_cycles):]
