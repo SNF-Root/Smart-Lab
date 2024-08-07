@@ -272,6 +272,8 @@ class Savannah:
                 return False
             lastSix = lines[(-2 * max_no_change_cycles):]
         print("Last 6 Checksums: ", lastSix)
+        print("[DEBUG] Pressure Checksum: ", pSum)
+        print("[DEBUG] Heating Checksum: ", hSum)
         print("[DEBUG] Num of Matching Pressure Checksums: ", lastSix.count(pSum))
         print("[DEBUG] Num of Matching Heating Checksums: ", lastSix.count(hSum))
         if (lastSix.count(pSum) == max_no_change_cycles) and (lastSix.count(hSum) == max_no_change_cycles):
