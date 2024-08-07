@@ -271,8 +271,8 @@ class Savannah:
             if len(lines) < (2 * max_no_change_cycles):
                 return False
             lastSix = lines[-2 * max_no_change_cycles]
-        
-        if lastSix.count(pSum) == max_no_change_cycles and lastSix.count(hSum) == max_no_change_cycles:
+        print("Last 6 Checksums: ", lastSix)
+        if (lastSix.count(pSum) == max_no_change_cycles) and (lastSix.count(hSum) == max_no_change_cycles):
             with open(metadataPath, 'w') as file:
                 file.write("")
             return True

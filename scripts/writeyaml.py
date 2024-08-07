@@ -191,7 +191,6 @@ class WriteYaml:
         else:
             print(f"File {file_path} does not exist or is empty")
             raise FileNotFoundError(f"File {file_path} does not exist or is empty")
-            return
         
         # Flag to check if any host with the toolname was found and deleted
         host_deleted = False
