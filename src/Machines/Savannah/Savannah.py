@@ -315,7 +315,7 @@ class Savannah:
             dataPath = f"src/Machines/{machine[0]}/data({machine[1]})"
 
             if not self.has_stopped_updating(dataPath):
-                print(f"[NOTICE]: Machine data files are still updating\n skipping algs for data path: {dataPath}")
+                print(f"[NOTICE]: Machine data files are still updating OR awaiting new files\n skipping algs for data path: {dataPath}")
                 continue
             if not self.verify_transfer(dataPath):
                 print(f"[WARNING]: Machine data files are NOT synced on local\n skipping algs for data path: {dataPath}")
