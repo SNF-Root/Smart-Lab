@@ -5,7 +5,31 @@ import re
 from scripts.writeyaml import WriteYaml
 
 class SetupGUI:
+    """
+    Class for GUI for setting up the project
 
+    Attributes:
+    ----------
+        user_host_list : list
+            A list of tuples containing the user, host, and machine details
+        rclone_path : str
+            The path to the Rclone directory
+        register_file_path : str
+            The path to the register file
+        rclone_file_path : str
+            The path to the rclone file
+        machinelist : list
+            A list of machine names
+        machinedict : dict
+            A dictionary mapping machine names to their real names
+        how_many_folders : dict
+            A dictionary mapping machine names to the number of folders and their names
+
+    Methods:
+    ----------
+        run()
+            Run the GUI
+    """
     def __init__(self):
         self.user_host_list = []
         self.rclone_path = ""
@@ -21,8 +45,31 @@ class SetupGUI:
             "Fiji ALD (F202)": (3, "Pressure", "Heating", "Plasma")
         }
 
+
     def run(self):
+        """
+        Run the GUI
+
+            Parameters:
+            ----------
+                None
+
+            Returns:
+            ----------
+                None
+        """
         def open_second_window():
+            """
+            Open a new window to add a machine to the entries
+
+                Parameters:
+                ----------
+                    None
+                
+                Returns:
+                ----------
+                    None
+            """
             selected_option = combobox.get()
             if selected_option:
                 new_window = tk.Toplevel(root)
@@ -79,7 +126,19 @@ class SetupGUI:
                     folder_entry.grid(row=5 + idx, column=1, padx=10, pady=5, sticky=(tk.W, tk.E))
                     folder_entries.append((label, folder_entry))
 
+
                 def on_second_submit():
+                    """
+                    Submit the machine details to the register file and write the YAML file
+
+                        Parameters:
+                        ----------
+                            None
+                        
+                        Returns:
+                        ----------
+                            None
+                    """
                     machine_name = machine_name_entry.get()
                     if machine_name == "":
                         machine_name = selected_option
@@ -152,7 +211,19 @@ class SetupGUI:
                 submit_button = ttk.Button(new_window, text="Submit", command=on_second_submit)
                 submit_button.grid(row=7 + len(folder_entries), column=0, columnspan=2, pady=10)
 
+
         def show_files_content():
+            """
+            Show the contents of the register.txt and rclone.txt files
+                
+                Parameters:
+                ----------
+                    None
+                
+                Returns:
+                ----------
+                    None
+            """
             list_window = tk.Toplevel(root)
             list_window.title("Current Info")
             list_window.geometry("400x400")  # Set an initial size for the window
@@ -185,7 +256,18 @@ class SetupGUI:
             list_window.grid_rowconfigure(3, weight=1)
             list_window.grid_columnconfigure(0, weight=1)
 
+
         def open_remove_window():
+            """
+            Open a new window to remove a machine from the entries
+                
+                Parameters:
+                ----------
+                    None
+                
+                Returns:
+                ----------
+            """
             remove_window = tk.Toplevel(root)
             remove_window.title("Remove a Machine")
 
@@ -201,7 +283,19 @@ class SetupGUI:
             if machines:
                 remove_combobox.current(0)
 
+
             def on_remove():
+                """
+                Remove the selected machine from the register file and delete it on the YAML file
+                
+                    Parameters:
+                    ----------
+                        None
+                    
+                    Returns:
+                    ----------
+                        None
+                """
                 selected_machine = remove_combobox.get()
                 if selected_machine:
                     remove_machine(selected_machine)
@@ -213,7 +307,19 @@ class SetupGUI:
             # Configure grid column to center the button
             remove_window.grid_columnconfigure(0, weight=1)
 
+
         def on_submit():
+            """
+            Submit the new Rclone path to the rclone.txt file
+                    
+                Parameters:
+                ----------
+                    None
+                
+                Returns:
+                ----------
+                    None
+            """
             new_rclone_path = rclone_entry.get()
             if new_rclone_path:
                 if not is_valid_path(new_rclone_path):
@@ -228,7 +334,21 @@ class SetupGUI:
                 rclone_file.close()
             root.destroy()
 
+
         def machine_name_exists(machine_name):
+            """
+            Check if the machine name already exists in the register file
+                
+                Parameters:
+                ----------
+                    machine_name : str
+                        The machine name to check for existence
+                
+                Returns:
+                ----------
+                    bool
+                        True if the machine name exists, False otherwise
+            """
             if not os.path.exists(self.register_file_path):
                 return False
             with open(self.register_file_path, 'r') as file:
@@ -238,7 +358,20 @@ class SetupGUI:
                         return True
             return False
 
+
         def show_error_window(message):
+            """
+            Show an error window with the given message
+
+                Parameters:
+                ----------
+                    message : str
+                        The error message to display
+                
+                Returns:
+                ----------
+                    None
+            """
             error_window = tk.Toplevel(root)
             error_window.title("ERROR")
             label = ttk.Label(error_window, text=message, foreground="red")
@@ -246,7 +379,21 @@ class SetupGUI:
             button = ttk.Button(error_window, text="OK", command=error_window.destroy)
             button.pack(pady=5)
 
+
         def is_valid_directory_name(name):
+            """
+            Check if the directory name is valid
+                
+                Parameters:
+                ----------
+                    name : str
+                        The directory name to check
+                
+                Returns:
+                ----------
+                    bool
+                        True if the directory name is valid, False otherwise
+            """
             invalid_characters = r'[/?<>\\:*|"\0]'
             if re.search(invalid_characters, name):
                 return False
@@ -256,7 +403,21 @@ class SetupGUI:
                 return False
             return True
 
+
         def is_valid_path(path):
+            """
+            Check if the path is valid given a path string
+                    
+                Parameters:
+                ----------
+                    path : str
+                        The path to check
+                
+                Returns:
+                ----------
+                    bool
+                        True if the path is valid, False otherwise
+            """
             print(path)
             invalid_characters = r'[<>"|?*\0]'
             if re.search(invalid_characters, path):
@@ -276,7 +437,21 @@ class SetupGUI:
                     return False
             return True
 
+
         def is_valid_ip_address(ip):
+            """
+            Check if the IP address is valid in terms of format
+                    
+                Parameters:
+                ----------
+                    ip : str
+                        The IP address to check
+                
+                Returns:
+                ----------
+                    bool
+                        True if the IP address is valid, False otherwise
+            """
             if not all(char.isdigit() or char == '.' for char in ip):
                 return False
             parts = ip.split('.')
@@ -287,7 +462,20 @@ class SetupGUI:
                     return False
             return True
 
+
         def remove_machine(machine_name):
+            """
+            Remove the machine from the register file and delete it from the YAML file
+                    
+                Parameters:
+                ----------
+                    machine_name : str
+                        The machine name to remove
+                
+                Returns:
+                ----------
+                    None
+            """
             with open(self.register_file_path, 'r') as file:
                 lines = file.readlines()
             with open(self.register_file_path, 'w') as file:
@@ -344,6 +532,7 @@ class SetupGUI:
         submit_button.grid(row=7, column=0, pady=10, sticky=tk.W)
 
         root.mainloop()
+
 
 def main():
     setup = SetupGUI()
