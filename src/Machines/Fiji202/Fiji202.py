@@ -54,12 +54,15 @@ class Fiji202:
 
             Parameters
             -----------
-                filepath (str): the path to the file to be renamed
-                append (str): the string to append to the file name
+                filepath: str
+                    the path to the file to be renamed
+                append: str
+                    the string to append to the file name
 
             Returns
             -------
-                newpath (str): the new path of the renamed file            
+                newpath: str
+                    the new path of the renamed file            
         """
         # RENAME FILE
         filename = filepath.split("/")
@@ -80,8 +83,10 @@ class Fiji202:
         
             Parameters
             -----------
-                src (str): the path to the source item
-                dst (str): the path to the destination item
+                src: str
+                    the path to the source item
+                dst: str
+                    the path to the destination item
             
             Returns
             -------
@@ -106,12 +111,15 @@ class Fiji202:
 
             Parameters
             -----------
-                src_items (list): a list of paths to the source items
-                base_dst_folder (str): the path to the base destination folder
+                src_items: list
+                    a list of paths to the source items
+                base_dst_folder: str
+                    the path to the base destination folder
             
             Returns
             -------
-                dirname (str): the name of the new folder
+                dirname: str
+                    the name of the new folder
         """
         # Create the new folder name
         dirname = datetime.now().strftime("%m:%d:%Y") + "~" + datetime.now().strftime("%H:%M")
@@ -145,13 +153,17 @@ class Fiji202:
 
             Parameters
             -----------
-                src_folder1 (str): the path to the first source folder
-                src_folder2 (str): the path to the second source folder
-                base_dst_folder (str): the path to the base destination folder
+                src_folder1: str
+                    the path to the first source folder
+                src_folder2: str
+                    the path to the second source folder
+                base_dst_folder: str
+                    the path to the base destination folder
 
             Returns
             -------
-                dirname (str): the name of the new folder
+                dirname: str
+                    the name of the new folder
         """
         # Create the new folder name
         dirname = datetime.now().strftime("%m:%d:%Y") + "~" + datetime.now().strftime("%H:%M")
@@ -201,7 +213,8 @@ class Fiji202:
 
             Parameters
             -----------
-                dataPath (str): the path to the data folder of the machine
+                dataPath: str
+                    the path to the data folder of the machine
             
             Returns
             -------

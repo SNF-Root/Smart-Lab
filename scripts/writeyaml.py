@@ -62,7 +62,7 @@ class WriteYaml:
             
             Parameters
             ----------
-                str
+                path: str
                     the path string to be analyzed
             
             Returns

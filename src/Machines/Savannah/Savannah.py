@@ -87,8 +87,10 @@ class Savannah:
         
             Parameters
             -----------
-                src (str): the path to the source item
-                dst (str): the path to the destination item
+                src: str
+                    the path to the source item
+                dst: str
+                    the path to the destination item
 
             Returns
             -------
@@ -113,8 +115,10 @@ class Savannah:
 
             Parameters
             -----------
-                src_items (list): a list of paths to the source items
-                base_dst_folder (str): the path to the base destination folder
+                src_items: list
+                    a list of paths to the source items
+                base_dst_folder: str
+                    the path to the base destination folder
 
             Returns
             -------
@@ -152,9 +156,12 @@ class Savannah:
 
             Parameters
             -----------
-                src_folder1 (str): the path to the first source folder
-                src_folder2 (str): the path to the second source folder
-                base_dst_folder (str): the path to the base destination folder
+                src_folder1: str
+                    the path to the first source folder
+                src_folder2: str
+                    the path to the second source folder
+                base_dst_folder: str
+                    the path to the base destination folder
             
             Returns
             -------
@@ -208,7 +215,8 @@ class Savannah:
 
             Parameters
             -----------
-                dataPath (str): the path to the data folder for the machine
+                dataPath: str
+                    the path to the data folder for the machine
 
             Returns
             -------
@@ -229,7 +237,8 @@ class Savannah:
         
             Parameters
             -----------
-                file_path (str): The path to the file to calculate the checksum for.
+                file_path: str
+                    The path to the file to calculate the checksum for.
 
             Returns
             -------
@@ -247,9 +256,12 @@ class Savannah:
 
             Parameters
             ----------
-                file_path (str): The path to the file to monitor.
-                check_interval (int): Time in seconds to wait between checks.
-                max_no_change_cycles (int): Number of cycles to wait with no changes.
+                file_path: str
+                    The path to the file to monitor.
+                check_interval: int
+                    Time in seconds to wait between checks.
+                max_no_change_cycles: int
+                    Number of cycles to wait with no changes.
 
             Returns
             -------
