@@ -24,15 +24,15 @@ This software package includes built-in methods and algorithms for commonly used
   - Set up a private network that only the collector machine and the hosts can connect to.
   - Only specific machines can connect to maintain security.
 > [!IMPORTANT]
-> **MUST SET UP STATIC IP ON THE WIRELESS ACCESS POINT**
+> **Must set up static IP on the wireless access point!**
 
 - **Linux Computer (Collector Machine)**
   - Set up for dual-homing (able to connect to two networks at once).
-    - One connection to the router, other to outbound network.
+    - One connection to the wireless access point, other to outbound internet (wired connection).
   - Any Linux distribution should work (tested on [Ubuntu](https://ubuntu.com/download)).
 
 > [!NOTE]
-> We use Linux as our main OS for this project to ensure customizability and robustness.
+> We use Linux as our preferred OS for this project to ensure customizability and robustness.
 
 ### Prerequisite Software :floppy_disk:
 
@@ -105,7 +105,7 @@ To view the output files of a specific machine stored locally on the collector, 
 ### [Ansible](https://www.ansible.com/)
 
 > Ansible is a powerful open-source package that is great for automating tasks related to accessing a fleet of host machines.
-* We use Ansible because we can manage dozens of machines of all different kinds in the lab.
+* We use Ansible to easily manage dozens of machines of all different kinds in the lab.
 * Ansible is written in a user-friendly way, making coding and debugging easier.
 
 ### [Rclone](https://rclone.org/)
