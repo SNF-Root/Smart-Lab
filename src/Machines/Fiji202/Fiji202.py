@@ -7,6 +7,7 @@ from datetime import datetime
 import timeit
 import os
 import shutil
+import hashlib
 
 
 class Fiji202:
@@ -29,6 +30,10 @@ class Fiji202:
         Copies the contents of src_folder1 and src_folder2 to a new folder in base_dst_folder.
     verify_transfer(dataPath):
         Verifies that the transfer of source items to the destination folder was successful.
+    calculate_checksum(dataPath):
+        Calculate the checksum of the file contents.
+    has_stopped_updating(dataPath, max_no_change_cycles=3):
+        Monitor a file for updates and return True if no updates are detected for max_no_change_cycles consecutive cycles.
     run():
         Runs the Pressure, Heating, and Plasma algorithms for all Fiji202 machines
     """
@@ -228,6 +233,76 @@ class Fiji202:
             return True
         else:
             return False
+        
+    
+    def calculate_checksum(self, dataPath):
+        """
+        Calculate the checksum of the file contents.
+        
+            Parameters
+            -----------
+                file_path: str
+                    The path to the file to calculate the checksum for.
+
+            Returns
+            -------
+                str: The checksum of the file contents.
+        """
+        with open(dataPath, 'rb') as file:
+            file_content = file.read()
+            return hashlib.md5(file_content).hexdigest()
+
+
+    def has_stopped_updating(self, dataPath, max_no_change_cycles=3):
+        """
+        Monitor a file for updates and return True if no updates are detected
+        for max_no_change_cycles consecutive cycles.
+
+            Parameters
+            ----------
+                file_path: str
+                    The path to the file to monitor.
+                check_interval: int
+                    Time in seconds to wait between checks.
+                max_no_change_cycles: int
+                    Number of cycles to wait with no changes.
+
+            Returns
+            -------
+                bool: True if the file stopped updating, False otherwise.
+        """
+        pFile = Pressure(dataPath).mostRecent()
+        hFile = Heating(dataPath).mostRecent()
+        plFile = Plasma(dataPath).mostRecent()
+        pSum = self.calculate_checksum(pFile)
+        hSum = self.calculate_checksum(hFile)
+        plSum = self.calculate_checksum(plFile)
+
+        metadataPath = dataPath + "/metadata.txt"
+
+        with open(metadataPath, 'a+') as file:
+            file.write(pSum + "\n")
+            file.write(hSum + "\n")
+            file.write(plSum + "\n")
+
+        with open(metadataPath, 'r') as file:
+            lines = [line.strip() for line in file.readlines() if line.strip()]
+            if len(lines) < (3 * max_no_change_cycles):
+                return False
+            lastCheck = lines[(-3 * max_no_change_cycles):]
+        print("Last 9 Checksums: ", lastCheck)
+        print("[DEBUG] Pressure Checksum: ", pSum)
+        print("[DEBUG] Heating Checksum: ", hSum)
+        print("[DEBUG] Plasma Checksum: ", plSum)
+        print("[DEBUG] Num of Matching Pressure Checksums: ", lastCheck.count(pSum))
+        print("[DEBUG] Num of Matching Heating Checksums: ", lastCheck.count(hSum))
+        print("[DEBUG] Num of Matching Plasma Checksums: ", lastCheck.count(plSum))
+        if (lastCheck.count(pSum) == max_no_change_cycles) and (lastCheck.count(hSum) == max_no_change_cycles) and (lastCheck.count(plSum) == max_no_change_cycles):
+            with open(metadataPath, 'w') as file:
+                file.write("")
+            return True
+        else:
+            return False
 
 
     def run(self):
@@ -259,13 +334,17 @@ class Fiji202:
         # Raw file handling
         for machine in runMachine:
             dataPath = f"src/Machines/{machine[0]}/data({machine[1]})"
-            p = Pressure(dataPath)
-            h = Heating(dataPath)
-            pl = Plasma(dataPath)
 
+            if not self.has_stopped_updating(dataPath):
+                print(f"[NOTICE]: Machine data files are still updating OR awaiting new files\n skipping algs for data path: {dataPath}")
+                continue
             if not self.verify_transfer(dataPath):
                 print(f"[WARNING]: Machine data files are NOT synced on local\n skipping algs for data path: {dataPath}")
                 continue
+
+            p = Pressure(dataPath)
+            h = Heating(dataPath)
+            pl = Plasma(dataPath)
 
             # Uploading raw files
             if raw[runMachine.index(machine)]:

@@ -282,13 +282,13 @@ class Savannah:
             lines = [line.strip() for line in file.readlines() if line.strip()]
             if len(lines) < (2 * max_no_change_cycles):
                 return False
-            lastSix = lines[(-2 * max_no_change_cycles):]
-        print("Last 6 Checksums: ", lastSix)
+            lastCheck = lines[(-2 * max_no_change_cycles):]
+        print("Last 6 Checksums: ", lastCheck)
         print("[DEBUG] Pressure Checksum: ", pSum)
         print("[DEBUG] Heating Checksum: ", hSum)
-        print("[DEBUG] Num of Matching Pressure Checksums: ", lastSix.count(pSum))
-        print("[DEBUG] Num of Matching Heating Checksums: ", lastSix.count(hSum))
-        if (lastSix.count(pSum) == max_no_change_cycles) and (lastSix.count(hSum) == max_no_change_cycles):
+        print("[DEBUG] Num of Matching Pressure Checksums: ", lastCheck.count(pSum))
+        print("[DEBUG] Num of Matching Heating Checksums: ", lastCheck.count(hSum))
+        if (lastCheck.count(pSum) == max_no_change_cycles) and (lastCheck.count(hSum) == max_no_change_cycles):
             with open(metadataPath, 'w') as file:
                 file.write("")
             return True
