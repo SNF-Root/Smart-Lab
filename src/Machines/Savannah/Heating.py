@@ -39,7 +39,7 @@ class Heating:
         the path to the directory that contains the output plots for the machine
     textpath : str
         the path to the directory that contains the output text for the machine
-    currentRecipe : str
+    recipe : str
         the name of the recipe for the machine
     recipes : list
         a list of the names of the recipes for the machine
@@ -110,9 +110,9 @@ class Heating:
         self.textpath = dataPath + "/Output_Text"
 
         # Recipe Info
-        self.currentRecipe = ""
+        self.recipe = ""
         self.recipes = ["Al2O3", "TiO2", "HfO2", "ZrO2", "ZnO", "Ru", "Pt", "Ta2O5"]
-        self.recipeIgnores = ["standby", "pulse"]
+        self.recipeIgnores = ["pulse"]
         self.ingredientStack = []
         self.fileStack = []
         self.dir_list = []
@@ -165,7 +165,7 @@ class Heating:
         self.mfc1 = []
         self.numPrecursors = 0
         self.cycles = []
-        self.currentRecipe = ""
+        self.recipe = ""
 
         # If the file is empty
         empty = True
@@ -215,11 +215,11 @@ class Heating:
                 # Find the recipe name
                 if iter == 1:
                     for j in range(index + 4, data.__len__(), 1):
-                        self.currentRecipe += data[j] + " "
-                    self.currentRecipe = self.currentRecipe.strip()
-                    for key in self.ingredientStack:
-                        if self.currentRecipe.find(key) != -1:
-                            self.currentRecipe = key
+                        self.recipe += data[j] + " "
+                    self.recipe = self.recipe.strip()
+                    # for key in self.ingredientStack:
+                    #     if self.recipe.find(key) != -1:
+                    #         self.recipe = key
 
 
         # if the file is not empty, print out the data
@@ -259,8 +259,8 @@ class Heating:
                 if title.find(self.recipes[j].lower()) != -1:
                     self.ingredientStack.append(self.recipes[j])
                     break
-            if (title.find("standby") == -1) and (title.find("pulse") == -1):
-                self.ingredientStack.append("Unknown")
+            # if (title.find("standby") == -1) and (title.find("pulse") == -1):
+            #     self.ingredientStack.append("Unknown")
         
         # self.outString += "Most Recent: " + str(self.ingredientStack) + "\n\n"
 
@@ -300,7 +300,7 @@ class Heating:
         """
         self.outString = "----------------------------------------------\n\nHEATING REPORT AT " + datetime.now().strftime("%H:%M:%S") + " ON " + datetime.now().strftime("%m/%d/%Y") + "\n\n----------------------------------------------\n\n"
         self.readFile()
-        self.outString += "Recipe: " + self.currentRecipe.upper() + "\n\n----------------------------------------------\n\n"
+        self.outString += "Recipe: " + self.recipe + "\n\n----------------------------------------------\n\n"
         # self.readDir()
         file_path = self.textpath + "/Heating Report.txt"
         with open(file_path, "w") as file:
@@ -456,8 +456,7 @@ class Heating:
             
             Returns
             -------
-                True (bool): if there is new data
-                False (bool): if there is no new data
+                recipe (str): the name of the recipe for the machine
         """
         stack = []
         with open(self.dataPath + "/process_stack.txt", "r") as file:
@@ -479,7 +478,7 @@ class Heating:
         self.genReport()
         self.plotHeating()
         print("Sent data for:", self.heatingFilePath)
-        return True
+        return self.recipe
 
     
     def sendDataRaw(self):
@@ -496,7 +495,7 @@ class Heating:
                 heatingFilePath (str): the file path of the new data
         """
         stack = []
-        print("RECIPE:", self.currentRecipe)
+        print("RECIPE:", self.recipe)
         with open(self.dataPath + "/process_stack.txt", "r") as file:
             stack = file.read().splitlines()
             file.close()
@@ -527,8 +526,7 @@ class Heating:
 
             Returns
             -------
-                True (bool): if there is new data
-                False (bool): if there is no new data
+                recipe (str): the name of the recipe for the machine
         """
         self.initialize()
         return self.sendData()

@@ -149,7 +149,7 @@ class Savannah:
             raise e
 
 
-    def copy_folder_contents(self, src_folder1, src_folder2, base_dst_folder):
+    def copy_folder_contents(self, name, src_folder1, src_folder2, base_dst_folder):
         """
         Copies the contents of src_folder1 and src_folder2 to a new folder in base_dst_folder.
         The new folder is named according to the current date and time.
@@ -168,7 +168,7 @@ class Savannah:
                 str: the name of the new folder created
         """
         # Create the new folder name
-        dirname = datetime.now().strftime("%m:%d:%Y") + "~" + datetime.now().strftime("%H:%M")
+        dirname = name + "~" + datetime.now().strftime("%m:%d:%Y") + "~" + datetime.now().strftime("%H:%M")
         dst_folder = os.path.join(base_dst_folder, dirname)
         
         try:
@@ -326,9 +326,9 @@ class Savannah:
         for machine in runMachine:
             dataPath = f"src/Machines/{machine[0]}/data({machine[1]})"
 
-            if not self.has_stopped_updating(dataPath):
-                print(f"[NOTICE]: Machine data files are still updating OR awaiting new files\n skipping algs for data path: {dataPath}")
-                continue
+            # if not self.has_stopped_updating(dataPath):
+            #     print(f"[NOTICE]: Machine data files are still updating OR awaiting new files\n skipping algs for data path: {dataPath}")
+            #     continue
             if not self.verify_transfer(dataPath):
                 print(f"[WARNING]: Machine data files are NOT synced on local\n skipping algs for data path: {dataPath}")
                 continue
@@ -368,7 +368,7 @@ class Savannah:
                     # ADD DATE TIME TO NEW DIRECTORY NAME
                     out_plot = dataPath + "/Output_Plots"
                     out_text = dataPath + "/Output_Text"
-                    dirname = self.copy_folder_contents(out_plot, out_text,
+                    dirname = self.copy_folder_contents(newh, out_plot, out_text,
                                                         f"src/Machines/{machine[0]}/data({machine[1]})/Output_Data")
                     # FIND ROOT DIRECTORY OF CLOUD STORAGE
                     file = open("src/rclone.txt", "r")

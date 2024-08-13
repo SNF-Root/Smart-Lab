@@ -171,9 +171,9 @@ class Pressure:
                     for i in range(data.__len__() - 3):
                         self.recipe += data[i+3] + " "
                     self.recipe = self.recipe.strip()
-                    for key in self.ingredientStack:
-                        if self.recipe.find(key) != -1:
-                            self.recipe = key
+                    # for key in self.ingredientStack:
+                    #     if self.recipe.find(key) != -1:
+                    #         self.recipe = key
 
 
         # if the file is not empty, print out the data
@@ -209,8 +209,8 @@ class Pressure:
                 if title.find(self.recipes[j].lower()) != -1:
                     self.ingredientStack.append(self.recipes[j])
                     break
-            if (title.find("standby") == -1) and (title.find("pulse") == -1):
-                self.ingredientStack.append("Unknown")
+            # if (title.find("standby") == -1) and (title.find("pulse") == -1):
+            #     self.ingredientStack.append("Unknown")
         
         # self.outString += "Most Recent: " + str(self.ingredientStack) + "\n\n"
 
@@ -229,7 +229,7 @@ class Pressure:
         """
         self.outString = self.outString = "----------------------------------------------\n\nPRESSURE REPORT AT " + datetime.now().strftime("%H:%M:%S") + " ON " + datetime.now().strftime("%m/%d/%Y") + "\n\n----------------------------------------------\n\n"
         self.readFile()
-        self.outString += "Recipe: " + self.recipe.upper() + "\n\n----------------------------------------------\n\n"
+        self.outString += "Recipe: " + self.recipe + "\n\n----------------------------------------------\n\n"
         # self.readDir()
         file_path = self.textpath + "/Pressure Report.txt"
         with open(file_path, "w") as file:
@@ -291,7 +291,7 @@ class Pressure:
                 ax[0].plot(self.pTime, self.Pressure, 'tab:blue')
                 ax[1].set_title('Pressure Last 1500ms')
                 ax[1].plot(lastT, lastP, 'tab:orange', linestyle='solid')
-                ax[2].set_title('Base Pressure Last 60 Runs')
+                ax[2].set_title('Base Pressure Last 100 Runs')
                 ax[2].plot(basePressures, 'tab:red', linestyle='solid')
                 fig.tight_layout()
                 # plt.show()
@@ -387,8 +387,7 @@ class Pressure:
             
             Returns
             -------
-                True (bool): If there is new data
-                False (bool): If there is no new data
+                recipe (str): The recipe info
         """
         stack = []
         with open(self.dataPath + "/process_stack.txt", "r") as file:
@@ -416,15 +415,13 @@ class Pressure:
                 file.write(str(avg) + "\n")
                 file.close()
             
-
         # # IMPLEMENT RATE OF RISE EXCEPTION
         # if self.pressureFilePath.lower().split("/")[-1].find("rate of rise"):
         #     return
 
-
         self.plotPressure()
         print("Sent data successfully for:", self.pressureFilePath)
-        return True
+        return self.recipe
 
 
     def sendDataRaw(self):
