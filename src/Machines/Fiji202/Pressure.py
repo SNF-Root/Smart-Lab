@@ -284,7 +284,7 @@ class Pressure:
 
         else:
             fig = plt.figure()
-            fig.suptitle('Precursor Heating Data')
+            fig.suptitle('Pressure Data')
             fig.set_size_inches(8, 8)
             fig.supxlabel('Time (s)')
             fig.supylabel('Pressure (Torr)')

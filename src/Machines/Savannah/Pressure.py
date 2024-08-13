@@ -89,7 +89,7 @@ class Pressure:
         # Recipe Info
         self.recipe = ""
         self.recipes = ["Al2O3", "TiO2", "HfO2", "ZrO2", "ZnO", "Ru", "Pt", "Ta2O5"]
-        self.recipeIgnores = ["standby", "pulse"]
+        self.recipeIgnores = ["pulse"]
         self.ingredientStack = []
         self.fileStack = []
         self.dir_list = []
@@ -255,15 +255,27 @@ class Pressure:
         except FileNotFoundError:
             pass
 
+        # Read in base pressures from file, put the last 100 runs into list
+        basePressures = []
+        with open(self.dataPath + "/base_pressure.txt", "r") as file:
+            base = [float(i) for i in file.read().splitlines()]
+            if len(base) < 100:
+                basePressures = base
+            else:
+                basePressures = base[-100:]
+            file.close()
+
         # Plotting the Pressure vs Time
         if (self.pTime.__len__() > 0):
             if (self.pTime.__len__() < 1500):
-                fig, ax = plt.subplots()
+                fig, ax = plt.subplots(2, 1)
                 fig.suptitle('Pressure Data')
                 fig.set_size_inches(8, 8)
                 fig.supxlabel('Time (ms)')
                 fig.supylabel('Pressure (Torr)')
-                ax.plot(self.pTime, self.Pressure)
+                ax[0].plot(self.pTime, self.Pressure)
+                ax[1].set_title('Base Pressure Last 60 Runs')
+                ax[1].plot(basePressures, 'tab:red', linestyle='solid')
                 fig.tight_layout()
                 # plt.show()
                 fig.savefig(path)
@@ -271,7 +283,7 @@ class Pressure:
             else:
                 lastP = self.Pressure[-1500:]
                 lastT = self.pTime[-1500:]
-                fig, ax = plt.subplots(2, 1)
+                fig, ax = plt.subplots(3, 1)
                 fig.suptitle('Pressure Data')
                 fig.set_size_inches(8, 8)
                 fig.supxlabel('Time (ms)')
@@ -279,13 +291,15 @@ class Pressure:
                 ax[0].plot(self.pTime, self.Pressure, 'tab:blue')
                 ax[1].set_title('Pressure Last 1500ms')
                 ax[1].plot(lastT, lastP, 'tab:orange', linestyle='solid')
+                ax[2].set_title('Base Pressure Last 60 Runs')
+                ax[2].plot(basePressures, 'tab:red', linestyle='solid')
                 fig.tight_layout()
                 # plt.show()
                 fig.savefig(path)
 
         else:
             fig = plt.figure()
-            fig.suptitle('Precursor Heating Data')
+            fig.suptitle('Pressure Data')
             fig.set_size_inches(8, 8)
             fig.supxlabel('Time (s)')
             fig.supylabel('Pressure (Torr)')
@@ -353,7 +367,7 @@ class Pressure:
                 True (bool): if the recipe is in the ignore list
                 False (bool): if the recipe is not in the ignore list
         """
-        filename = self.pressureFilePath.replace("\\", "/").lower()
+        filename = self.pressureFilePath.lower()
         filename =filename.split("/")
         filename = filename[-1]
         for i in self.recipeIgnores:
@@ -394,6 +408,20 @@ class Pressure:
                 file.close()
 
         self.genReport()
+
+        # ADDITIONAL RECIPE EXCEPTIONS
+        if self.pressureFilePath.lower().split("/")[-1].find("standby"):
+            with open(self.dataPath + "/base_pressure.txt", "a+") as file:
+                avg = (sum(self.Pressure[-60:]) / len(self.Pressure[-60:]))
+                file.write(str(avg) + "\n")
+                file.close()
+            
+
+        # # IMPLEMENT RATE OF RISE EXCEPTION
+        # if self.pressureFilePath.lower().split("/")[-1].find("rate of rise"):
+        #     return
+
+
         self.plotPressure()
         print("Sent data successfully for:", self.pressureFilePath)
         return True
