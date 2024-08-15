@@ -150,7 +150,7 @@ class SmartCam:
             
             # FIND ROOT DIRECTORY OF CLOUD STORAGE
 
-            dirname = dataPath + "Output_Text"
+            dirname = dataPath + "/Output_Text"
 
             file = open("src/rclone.txt", "r")
             root = file.readline().strip()
