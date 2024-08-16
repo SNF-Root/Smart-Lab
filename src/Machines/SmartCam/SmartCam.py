@@ -8,8 +8,35 @@ import shutil
 
 
 class SmartCam:
+    """
+    Iterates through the SmartCam machines in the register.txt file and processes the data.
+    
+    Attributes
+    ----------
+    None
+
+    Methods
+    -------
+    copy_item(src, dst):
+        Copy an item (file or directory) from src to dst.
+    copy_sources_to_new_folder(src_items, base_dst_folder):
+        Copies the contents of source items (files or folders) to a new folder in base_dst_folder.
+    run():
+        Runs the SmartCam machine processing algorithm.
+    """
     
     def __init__(self):
+        """
+        Constructor for the SmartCam class
+        
+            Parameters
+            -----------
+                None
+            
+            Returns
+            -------
+                None
+        """
         pass
 
     
@@ -82,73 +109,26 @@ class SmartCam:
 
 
     def run(self):
-        # RUN ALGS
+        # RUN ALGS, find all SmartCam machines in register.txt
         start = timeit.default_timer()
         file = open("src/register.txt", "r")
         runMachine = []
-        raw = []
         for line in file:
             m = tuple(line.strip().split())
             if m[0] == "SmartCam":
                 runMachine.append(m)
-                # if m[4] == "raw":
-                #     raw.append(True)
-                # else:
-                #     raw.append(False)
+
         file.close()
         # Raw file handling
         for machine in runMachine:
             dataPath = f"src/Machines/{machine[0]}/data({machine[1]})"
 
-            # if not self.has_stopped_updating(dataPath):
-            #     print(f"[NOTICE]: Machine data files are still updating OR awaiting new files\n skipping algs for data path: {dataPath}")
-            #     continue
-
-            # if not self.verify_transfer(dataPath):
-            #     print(f"[WARNING]: Machine data files are NOT synced on local\n skipping algs for data path: {dataPath}")
-            #     continue
-
-            # p = Pressure(dataPath)
-            # h = Heating(dataPath)
-
-            # Uploading raw files
-            # if raw[runMachine.index(machine)]:
-            #     newp = p.runRaw()
-            #     newh = h.runRaw()
-            #     # If new raw files are found, change their names and upload them
-            #     if newp and newh:
-            #         newp = self.changeName(newp, "Pressure")
-            #         newh = self.changeName(newh, "Heating")
-            #         src_items = [newp, newh]
-            #         dirname = self.copy_sources_to_new_folder(src_items,
-            #                                                   f"src/Machines/{machine[0]}/data({machine[1]})/Output_Data")
-            #         # FIND ROOT DIRECTORY OF CLOUD STORAGE
-            #         file = open("src/rclone.txt", "r")
-            #         root = file.readline().strip()
-            #         if root == "":
-            #             print("Cloud Storage Not Found, Skipping Upload...")
-            #             file.close()
-            #             return
-            #         file.close()
-            #         # UPLOAD TO CLOUD STORAGE
-            #         up = Uploader(f"src/Machines/{machine[0]}/data({machine[1]})/Output_Data/{dirname}",
-            #                         f"{root}/{machine[0]}/{machine[1]}/{dirname}")
-            #         up.rclone()
-            # Uploading normal output files
-            # else:
-
-            # newp = p.run()
-            # newh = h.run()
+            c = Camera(dataPath)
+            newc = c.run()
+            if newc == None:
+                return
             stop = timeit.default_timer()
             print('Data Processing Runtime: ', stop - start)
-            # if newp and newh:
-            #     # ADD DATE TIME TO NEW DIRECTORY NAME
-            #     out_plot = dataPath + "/Output_Plots"
-            #     out_text = dataPath + "/Output_Text"
-            #     dirname = self.copy_folder_contents(newh, out_plot, out_text,
-            #                                         f"src/Machines/{machine[0]}/data({machine[1]})/Output_Data")
-            
-            # FIND ROOT DIRECTORY OF CLOUD STORAGE
 
             dirname = dataPath + "/Output_Text"
 
