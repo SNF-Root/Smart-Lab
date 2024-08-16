@@ -14,6 +14,7 @@ src/rclone.txt
 src/register.txt
 src/Machines/Fiji202/*data*
 src/Machines/Savannah/*data*
+src/Machines/SmartCam/*data*
 ansible/hosts.yml
 error.log
 
