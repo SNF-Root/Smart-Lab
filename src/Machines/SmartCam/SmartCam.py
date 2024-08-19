@@ -5,6 +5,7 @@ from datetime import datetime
 import timeit
 import os
 import shutil
+import hashlib
 
 
 class SmartCam:
@@ -108,6 +109,63 @@ class SmartCam:
             raise e
 
 
+    def calculate_checksum(self, dataPath):
+        """
+        Calculate the checksum of the file contents.
+        
+            Parameters
+            -----------
+                file_path: str
+                    The path to the file to calculate the checksum for.
+
+            Returns
+            -------
+                str: The checksum of the file contents.
+        """
+        with open(dataPath, 'rb') as file:
+            file_content = file.read()
+            return hashlib.md5(file_content).hexdigest()
+
+
+    def has_stopped_updating(self, dataPath, max_no_change_cycles=3):
+        """
+        Monitor a file for updates and return True if no updates are detected
+        for max_no_change_cycles consecutive cycles.
+
+            Parameters
+            ----------
+                file_path: str
+                    The path to the file to monitor.
+                check_interval: int
+                    Time in seconds to wait between checks.
+                max_no_change_cycles: int
+                    Number of cycles to wait with no changes.
+
+            Returns
+            -------
+                bool: True if the file stopped updating, False otherwise.
+        """
+        cFile = Camera(dataPath).mostRecent()
+        cSum = self.calculate_checksum(cFile)
+
+        metadataPath = dataPath + "/metadata.txt"
+
+        file = open(metadataPath, "r")
+        old_check = file.readline().strip()
+        file.close()
+        if old_check == "":
+            with open(metadataPath, "a+") as file:
+                file.write(cSum + "\n")
+            file.close()
+            return
+        elif old_check == cSum:
+            return False
+        else:
+            with open(metadataPath, "w") as file:
+                file.write("")
+            return True
+
+
     def run(self):
         # RUN ALGS, find all SmartCam machines in register.txt
         start = timeit.default_timer()
@@ -122,6 +180,10 @@ class SmartCam:
         # Raw file handling
         for machine in runMachine:
             dataPath = f"src/Machines/{machine[0]}/data({machine[1]})"
+
+            if not self.has_stopped_updating(dataPath):
+                print(f"[NOTICE]: Machine data files are still updating OR awaiting new files\n skipping algs for data path: {dataPath}")
+                continue
 
             c = Camera(dataPath)
             newc = c.run()
