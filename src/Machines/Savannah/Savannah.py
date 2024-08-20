@@ -317,10 +317,11 @@ class Savannah:
             m = tuple(line.strip().split())
             if m[0] == "Savannah":
                 runMachine.append(m)
-                if m[4] == "raw":
-                    raw.append(True)
-                else:
-                    raw.append(False)
+                for i in range(len(m)):
+                    if m[i] == "raw":
+                        raw.append(True)
+                    else:
+                        raw.append(False)
         file.close()
         # Raw file handling
         for machine in runMachine:
