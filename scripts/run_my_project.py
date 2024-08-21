@@ -11,7 +11,7 @@ import sys
 if __name__ == '__main__':
     # Create necessary files and directories
     # Are not overrided by pulling updates
-    file_paths = ['src/register.txt', 'src/rclone.txt', 'ansible/hosts.yml']
+    file_paths = [os.path.join('src', 'register.txt'), os.path.join('src', 'rclone.txt'), os.path.join('ansible', 'hosts.yml')]
 
     for file_path in file_paths:
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
