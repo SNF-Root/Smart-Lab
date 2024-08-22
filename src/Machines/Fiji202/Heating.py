@@ -108,9 +108,9 @@ class Heating:
         # File Paths (String)
         self.dataPath = dataPath
         self.heatingFilePath = ""
-        self.heatingDirPath = dataPath + "/Heating-Data"
-        self.plotpath = dataPath + "/Output_Plots"
-        self.textpath = dataPath + "/Output_Text"
+        self.heatingDirPath = os.path.join(dataPath, "Heating-Data")
+        self.plotpath = os.path.join(dataPath, "Output_Plots")
+        self.textpath = os.path.join(dataPath, "Output_Text")
 
         # Recipe Info
         self.currentRecipe = ""
@@ -340,7 +340,7 @@ class Heating:
         self.readFile()
         self.outString += "Recipe: " + self.currentRecipe.upper() + "\n\n----------------------------------------------\n\n"
         # self.readDir()
-        file_path = self.textpath + "/Heating Report.txt"
+        file_path = os.path.join(self.textpath, "Heating Report.txt")
         with open(file_path, "w") as file:
             file.write(self.outString)
         file.close()
@@ -358,8 +358,8 @@ class Heating:
             -------
                 None
         """
-        p_path = self.plotpath + "/Precursor Heating Data.png"
-        np_path = self.plotpath + "/Non-Precursor Heating Data.png"
+        p_path = os.path.join(self.plotpath, "Precursor Heating Data.png")
+        np_path = os.path.join(self.plotpath, "Non-Precursor Heating Data.png")
         try:
             os.remove(np_path)
         except FileNotFoundError:
@@ -455,7 +455,7 @@ class Heating:
         times = []
         listFiles = self.dir_list
         for i in listFiles:
-            filepath = self.heatingDirPath + "/" + i
+            filepath = os.path.join(self.heatingDirPath, i)
             # get creation time
             times.append((filepath, os.path.getctime(filepath)))
         if times.__len__() == 0:
@@ -478,9 +478,7 @@ class Heating:
                 True (bool): if the recipe is in the ignore list
                 False (bool): if the recipe is not in the ignore list
         """
-        filename = self.heatingFilePath.replace("\\", "/").lower()
-        filename =filename.split("/")
-        filename = filename[-1]
+        filename = os.path.basename(self.heatingFilePath).lower()
         for i in self.recipeIgnores:
             if filename.find(i) != -1:
                 return True
@@ -500,19 +498,20 @@ class Heating:
                 False (bool): if there is no new data
         """
         stack = []
-        with open(self.dataPath + "/process_stack.txt", "r") as file:
+        process_path = os.path.join(self.dataPath, "process_stack.txt")
+        with open(process_path, "r") as file:
             stack = file.read().splitlines()
             file.close()
         if self.ignoreRecipe():
             return False
         elif stack.__len__() == 0:
-            with open(self.dataPath + "/process_stack.txt", "a+") as file:
+            with open(process_path, "a+") as file:
                 file.write(self.heatingFilePath + "\n")
                 file.close()
         elif stack.count(self.heatingFilePath) > 0:
             return False
         else:
-            with open(self.dataPath + "/process_stack.txt", "a+") as file:
+            with open(process_path, "a+") as file:
                 file.write(self.heatingFilePath + "\n")
                 file.close()
 
@@ -536,20 +535,21 @@ class Heating:
                 heatingFilePath (str): the file path of the new data
         """
         stack = []
+        process_path = os.path.join(self.dataPath, "process_stack.txt")
         print("RECIPE:", self.currentRecipe)
-        with open(self.dataPath + "/process_stack.txt", "r") as file:
+        with open(process_path, "r") as file:
             stack = file.read().splitlines()
             file.close()
         if self.ignoreRecipe():
             return None
         elif stack.__len__() == 0:
-            with open(self.dataPath + "/process_stack.txt", "a+") as file:
+            with open(process_path, "a+") as file:
                 file.write(self.heatingFilePath + "\n")
                 file.close()
         elif stack.count(self.heatingFilePath) > 0:
             return None
         else:
-            with open(self.dataPath + "/process_stack.txt", "a+") as file:
+            with open(process_path, "a+") as file:
                 file.write(self.heatingFilePath + "\n")
                 file.close()
 

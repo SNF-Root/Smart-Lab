@@ -82,9 +82,9 @@ class Pressure:
         # File paths (String)
         self.dataPath = dataPath
         self.pressureFilePath = ""
-        self.pressureDirPath = dataPath + "/Pressure-Data"
-        self.plotpath = dataPath + "/Output_Plots"
-        self.textpath = dataPath + "/Output_Text"
+        self.pressureDirPath = os.path.join(dataPath, "Pressure-Data")
+        self.plotpath = os.path.join(dataPath, "Output_Plots")
+        self.textpath = os.path.join(dataPath, "Output_Text")
 
         # Recipe Info
         self.recipe = ""
@@ -230,7 +230,7 @@ class Pressure:
         self.readFile()
         self.outString += "Recipe: " + self.recipe.upper() + "\n\n----------------------------------------------\n\n"
         # self.readDir()
-        file_path = self.textpath + "/Pressure Report.txt"
+        file_path = os.path.join(self.textpath, "Pressure Report.txt")
         with open(file_path, "w") as file:
             file.write(self.outString)
         file.close()
@@ -248,7 +248,7 @@ class Pressure:
             -------
                 None
         """
-        path = self.plotpath + "/PressureData.png"
+        path = os.path.join(self.plotpath, "PressureData.png")
         try:
             os.remove(path)
         except FileNotFoundError:
@@ -328,7 +328,7 @@ class Pressure:
         times = []
         listFiles = self.dir_list
         for i in listFiles:
-            filepath = self.pressureDirPath + "/" + i
+            filepath = os.path.join(self.pressureDirPath, i)
             # get creation time
             times.append((filepath, os.path.getctime(filepath)))
         if times.__len__() == 0:
@@ -352,9 +352,7 @@ class Pressure:
                 True (bool): if the recipe is in the ignore list
                 False (bool): if the recipe is not in the ignore list
         """
-        filename = self.pressureFilePath.replace("\\", "/").lower()
-        filename =filename.split("/")
-        filename = filename[-1]
+        filename = os.path.basename(self.pressureFilePath).lower()
         for i in self.recipeIgnores:
             if filename.find(i) != -1:
                 return True
@@ -376,19 +374,20 @@ class Pressure:
                 False (bool): If there is no new data
         """
         stack = []
-        with open(self.dataPath + "/process_stack.txt", "r") as file:
+        process_path = os.path.join(self.dataPath, "process_stack.txt")
+        with open(process_path, "r") as file:
             stack = file.read().splitlines()
             file.close()
         if self.ignoreRecipe():
             return False
         elif stack.__len__() == 0:
-            with open(self.dataPath + "/process_stack.txt", "a+") as file:
+            with open(process_path, "a+") as file:
                 file.write(self.pressureFilePath + "\n")
                 file.close()
         elif stack.count(self.pressureFilePath) > 0:
             return False
         else:
-            with open(self.dataPath + "/process_stack.txt", "a+") as file:
+            with open(process_path, "a+") as file:
                 file.write(self.pressureFilePath + "\n")
                 file.close()
 
@@ -412,19 +411,20 @@ class Pressure:
                 pressureFilePath (str): The file path of the pressure data
         """
         stack = []
-        with open(self.dataPath + "/process_stack.txt", "r") as file:
+        process_path = os.path.join(self.dataPath, "process_stack.txt")
+        with open(process_path, "r") as file:
             stack = file.read().splitlines()
             file.close()
         if self.ignoreRecipe():
             return None
         elif stack.__len__() == 0:
-            with open(self.dataPath + "/process_stack.txt", "a+") as file:
+            with open(process_path, "a+") as file:
                 file.write(self.pressureFilePath + "\n")
                 file.close()
         elif stack.count(self.pressureFilePath) > 0:
             return None
         else:
-            with open(self.dataPath + "/process_stack.txt", "a+") as file:
+            with open(process_path, "a+") as file:
                 file.write(self.pressureFilePath + "\n")
                 file.close()
 

@@ -85,9 +85,9 @@ class Plasma:
         # File paths (String)
         self.dataPath = dataPath
         self.plasmaFilePath = ""
-        self.plasmaDirPath = dataPath + "/Plasma-Data"
-        self.plotpath = dataPath + "/Output_Plots"
-        self.textpath = dataPath + "/Output_Text"
+        self.plasmaDirPath = os.path.join(dataPath, "Plasma-Data")
+        self.plotpath = os.path.join(dataPath, "Output_Plots")
+        self.textpath = os.path.join(dataPath, "Output_Text")
 
         # Recipe Info
         self.recipe = ""
@@ -246,7 +246,7 @@ class Plasma:
         self.readFile()
         self.outString += "Recipe: " + self.recipe.upper() + "\n\n----------------------------------------------\n\n"
         # self.readDir()
-        file_path = self.textpath + "/Plasma Report.txt"
+        file_path = os.path.join(self.textpath, "Plasma Report.txt")
         with open(file_path, "w") as file:
             file.write(self.outString)
         file.close()
@@ -264,7 +264,7 @@ class Plasma:
             -------
                 None
         """
-        path = self.plotpath + "/PlasmaData.png"
+        path = os.path.join(self.plotpath, "PlasmaData.png")
         try:
             os.remove(path)
         except FileNotFoundError:
@@ -348,7 +348,7 @@ class Plasma:
         times = []
         listFiles = self.dir_list
         for i in listFiles:
-            filepath = self.plasmaDirPath + "/" + i
+            filepath = os.path.join(self.plasmaDirPath, i)
             # get creation time
             times.append((filepath, os.path.getctime(filepath)))
         if times.__len__() == 0:
@@ -372,9 +372,7 @@ class Plasma:
                 True (bool): if the recipe is in the ignore list
                 False (bool): if the recipe is not in the ignore list
         """
-        filename = self.plasmaFilePath.replace("\\", "/").lower()
-        filename =filename.split("/")
-        filename = filename[-1]
+        filename = os.path.basename(self.plasmaFilePath).lower()
         for i in self.recipeIgnores:
             if filename.find(i) != -1:
                 return True
@@ -396,19 +394,20 @@ class Plasma:
                 False (bool): If there is no new data
         """
         stack = []
-        with open(self.dataPath + "/process_stack.txt", "r") as file:
+        process_path = os.path.join(self.dataPath, "process_stack.txt")
+        with open(process_path, "r") as file:
             stack = file.read().splitlines()
             file.close()
         if self.ignoreRecipe():
             return False
         elif stack.__len__() == 0:
-            with open(self.dataPath + "/process_stack.txt", "a+") as file:
+            with open(process_path, "a+") as file:
                 file.write(self.plasmaFilePath + "\n")
                 file.close()
         elif stack.count(self.plasmaFilePath) > 0:
             return False
         else:
-            with open(self.dataPath + "/process_stack.txt", "a+") as file:
+            with open(process_path, "a+") as file:
                 file.write(self.plasmaFilePath + "\n")
                 file.close()
 
@@ -432,19 +431,20 @@ class Plasma:
                 plasmaFilePath (str): The file path of the plasma data
         """
         stack = []
-        with open(self.dataPath + "/process_stack.txt", "r") as file:
+        process_path = os.path.join(self.dataPath, "process_stack.txt")
+        with open(process_path, "r") as file:
             stack = file.read().splitlines()
             file.close()
         if self.ignoreRecipe():
             return None
         elif stack.__len__() == 0:
-            with open(self.dataPath + "/process_stack.txt", "a+") as file:
+            with open(process_path, "a+") as file:
                 file.write(self.plasmaFilePath + "\n")
                 file.close()
         elif stack.count(self.plasmaFilePath) > 0:
             return None
         else:
-            with open(self.dataPath + "/process_stack.txt", "a+") as file:
+            with open(process_path, "a+") as file:
                 file.write(self.plasmaFilePath + "\n")
                 file.close()
 
