@@ -190,14 +190,14 @@ class SetupGUI:
                         for x in folder_data:
                             keys.append(x)
                             values.append(folder_data[x])
-                            os.makedirs(f"src/Machines/{realname}/data({machine_name})/{x}-Data", exist_ok=True)
+                            os.makedirs(os.path.join(folder_path, f"{x}-Data"), exist_ok=True)
 
                         write = WriteYaml(host, user, machine_name, values[0], 
-                                          f"src/Machines/{realname}/data({machine_name})/{self.how_many_folders[selected_option][1]}-Data")
+                                          os.path.join(folder_path, f"{self.how_many_folders[selected_option][1]}-Data"))
                         write.write_yaml()
                         for x in range(1, len(keys)):
                             write.add_directory(host, machine_name, values[x],
-                                                f"src/Machines/{realname}/data({machine_name})/{self.how_many_folders[selected_option][x+1]}-Data")
+                                                os.path.join(folder_path, f"{self.how_many_folders[selected_option][x+1]}-Data"))
                     
                     outstr = ""
                     for machine, machine_name, user, host, folder_data, raw_status in self.user_host_list:
