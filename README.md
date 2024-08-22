@@ -49,8 +49,6 @@ This software package includes built-in methods and algorithms for commonly used
 > * To set up Rclone for your specific use case, navigate to [Rclone's website](https://rclone.org/install/).
 >   - Here is the setup for [Rclone with Google Drive](https://rclone.org/drive/).
 
-> [!NOTE]
-> The project is currently not built for Python 2; these features may be added in the future.
 
 ### Installation
 
