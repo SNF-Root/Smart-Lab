@@ -70,8 +70,7 @@ class Fiji202:
                     the new path of the renamed file            
         """
         # RENAME FILE
-        filename = filepath.split("/")
-        name = filename[-1]
+        name = os.path.basename(filepath)
         newpath = filepath.replace(name, f"({append}) {name}")
         # CHANGE FILE NAME
         try:
@@ -278,7 +277,7 @@ class Fiji202:
         hSum = self.calculate_checksum(hFile)
         plSum = self.calculate_checksum(plFile)
 
-        metadataPath = dataPath + "/metadata.txt"
+        metadataPath = os.path.join(dataPath, "metadata.txt")
 
         with open(metadataPath, 'a+') as file:
             file.write(pSum + "\n")
@@ -319,7 +318,7 @@ class Fiji202:
         """
         # RUN ALGS
         start = timeit.default_timer()
-        file = open("src/register.txt", "r")
+        file = open(os.path.join("src", "register.txt"), "r")
         runMachine = []
         raw = []
         for line in file:
@@ -334,7 +333,7 @@ class Fiji202:
         file.close()
         # Raw file handling
         for machine in runMachine:
-            dataPath = f"src/Machines/{machine[0]}/data({machine[1]})"
+            dataPath = os.path.join("src", "Machines", f"{machine[0]}", f"data({machine[1]})")
 
             if not self.has_stopped_updating(dataPath):
                 print(f"[NOTICE]: Machine data files are still updating OR awaiting new files\n skipping algs for data path: {dataPath}")
@@ -359,8 +358,8 @@ class Fiji202:
                     newpl = self.changeName(newpl, "Plasma")
                     src_items = [newp, newh, newpl]
                     dirname = self.copy_sources_to_new_folder(src_items,
-                                                              f"src/Machines/{machine[0]}/data({machine[1]})/Output_Data")
-                    file = open("src/rclone.txt", "r")
+                                                              os.path.join(dataPath, "Output_Data"))
+                    file = open(os.path.join("src", "rclone.txt"), "r")
                     root = file.readline().strip()
                     if root == "":
                         print("Cloud Storage Not Found, Skipping Upload...")
@@ -368,8 +367,8 @@ class Fiji202:
                         return
                     file.close()
                     # UPLOAD TO CLOUD STORAGE
-                    up = Uploader(f"src/Machines/{machine[0]}/data({machine[1]})/Output_Data/{dirname}",
-                                  f"{root}/{machine[0]}/{machine[1]}/{dirname}")
+                    up = Uploader(os.path.join(dataPath, "Output_Data", f"{dirname}"),
+                                    os.path.join(root, machine[0], machine[1], dirname))
                     up.rclone()
             # Uploading normal output files
             else:
@@ -380,12 +379,12 @@ class Fiji202:
                 print('Data Processing Runtime: ', stop - start)
                 if newp and newh and newpl:
                     # ADD DATE TIME TO NEW DIRECTORY NAME
-                    out_plot = dataPath + "/Output_Plots"
-                    out_text = dataPath + "/Output_Text"
+                    out_plot = os.path.join(dataPath, "Output_Plots")
+                    out_text = os.path.join(dataPath, "Output_Text")
                     dirname = self.copy_folder_contents(out_plot, out_text,
-                                                        f"src/Machines/{machine[0]}/data({machine[1]})/Output_Data")
+                                                        os.path.join(dataPath, "Output_Data"))
                     # FIND ROOT DIRECTORY OF CLOUD STORAGE
-                    file = open("src/rclone.txt", "r")
+                    file = open(os.path.join("src", "rclone.txt"), "r")
                     root = file.readline().strip()
                     if root == "":
                         print("Cloud Storage Not Found, Skipping Upload...")
@@ -393,8 +392,8 @@ class Fiji202:
                         return
                     file.close()
                     # UPLOAD TO CLOUD STORAGE
-                    up = Uploader(f"src/Machines/{machine[0]}/data({machine[1]})/Output_Data/{dirname}",
-                                  f"{root}/{machine[0]}/{machine[1]}/{dirname}")
+                    up = Uploader(os.path.join(dataPath, "Output_Data", f"{dirname}"),
+                                    os.path.join(root, machine[0], machine[1], dirname))
                     up.rclone()
 
 
