@@ -31,9 +31,6 @@ This software package includes built-in methods and algorithms for commonly used
     - One connection to the wireless access point, other to outbound internet (wired connection).
   - Any Linux distribution should work (tested on [Ubuntu](https://ubuntu.com/download)).
 
-> [!NOTE]
-> We use Linux as our preferred OS for this project to ensure customizability and robustness.
-
 ### Prerequisite Software :floppy_disk:
 
 - `Git`
@@ -47,7 +44,6 @@ This software package includes built-in methods and algorithms for commonly used
 > * To install Python 3 on Linux, navigate to [this article](https://docs.python-guide.org/starting/install3/linux/).
 > * To set up passwordless SSH, navigate to [this article](https://linuxize.com/post/how-to-setup-passwordless-ssh-login/).
 > * To set up Rclone for your specific use case, navigate to [Rclone's website](https://rclone.org/install/).
->   - Here is the setup for [Rclone with Google Drive](https://rclone.org/drive/).
 
 
 ### Installation
