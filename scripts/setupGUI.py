@@ -33,8 +33,8 @@ class SetupGUI:
     def __init__(self):
         self.user_host_list = []
         self.rclone_path = ""
-        self.register_file_path = "src/register.txt"
-        self.rclone_file_path = "src/rclone.txt"
+        self.register_file_path = os.path.join("src", "register.txt")
+        self.rclone_file_path = os.path.join("src", "rclone.txt")
         self.machinelist = ["Savannah ALD", "Fiji ALD (F202)", "Smart Cam"]
         self.machinedict = {
             "Savannah ALD": "Savannah",
@@ -175,16 +175,18 @@ class SetupGUI:
                     else:
                         keys = []
                         values = []
-                        os.makedirs(f"src/Machines/{realname}/data({machine_name})", exist_ok=True)
-                        os.makedirs(f"src/Machines/{realname}/data({machine_name})/Output_Text", exist_ok=True)
-                        os.makedirs(f"src/Machines/{realname}/data({machine_name})/Output_Plots", exist_ok=True)
-                        os.makedirs(f"src/Machines/{realname}/data({machine_name})/Output_Data", exist_ok=True)
-                        with open(f"src/Machines/{realname}/data({machine_name})/process_stack.txt", "w") as file:
-                            file.close()
-                            pass
-                        with open(f"src/Machines/{realname}/data({machine_name})/metadata.txt", "w") as file:
-                            file.close()
-                            pass
+                        folder_path = os.path.join('src', 'Machines', realname, f"data({machine_name})")
+                        additional_items = ["Output_Text", "Output_Plots", "Output_Data", "process_stack.txt", "metadata.txt"]
+                        
+                        os.makedirs(folder_path, exist_ok=True)
+                        for item in additional_items:
+                            if os.path.splitext(item)[1] != "":
+                                with open(os.path.join(folder_path, item), "w") as file:
+                                    file.close()
+                                    pass
+                            else:
+                                os.makedirs(os.path.join(folder_path, item), exist_ok=True)
+
                         for x in folder_data:
                             keys.append(x)
                             values.append(folder_data[x])
