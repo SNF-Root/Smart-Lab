@@ -16,15 +16,15 @@ def main():
             None
     """
     # ANSIBLE
-    current_directory = os.getcwd()
-    ansible_command = ['ansible-playbook', '-i', os.path.join('ansible', 'hosts.yml'), os.path.join('ansible', 'playbook.yml')]
+    # current_directory = os.getcwd()
+    # ansible_command = ['ansible-playbook', '-i', os.path.join('ansible', 'hosts.yml'), os.path.join('ansible', 'playbook.yml')]
 
-    try:
-        result = subprocess.run(ansible_command, cwd=current_directory, capture_output=True, text=True)
-        print('Errors:', result.stderr)
-        print('Output:', result.stdout)
-    except Exception as e:
-        raise e
+    # try:
+    #     result = subprocess.run(ansible_command, cwd=current_directory, capture_output=True, text=True)
+    #     print('Errors:', result.stderr)
+    #     print('Output:', result.stdout)
+    # except Exception as e:
+    #     raise e
 
 
     # Loops through all machines registered in the register.txt file
