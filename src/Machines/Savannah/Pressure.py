@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 import os
 from datetime import datetime
 
@@ -237,6 +238,23 @@ class Pressure:
         file.close()
 
 
+    def loadBasePressure(self, file_path):
+        basePressures = []
+        dates = []
+        times = []
+        with open(file_path, "r") as file:
+            for line in file:
+                torr, date, time = line.strip().split()
+                basePressures.append(float(torr))
+                dates.append(date)
+                times.append(time)
+
+            if len(basePressures) > 100:
+                basePressures = basePressures[-100:]
+            file.close()
+        return basePressures, dates, times
+
+
     def plotPressure(self):
         """
         Plots the Pressure vs Time and saves it as a png file at self.plotpath.
@@ -256,14 +274,11 @@ class Pressure:
             pass
 
         # Read in base pressures from file, put the last 100 runs into list
-        basePressures = []
-        with open(os.path.join(self.dataPath, "base_pressure.txt"), "r") as file:
-            base = [float(i) for i in file.read().splitlines()]
-            if len(base) < 100:
-                basePressures = base
-            else:
-                basePressures = base[-100:]
-            file.close()
+        basePressures, dates, times = self.loadBasePressure(os.path.join(self.dataPath, "base_pressure.txt"))
+        datetime_values = [
+                datetime.strptime(f"{date} {time}", '%Y-%m-%d %H:%M:%S')
+                for date, time in zip(dates, times)
+            ]
 
         # Plotting the Pressure vs Time
         if (self.pTime.__len__() > 0):
@@ -271,11 +286,21 @@ class Pressure:
                 fig, ax = plt.subplots(2, 1)
                 fig.suptitle('Pressure Data')
                 fig.set_size_inches(8, 8)
-                fig.supxlabel('Time (ms)')
+                # fig.supxlabel('Time (ms)')
                 fig.supylabel('Pressure (Torr)')
                 ax[0].plot(self.pTime, self.Pressure)
+                ax[0].set_xlabel('Time (ms)')
+
                 ax[1].set_title('Base Pressure Last 60 Runs')
-                ax[1].plot(basePressures, 'tab:red', linestyle='solid')
+                ax[1].xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d %H:%M'))
+                ax[1].xaxis.set_major_locator(mdates.AutoDateLocator())
+                ax[1].plot(datetime_values, basePressures, 'tab:red', marker='o', linestyle='-')
+                ax[1].set_xlabel('Date and Time')
+
+                # Apply auto formatting for the x-axis dates only on the second subplot
+                plt.setp(ax[1].get_xticklabels(), rotation=45, ha='right')
+
+                # ax[1].set_ylabel('Pressure (Torr)')
                 fig.tight_layout()
                 # plt.show()
                 fig.savefig(path)
@@ -283,18 +308,30 @@ class Pressure:
             else:
                 lastP = self.Pressure[-1500:]
                 lastT = self.pTime[-1500:]
+                
                 fig, ax = plt.subplots(3, 1)
                 fig.suptitle('Pressure Data')
                 fig.set_size_inches(8, 8)
-                fig.supxlabel('Time (ms)')
                 fig.supylabel('Pressure (Torr)')
+                
+                # First subplot
                 ax[0].plot(self.pTime, self.Pressure, 'tab:blue')
+                ax[0].set_xlabel('Time (ms)')
+
+                # Second subplot
                 ax[1].set_title('Pressure Last 1500ms')
                 ax[1].plot(lastT, lastP, 'tab:orange', linestyle='solid')
-                ax[2].set_title('Base Pressure Last 100 Runs')
-                ax[2].plot(basePressures, 'tab:red', linestyle='solid')
+                ax[1].set_xlabel('Time (ms)')
+
+                # Third subplot
+                ax[2].set_title('Base Pressure Last 60 Runs')
+                ax[2].xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d %H:%M'))
+                ax[2].xaxis.set_major_locator(mdates.AutoDateLocator())
+                ax[2].plot(datetime_values, basePressures, 'tab:red', marker='o', linestyle='-')
+                ax[2].set_xlabel('Date and Time')
+                
+
                 fig.tight_layout()
-                # plt.show()
                 fig.savefig(path)
 
         else:
@@ -411,7 +448,8 @@ class Pressure:
         if os.path.basename(self.pressureFilePath.lower()).find("standby"):
             with open(os.path.join(self.dataPath, "base_pressure.txt"), "a+") as file:
                 avg = (sum(self.Pressure[-60:]) / len(self.Pressure[-60:]))
-                file.write(str(avg) + "\n")
+                
+                file.write(str(avg) + " " + datetime.now().strftime("%Y-%m-%d") + " " + datetime.now().strftime("%H:%M:%S") + "\n")
                 file.close()
             
         # # IMPLEMENT RATE OF RISE EXCEPTION
