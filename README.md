@@ -2,9 +2,29 @@
 
 ## Overview
 
-The Smart Lab Project is a lab data management software package designed to collect, process, and store data from various tools used in nanofabrication facilities. The primary goal of this project is to make hard-to-reach data more accessible and readable in a coherent database for better management, monitoring, and decision-making.
+<!-- The Smart Lab Project is a lab data management software package designed to collect, process, and store data from various tools used in nanofabrication facilities. The primary goal of this project is to make hard-to-reach data more accessible and readable in a coherent database for better management, monitoring, and decision-making.
 
-This software package includes built-in methods and algorithms for commonly used nanofabrication machines, allowing users to select which machines they want to retrieve data from. Setup is facilitated through a quick and easy GUI that opens upon program execution, as well as through a script that can be executed at any time.
+This software package includes built-in methods and algorithms for commonly used nanofabrication machines, allowing users to select which machines they want to retrieve data from. Setup is facilitated through a quick and easy GUI that opens upon program execution, as well as through a script that can be executed at any time. -->
+
+<!-- Smart Lab Project is a data management software for nanofabrication facilities. It collects, processes, and stores data from various tools, making hard-to-reach information more accessible and organized in a central database. This enhances management, monitoring, and decision-making.
+
+The software includes built-in methods and algorithms for commonly used nanofabrication machines, allowing users to easily select which machines to retrieve data from. Setup is simple, with an intuitive GUI that launches on startup, or via a script that can be run at any time. -->
+
+**Smart Lab** is a data management software for nanofabrication facilities, designed to:
+
+* 📊 **Collect**, **process**, and **store** data from various tools remotely
+* 📂 Make hard-to-reach data accessible in a unified database
+* 📈 Improve management, monitoring, and decision-making
+
+### ✨ **Key Features**
+
+* **Built-in Methods and Algorithms**
+
+  Easily select which machines to retrieve data from using pre-configured methods for commonly used nanofabrication tools.
+
+* **User-Friendly Setup**
+
+  Start quickly with an intuitive GUI that opens on startup, or use a script that can be executed anytime.
 
 ![SmartLab_Flowchart](https://github.com/user-attachments/assets/f7f04656-9825-4226-8dd7-7646ddcf4272)
 
@@ -93,6 +113,7 @@ To view the output files of a specific machine stored locally on the collector, 
 | --- | :---: | :---: |
 | Cambridge Savannah ALD | Pressure, Heating | Beta |
 | Veeco Fiji 202 ALD | Pressure, Heating, Plasma (RF) | Beta |
+| SNF Smart Cam | None | Beta |
 
 ## Packages Used
 
