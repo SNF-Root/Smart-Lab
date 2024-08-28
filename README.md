@@ -38,7 +38,7 @@ The software includes built-in methods and algorithms for commonly used nanofabr
 
 ## Getting Started
 
-### Prerequisite Hardware :hammer_and_wrench:
+### :hammer_and_wrench: Prerequisite Hardware
 
 - **Wireless Access Point (Router)**
   - Set up a private network that only the collector machine and the hosts can connect to.
@@ -51,7 +51,7 @@ The software includes built-in methods and algorithms for commonly used nanofabr
     - One connection to the wireless access point, other to outbound internet (wired connection).
   - Any Linux distribution should work (tested on [Ubuntu](https://ubuntu.com/download)).
 
-### Prerequisite Software :floppy_disk:
+### :floppy_disk: Prerequisite Software
 
 - `Git`
 - `Python 3` (version 3.6 or higher) with the `tkinter` package installed.
