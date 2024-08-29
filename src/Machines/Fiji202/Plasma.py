@@ -92,7 +92,7 @@ class Plasma:
         # Recipe Info
         self.recipe = ""
         self.recipes = ["Al2O3", "HfO2", "InOx", "NiO", "Pt", "Ru", "SiO2", "Ta2O5", "TaN", "TiN", "TiO2", "WN", "ZrO2"]
-        self.recipeIgnores = ["standby", "pulse", "purge"]
+        self.recipeIgnores = ["pulse"]
         self.ingredientStack = []
         self.fileStack = []
         self.dir_list = []
@@ -224,8 +224,8 @@ class Plasma:
                 if title.find(self.recipes[j].lower()) != -1:
                     self.ingredientStack.append(self.recipes[j])
                     break
-            if (title.find("standby") == -1) and (title.find("pulse") == -1):
-                self.ingredientStack.append("Unknown")
+            # if (title.find("standby") == -1) and (title.find("pulse") == -1):
+            #     self.ingredientStack.append("Unknown")
         
         # self.outString += "Most Recent: " + str(self.ingredientStack) + "\n\n"
 
