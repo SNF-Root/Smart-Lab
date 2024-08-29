@@ -185,9 +185,9 @@ class Plasma:
                     for i in range(data.__len__() - 4):
                         self.recipe += data[i+4] + " "
                     self.recipe = self.recipe.strip()
-                    for key in self.ingredientStack:
-                        if self.recipe.find(key) != -1:
-                            self.recipe = key
+                    # for key in self.ingredientStack:
+                    #     if self.recipe.find(key) != -1:
+                    #         self.recipe = key
 
 
         # if the file is not empty, structure the report in outString
@@ -244,7 +244,7 @@ class Plasma:
         """
         self.outString = self.outString = "----------------------------------------------\n\nPLASMA REPORT AT " + datetime.now().strftime("%H:%M:%S") + " ON " + datetime.now().strftime("%m/%d/%Y") + "\n\n----------------------------------------------\n\n"
         self.readFile()
-        self.outString += "Recipe: " + self.recipe.upper() + "\n\n----------------------------------------------\n\n"
+        self.outString += "Recipe: " + self.recipe + "\n\n----------------------------------------------\n\n"
         # self.readDir()
         file_path = os.path.join(self.textpath, "Plasma Report.txt")
         with open(file_path, "w") as file:
