@@ -328,6 +328,8 @@ class Pressure:
                 ax[2].plot(datetime_values, basePressures, 'tab:red', marker='o', linestyle='-')
                 ax[2].set_xlabel('Date and Time')
                 
+                plt.setp(ax[2].get_xticklabels(), rotation=45, ha='right')
+
                 fig.tight_layout()
                 fig.savefig(path)
 
