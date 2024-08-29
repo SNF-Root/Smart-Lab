@@ -41,7 +41,7 @@ class Heating:
         the path to the directory that contains the output plots for the machine
     textpath : str
         the path to the directory that contains the output text for the machine
-    currentRecipe : str
+    recipe : str
         the name of the recipe for the machine
     recipes : list
         a list of the names of the recipes for the machine
@@ -113,7 +113,7 @@ class Heating:
         self.textpath = os.path.join(dataPath, "Output_Text")
 
         # Recipe Info
-        self.currentRecipe = ""
+        self.recipe = ""
         self.recipes = ["Al2O3", "HfO2", "InOx", "NiO", "Pt", "Ru", "SiO2", "Ta2O5", "TaN", "TiN", "TiO2", "WN", "ZrO2"]
         self.recipeIgnores = ["pulse"]
         self.ingredientStack = []
@@ -169,7 +169,7 @@ class Heating:
         self.mfc1 = []
         self.numPrecursors = 0
         self.cycles = []
-        self.currentRecipe = ""
+        self.recipe = ""
 
         # Track Max Temp Values for each component
         chuckMax = 0
@@ -231,11 +231,11 @@ class Heating:
                 # Find the recipe name
                 if iter == 1:
                     for j in range(17, data.__len__()):
-                        self.currentRecipe += data[j] + " "
-                    self.currentRecipe = self.currentRecipe.strip()
+                        self.recipe += data[j] + " "
+                    self.recipe = self.recipe.strip()
                     for key in self.ingredientStack:
-                        if self.currentRecipe.find(key) != -1:
-                            self.currentRecipe = key
+                        if self.recipe.find(key) != -1:
+                            self.recipe = key
 
 
         # Error Message for Max Temp Exceeded for some components
@@ -338,7 +338,7 @@ class Heating:
         """
         self.outString = "----------------------------------------------\n\nHEATING REPORT AT " + datetime.now().strftime("%H:%M:%S") + " ON " + datetime.now().strftime("%m/%d/%Y") + "\n\n----------------------------------------------\n\n"
         self.readFile()
-        self.outString += "Recipe: " + self.currentRecipe.upper() + "\n\n----------------------------------------------\n\n"
+        self.outString += "Recipe: " + self.recipe.upper() + "\n\n----------------------------------------------\n\n"
         # self.readDir()
         file_path = os.path.join(self.textpath, "Heating Report.txt")
         with open(file_path, "w") as file:
@@ -518,7 +518,7 @@ class Heating:
         self.genReport()
         self.plotHeating()
         print("Sent data Successfully for:", self.heatingFilePath)
-        return True
+        return self.recipe
 
     
     def sendDataRaw(self):
@@ -536,7 +536,7 @@ class Heating:
         """
         stack = []
         process_path = os.path.join(self.dataPath, "process_stack.txt")
-        print("RECIPE:", self.currentRecipe)
+        print("RECIPE:", self.recipe)
         with open(process_path, "r") as file:
             stack = file.read().splitlines()
             file.close()

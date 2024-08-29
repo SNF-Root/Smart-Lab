@@ -421,8 +421,7 @@ class Pressure:
             
             Returns
             -------
-                True (bool): If there is new data
-                False (bool): If there is no new data
+                recipe (str): The recipe info
         """
         stack = []
         process_path = os.path.join(self.dataPath, "process_stack.txt")
@@ -458,7 +457,7 @@ class Pressure:
 
         self.plotPressure()
         print("Sent data successfuly for:", self.pressureFilePath)
-        return True
+        return self.recipe
 
 
     def sendDataRaw(self):

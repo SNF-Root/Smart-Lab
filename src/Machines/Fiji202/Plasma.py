@@ -414,7 +414,7 @@ class Plasma:
         self.genReport()
         self.plotPlasma()
         print("Sent data for:", self.plasmaFilePath)
-        return True
+        return self.recipe
 
 
     def sendDataRaw(self):

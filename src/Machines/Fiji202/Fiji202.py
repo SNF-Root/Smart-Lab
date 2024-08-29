@@ -150,7 +150,7 @@ class Fiji202:
             raise e
 
 
-    def copy_folder_contents(self, src_folder1, src_folder2, base_dst_folder):
+    def copy_folder_contents(self, name, src_folder1, src_folder2, base_dst_folder):
         """
         Copies the contents of src_folder1 and src_folder2 to a new folder in base_dst_folder.
         The new folder is named according to the current date and time.
@@ -381,7 +381,7 @@ class Fiji202:
                     # ADD DATE TIME TO NEW DIRECTORY NAME
                     out_plot = os.path.join(dataPath, "Output_Plots")
                     out_text = os.path.join(dataPath, "Output_Text")
-                    dirname = self.copy_folder_contents(out_plot, out_text,
+                    dirname = self.copy_folder_contents(newh, out_plot, out_text,
                                                         os.path.join(dataPath, "Output_Data"))
                     # FIND ROOT DIRECTORY OF CLOUD STORAGE
                     file = open(os.path.join("src", "rclone.txt"), "r")
