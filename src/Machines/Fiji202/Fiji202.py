@@ -170,7 +170,7 @@ class Fiji202:
                     the name of the new folder
         """
         # Create the new folder name
-        dirname = datetime.now().strftime("%m:%d:%Y") + "~" + datetime.now().strftime("%H:%M")
+        dirname = name + "~" + datetime.now().strftime("%m:%d:%Y") + "~" + datetime.now().strftime("%H:%M")
         dst_folder = os.path.join(base_dst_folder, dirname)
         
         try:
