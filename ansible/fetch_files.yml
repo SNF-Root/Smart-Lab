@@ -1,61 +1,39 @@
 - name: Gather facts
   setup:
 
-- name: Check if the remote directory is empty (Unix)
-  command: "ls -A \"{{ dir_info.src }}\""
-  register: unix_dir_contents
-  failed_when: unix_dir_contents.rc != 0 and unix_dir_contents.stderr.find('No such file or directory') == -1
-  when: ansible_facts['os_family'] != 'Windows'
-
-- name: Check if the remote directory is empty (Windows)
-  win_shell: |
-    Get-ChildItem -Path "{{ dir_info.src }}"
-  register: win_dir_contents
-  failed_when: win_dir_contents.rc != 0
-  when: ansible_facts['os_family'] == 'Windows'
-
-- name: Set fact indicating if the directory is empty (Unix)
-  set_fact:
-    is_remote_dir_empty: "{{ unix_dir_contents.stdout == '' }}"
-  when: ansible_facts['os_family'] != 'Windows'
-
-- name: Set fact indicating if the directory is empty (Windows)
-  set_fact:
-    is_remote_dir_empty: "{{ win_dir_contents.stdout == '' }}"
-  when: ansible_facts['os_family'] == 'Windows'
-
 - name: Find the most recent file from a remote directory (Unix)
-  find:
-    paths: "{{ dir_info.src }}"
-    recurse: no
-    age_stamp: mtime
-    file_type: file
-  register: unix_find_result
+  block:
+    - find:
+        paths: "{{ dir_info.src }}"
+        recurse: no
+        age_stamp: mtime
+        file_type: file
+      register: unix_find_result
+
+    - set_fact:
+        is_remote_dir_empty: "{{ unix_find_result.matched == 0 }}"
+        most_recent_file: "{{ (unix_find_result.files | sort(attribute='mtime', reverse=True) | first) if unix_find_result.files else None }}"
   when: ansible_facts['os_family'] != 'Windows'
 
 - name: Find the most recent file from a remote directory (Windows)
-  win_shell: |
-    $files = Get-ChildItem -Path "{{ dir_info.src }}" -File | Sort-Object LastWriteTime -Descending
-    if ($files) {
-      $files[0].FullName
-    }
-  register: win_find_result
-  when: ansible_facts['os_family'] == 'Windows'
+  block:
+    - win_shell: |
+        $files = Get-ChildItem -Path "{{ dir_info.src }}" -File | Sort-Object LastWriteTime -Descending
+        if ($files) {
+          $files[0].FullName
+        }
+      register: win_find_result
 
-- name: Set the most recent file as a fact (Unix)
-  set_fact:
-    most_recent_file: "{{ (unix_find_result.files | sort(attribute='mtime', reverse=True) | first) if unix_find_result.files else None }}"
-  when: ansible_facts['os_family'] != 'Windows'
-
-- name: Set the most recent file as a fact (Windows)
-  set_fact:
-    most_recent_file: "{{ win_find_result.stdout_lines[0] | default(None) }}"
+    - set_fact:
+        is_remote_dir_empty: "{{ win_find_result.stdout == '' }}"
+        most_recent_file: "{{ win_find_result.stdout_lines[0] | default(None) }}"
   when: ansible_facts['os_family'] == 'Windows'
 
 - name: Check if the file already exists locally (Unix)
-  stat:
-    path: "{{ dir_info.dest }}/{{ most_recent_file.path | basename }}"
-  register: stat_result
+  block:
+    - stat:
+        path: "{{ dir_info.dest }}/{{ most_recent_file.path | basename }}"
+      register: stat_result
   when:
     - not is_remote_dir_empty
     - most_recent_file is defined
@@ -63,33 +41,21 @@
     - ansible_facts['os_family'] != 'Windows'
 
 - name: Check if the file already exists locally (Windows)
-  win_stat:
-    path: "{{ dir_info.dest }}/{{ most_recent_file | win_basename }}"
-  register: stat_result
+  block:
+    - win_stat:
+        path: "{{ dir_info.dest }}/{{ most_recent_file | win_basename }}"
+      register: stat_result
   when:
     - not is_remote_dir_empty
     - most_recent_file is defined
     - ansible_facts['os_family'] == 'Windows'
 
-- name: Copy the most recent file from remote host to local machine if not already present (Unix)
+- name: Copy the most recent file from remote host to local machine if not already present
   fetch:
-    src: "{{ most_recent_file.path }}"
-    dest: "../{{ dir_info.dest }}/{{ most_recent_file.path | basename }}"
+    src: "{{ most_recent_file if ansible_facts['os_family'] == 'Windows' else most_recent_file.path }}"
+    dest: "../{{ dir_info.dest }}/{{ most_recent_file | win_basename if ansible_facts['os_family'] == 'Windows' else most_recent_file.path | basename }}"
     flat: yes
   when:
     - not is_remote_dir_empty
     - most_recent_file is defined
-    - most_recent_file.path is defined
     - stat_result.stat.exists is not defined or not stat_result.stat.exists
-    - ansible_facts['os_family'] != 'Windows'
-
-- name: Copy the most recent file from remote host to local machine if not already present (Windows)
-  fetch:
-    src: "{{ most_recent_file }}"
-    dest: "../{{ dir_info.dest }}/{{ most_recent_file | win_basename }}"
-    flat: yes
-  when:
-    - not is_remote_dir_empty
-    - most_recent_file is defined
-    - stat_result.exists is not defined or not stat_result.exists
-    - ansible_facts['os_family'] == 'Windows'
