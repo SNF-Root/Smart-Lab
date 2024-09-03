@@ -272,7 +272,7 @@ class Plasma:
 
         # Plotting the Plasma vs Time and Plasma Reflect vs Time
         if (self.rfTime.__len__() > 0):
-            if (self.rfTime.__len__() < 1500):
+            if (self.rfTime.__len__() < 400):
                 fig, ax = plt.subplots(2, 1)
                 fig.suptitle('Plasma Data')
                 fig.set_size_inches(8, 8)
@@ -286,8 +286,8 @@ class Plasma:
                 fig.savefig(path)
 
             else:
-                lastP = self.Plasma[-1500:]
-                lastT = self.rfTime[-1500:]
+                lastP = self.Plasma[-400:]
+                lastT = self.rfTime[-400:]
                 fig, ax = plt.subplots(3, 1)
                 fig.suptitle('Plasma Data')
                 fig.set_size_inches(8, 8)
