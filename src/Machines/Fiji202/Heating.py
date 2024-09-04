@@ -291,12 +291,12 @@ class Heating:
             print("DIRECTORY IS EMPTY, PROCESS ABORTED AT: \"src/Machines/Fiji202/Heating.py\" AT METHOD: parseTitles(). \n Hint: Try putting in a directory with files.")
             raise IndexError
         
-        for i in self.dir_list:
-            title = i.lower()
-            for j in range(self.recipes.__len__()):
-                if title.find(self.recipes[j].lower()) != -1:
-                    self.ingredientStack.append(self.recipes[j])
-                    break
+        # for i in self.dir_list:
+        #     title = i.lower()
+        #     for j in range(self.recipes.__len__()):
+        #         if title.find(self.recipes[j].lower()) != -1:
+        #             self.ingredientStack.append(self.recipes[j])
+        #             break
             # if (title.find("standby") == -1) and (title.find("pulse") == -1):
             #     self.ingredientStack.append("Unknown")
 
