@@ -1,9 +1,10 @@
 import matplotlib.pyplot as plt
 import os
 from datetime import datetime
+import src.Machines.BaseClasses.Heating_Base as Heating_Base
 
 
-class Heating:
+class Heating(Heating_Base.Heating_Base):
     """
     A class to represent the Heating algorithm for the Savannah Machine
 
@@ -89,57 +90,8 @@ class Heating:
                 dataPath : str
                     Path from Tool-Data to the data folder of the machine
         """
-        # Heater Data (Floats in Celcius) and Time (Float in s)
-        self.hTime = []
-        self.trap = []
-        self.stopValve = []
-        self.outerHeater = []
-        self.innerHeater = []
-        self.pManifold = []
-        self.precursors = [[], [], [], [], []]
-        self.mfc1 = []
-        self.numPrecursors = 0
-        # Cycles (int)
-        self.cycles = []
-
-        # File Paths (String)
-        self.dataPath = dataPath
-        self.heatingFilePath = ""
-        self.heatingDirPath = os.path.join(dataPath, "Heating-Data")
-        self.plotpath = os.path.join(dataPath, "Output_Plots")
-        self.textpath = os.path.join(dataPath, "Output_Text")
-
-        # Recipe Info
-        self.recipe = ""
-        # self.recipes = ["Al2O3", "TiO2", "HfO2", "ZrO2", "ZnO", "Ru", "Pt", "Ta2O5"]
+        super().__init__(dataPath)
         self.recipeIgnores = ["pulse"]
-        # self.ingredientStack = []
-        # self.fileStack = []
-        self.dir_list = []
-
-        self.outString = ""
-
-
-    def readDir(self):
-        """
-        Reads through directory and prints out how many of each recipe is in the directory.
-        Calls parseTitles() to parse through the titles of the files and count how many of each recipe is in the directory.
-
-            Parameters
-            ----------
-                None
-            
-            Returns
-            -------
-                None
-        """
-        path = self.heatingDirPath
-        try:
-            self.dir_list = os.listdir(path)
-            self.parseTitles()
-        except NotADirectoryError:
-            print("DIRECTORY NOT FOUND, PROCESS ABORTED AT: \"src/Machines/Savannah/Heating.py\" AT METHOD: readDir(). \n Hint: Try putting in a valid directory path.")
-            raise NotADirectoryError
 
 
     def readFile(self):
@@ -233,36 +185,6 @@ class Heating:
             self.outString += "Outer Heater Final Temp: " + str(self.outerHeater[-1]) + "\u00b0 C" + "\n\n"
             self.averageTemp()
         file.close()
-
-
-    def parseTitles(self):
-        """
-        Parses through the titles of the files and counts how many of each recipe is in the directory.
-        
-            Parameters
-            ----------
-                None
-            
-            Returns
-            -------
-                None
-        """
-        try:
-            foobar = self.dir_list[0]
-        except IndexError:
-            print("DIRECTORY IS EMPTY, PROCESS ABORTED AT: \"src/Machines/Savannah/Heating.py\" AT METHOD: parseTitles(). \n Hint: Try putting in a directory with files.")
-            raise IndexError
-        
-        # for i in self.dir_list:
-        #     title = i.lower()
-        #     for j in range(self.recipes.__len__()):
-        #         if title.find(self.recipes[j].lower()) != -1:
-        #             self.ingredientStack.append(self.recipes[j])
-        #             break
-            # if (title.find("standby") == -1) and (title.find("pulse") == -1):
-            #     self.ingredientStack.append("Unknown")
-        
-        # self.outString += "Most Recent: " + str(self.ingredientStack) + "\n\n"
 
 
     def averageTemp(self):
@@ -381,69 +303,6 @@ class Heating:
             print("GRAPHING ABORTED AT: \"src/Machines/Savannah/Heating.py\" AT METHOD: plotHeating(), No Precursor Data")
 
 
-    def initialize(self):
-        """
-        Initializes the Heating Data Stack with the most recent files
-
-            Parameters
-            ----------
-                None
-            
-            Returns
-            -------
-                None
-        """
-        self.heatingFilePath = self.mostRecent()
-        print("Initialized Heating Data Stack")
-
-
-    def mostRecent(self):
-        """
-        Returns the most recent file in the directory.
-            
-            Parameters
-            ----------
-                None
-            
-            Returns
-            -------
-                times[-1][0] (str): the file path of the most recent file
-        """
-        # tuples of (filename, creation time)
-        self.readDir()
-        times = []
-        listFiles = self.dir_list
-        for i in listFiles:
-            filepath = os.path.join(self.heatingDirPath, i)
-            # get creation time
-            times.append((filepath, os.path.getctime(filepath)))
-        if times.__len__() == 0:
-            print("NO FILES FOUND, PROCESS ABORTED AT: \"src/Machines/Savannah/Heating.py\" AT METHOD: mostRecent(). \n Hint: Ansible may have trouble copying files.")
-            return None
-        # sort by creation time
-        times.sort(key=lambda x: x[1])
-        return times[-1][0]
-
-
-    def ignoreRecipe(self):
-        """
-        Helper method that checks if the current recipe is in the ignore list.
-
-            Parameters
-            ----------
-                None
-            
-            Returns
-            -------
-                True (bool): if the recipe is in the ignore list
-                False (bool): if the recipe is not in the ignore list
-        """
-        filename = os.path.basename(self.heatingFilePath).lower()
-        for i in self.recipeIgnores:
-            if filename.find(i) != -1:
-                return True
-        return False
-
     def sendData(self):
         """
         Pops the most recent file from the stack and generates the full report.
@@ -514,39 +373,6 @@ class Heating:
 
         print("Sent data for:", self.heatingFilePath)
         return self.heatingFilePath
-
-
-    def run(self):
-        """
-        Runs the Heating algorithm and returns whether or not there is new data.
-
-            Parameters
-            ----------
-                None
-
-            Returns
-            -------
-                recipe (str): the name of the recipe for the machine
-        """
-        self.initialize()
-        return self.sendData()
-    
-
-    def runRaw(self):
-        """
-        Runs the Heating algorithm and returns the file path if there is new data.
-
-            Parameters
-            ----------
-                None
-
-            Returns
-            -------
-                heatingFilePath (str): the file path of the new data
-        """
-        self.initialize()
-        return self.sendDataRaw()
-
 
 
 # Main function to test the Heating class

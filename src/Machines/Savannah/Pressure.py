@@ -2,9 +2,10 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import os
 from datetime import datetime
+import src.Machines.BaseClasses.Pressure_Base as Pressure_Base
 
 
-class Pressure:
+class Pressure(Pressure_Base.Pressure_Base):
     """
         A class to represent the Pressure algorithm for the Savannah Machine.
         
@@ -74,50 +75,8 @@ class Pressure:
                 dataPath : str
                     Path from Tool-Data to the data folder of the machine
         """
-        # Pressure Data (Float in Torr) and Time (Float in ms)
-        self.pTime = []
-        self.Pressure = []
-        # Cycles (int)
-        self.cycles = []
-
-        # File paths (String)
-        self.dataPath = dataPath
-        self.pressureFilePath = ""
-        self.pressureDirPath = os.path.join(dataPath, "Pressure-Data")
-        self.plotpath = os.path.join(dataPath, "Output_Plots")
-        self.textpath = os.path.join(dataPath, "Output_Text")
-
-        # Recipe Info
-        self.recipe = ""
-        # self.recipes = ["Al2O3", "TiO2", "HfO2", "ZrO2", "ZnO", "Ru", "Pt", "Ta2O5"]
+        super().__init__(dataPath)
         self.recipeIgnores = ["pulse"]
-        # self.ingredientStack = []
-        # self.fileStack = []
-        self.dir_list = []
-
-        self.outString = ""
-
-
-    def readDir(self):
-        """
-        Reads through directory and prints out how many of each recipe is in the directory.
-        Calls parseTitles() to parse through the titles of the files and count how many of each recipe is in the directory.
-        
-            Parameters
-            ----------
-                None
-
-            Returns
-            -------
-                None
-        """
-        path = self.pressureDirPath
-        try:
-            self.dir_list = os.listdir(path)
-            self.parseTitles()
-        except NotADirectoryError:
-            print("DIRECTORY NOT FOUND, PROCESS ABORTED AT: \"src/Machines/Savannah/Pressure.py\" AT METHOD: readDir(). \n Hint: Try putting in a valid directory path.")
-            raise NotADirectoryError
 
 
     def readFile(self):
@@ -186,36 +145,6 @@ class Pressure:
         file.close()
 
 
-    def parseTitles(self):
-        """
-        Parses through the titles of the files and counts how many of each recipe is in the directory.
-        
-            Parameters
-            ----------
-                None
-            
-            Returns
-            -------
-                None
-        """
-        try:
-            foobar = self.dir_list[0]
-        except IndexError:
-            print("DIRECTORY IS EMPTY, PROCESS ABORTED AT: \"src/Machines/Savannah/Pressure.py\" AT METHOD: parseTitles(). \n Hint: Try putting in a directory with files.")
-            raise IndexError
-
-        # for i in self.dir_list:
-        #     title = i.lower()
-        #     for j in range(self.recipes.__len__()):
-        #         if title.find(self.recipes[j].lower()) != -1:
-        #             self.ingredientStack.append(self.recipes[j])
-        #             break
-            # if (title.find("standby") == -1) and (title.find("pulse") == -1):
-            #     self.ingredientStack.append("Unknown")
-        
-        # self.outString += "Most Recent: " + str(self.ingredientStack) + "\n\n"
-
-
     def genReport(self):
         """
         Generates a report of the pressure data into output text file.
@@ -236,23 +165,6 @@ class Pressure:
         with open(file_path, "w") as file:
             file.write(self.outString)
         file.close()
-
-
-    def loadBasePressure(self, file_path):
-        basePressures = []
-        dates = []
-        times = []
-        with open(file_path, "r") as file:
-            for line in file:
-                torr, date, time = line.strip().split()
-                basePressures.append(float(torr))
-                dates.append(date)
-                times.append(time)
-
-            if len(basePressures) > 100:
-                basePressures = basePressures[-100:]
-            file.close()
-        return basePressures, dates, times
 
 
     def plotPressure(self):
@@ -346,70 +258,6 @@ class Pressure:
             # plt.show()
             print("NO DATA TO PLOT, PROCESS ABORTED AT: \"src/Machines/Savannah/Pressure.py\" AT METHOD: plotPressure(). \n Hint: Try putting in a file with data.")
             return
-
-
-    def initialize(self):
-        """
-        Initializes the Pressure Data Stack with the most recent files.
-
-            Parameters
-            ----------
-                None
-
-            Returns
-            -------
-                None
-        """
-        self.pressureFilePath = self.mostRecent()
-        print("Initialized Pressure Data Stack")
-
-
-    def mostRecent(self):
-        """
-        Returns the most recent file in the directory.
-            
-            Parameters
-            ----------
-                None
-            
-            Returns
-            -------
-                times[-1][0] (str): the file path of the most recent file
-        """
-        # tuples of (filename, creation time)
-        self.readDir()
-        times = []
-        listFiles = self.dir_list
-        for i in listFiles:
-            filepath = os.path.join(self.pressureDirPath, i)
-            # get creation time
-            times.append((filepath, os.path.getctime(filepath)))
-        if times.__len__() == 0:
-            print("NO FILES FOUND, PROCESS ABORTED AT: \"src/Machines/Savannah/Pressure.py\" AT METHOD: mostRecent(). \n Hint: Ansible may have trouble copying files.")
-            return None
-        # sort by creation time
-        times.sort(key=lambda x: x[1])
-        return times[-1][0]
-
-
-    def ignoreRecipe(self):
-        """
-        Helper method that checks if the current recipe is in the ignore list.
-
-            Parameters
-            ----------
-                None
-            
-            Returns
-            -------
-                True (bool): if the recipe is in the ignore list
-                False (bool): if the recipe is not in the ignore list
-        """
-        filename = os.path.basename(self.pressureFilePath).lower()
-        for i in self.recipeIgnores:
-            if filename.find(i) != -1:
-                return True
-        return False
     
 
     def sendData(self):
@@ -495,39 +343,6 @@ class Pressure:
 
         print("Sent data successfully for:", self.pressureFilePath)
         return self.pressureFilePath
-
-
-    def run(self):
-        """
-        Runs the Pressure algorithm and returns whether or not there is new data.
-            
-            Parameters
-            ----------
-                None
-            
-            Returns
-            -------
-                True (bool): If there is new data
-                False (bool): If there is no new data
-        """
-        self.initialize()
-        return self.sendData()
-    
-
-    def runRaw(self):
-        """
-        Runs the Pressure algorithm and returns the file path if there is new data.
-                
-            Parameters
-            ----------
-                None
-            
-            Returns
-            -------
-                pressureFilePath (str): The file path of the pressure data
-        """
-        self.initialize()
-        return self.sendDataRaw()
 
 
 # Main function to test the Pressure class
