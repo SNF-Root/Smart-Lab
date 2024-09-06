@@ -2,10 +2,10 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import os
 from datetime import datetime
-import src.Machines.BaseClasses.Pressure_Base as Pressure_Base
+from src.Machines.BaseClasses.Pressure_Base import Pressure_Base
 
 
-class Pressure(Pressure_Base.Pressure_Base):
+class Pressure(Pressure_Base):
     """
         A class to represent the Pressure algorithm for the Fiji ALD (F202) Machine.
         

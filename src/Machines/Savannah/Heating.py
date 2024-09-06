@@ -1,10 +1,10 @@
 import matplotlib.pyplot as plt
 import os
 from datetime import datetime
-import src.Machines.BaseClasses.Heating_Base as Heating_Base
+from src.Machines.BaseClasses.Heating_Base import Heating_Base
 
 
-class Heating(Heating_Base.Heating_Base):
+class Heating(Heating_Base):
     """
     A class to represent the Heating algorithm for the Savannah Machine
 
