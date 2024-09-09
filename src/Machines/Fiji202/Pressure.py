@@ -68,7 +68,7 @@ class Pressure(Pressure_Base):
     
     def __init__(self, dataPath):
         super().__init__(dataPath)
-        self.recipeIgnores = ["pulse"]
+        self.recipeIgnores = ["purge", "pulse"]
 
 
     def readFile(self):

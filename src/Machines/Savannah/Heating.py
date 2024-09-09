@@ -91,7 +91,7 @@ class Heating(Heating_Base):
                     Path from Tool-Data to the data folder of the machine
         """
         super().__init__(dataPath)
-        self.recipeIgnores = ["pulse"]
+        self.recipeIgnores = ["purge", "pulse"]
 
 
     def readFile(self):

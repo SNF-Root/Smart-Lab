@@ -20,7 +20,7 @@ class Heating(Heating_Base):
                 None
         """
         super().__init__(dataPath)
-        self.recipeIgnores = ["pulse"]
+        self.recipeIgnores = ["purge", "pulse"]
         pass
 
     
