@@ -3,11 +3,8 @@ from src.Machines.Fiji202.Heating import Heating
 from src.Machines.Fiji202.Plasma import Plasma
 from src.uploader import Uploader
 
-from datetime import datetime
 import timeit
 import os
-import shutil
-import hashlib
 from src.Machines.BaseClasses.Runner_Base import Runner_Base
 
 

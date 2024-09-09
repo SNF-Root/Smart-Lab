@@ -3,11 +3,8 @@ from src.Machines.Savannah.Heating import Heating
 from src.uploader import Uploader
 from src.Machines.BaseClasses.Runner_Base import Runner_Base
 
-from datetime import datetime
 import timeit
 import os
-import shutil
-import hashlib
 
 
 class Savannah(Runner_Base):

@@ -1,6 +1,4 @@
-import matplotlib.pyplot as plt
 import os
-from datetime import datetime
 from abc import ABC, abstractmethod
 
 
@@ -57,7 +55,7 @@ class Heating_Base(ABC):
             self.dir_list = os.listdir(path)
             self.parseTitles()
         except NotADirectoryError:
-            print("DIRECTORY NOT FOUND, PROCESS ABORTED AT: \"src/Machines/Fiji202/Heating.py\" AT METHOD: readDir(). \n Hint: Try putting in a valid directory path.")
+            print("DIRECTORY NOT FOUND, PROCESS ABORTED AT METHOD: readDir(). \n Hint: Try putting in a valid directory path.")
             raise NotADirectoryError
 
 
@@ -76,8 +74,8 @@ class Heating_Base(ABC):
         try:
             foobar = self.dir_list[0]
         except IndexError:
-            print("DIRECTORY IS EMPTY, PROCESS ABORTED AT: \"src/Machines/Fiji202/Heating.py\" AT METHOD: parseTitles(). \n Hint: Try putting in a directory with files.")
-            raise IndexError
+            print("DIRECTORY IS EMPTY, PROCESS ABORTED AT METHOD: parseTitles(). \n Hint: Try putting in a directory with files.")
+            pass
         
         # for i in self.dir_list:
         #     title = i.lower()
@@ -126,7 +124,7 @@ class Heating_Base(ABC):
             # get creation time
             times.append((filepath, os.path.getctime(filepath)))
         if times.__len__() == 0:
-            print("NO FILES FOUND, PROCESS ABORTED AT: \"src/Machines/Fiji202/Heating.py\" AT METHOD: mostRecent(). \n Hint: Ansible may have trouble copying files.")
+            print("NO FILES FOUND, PROCESS ABORTED AT METHOD: mostRecent(). \n Hint: Ansible may have trouble copying files.")
             return None
         # sort by creation time
         times.sort(key=lambda x: x[1])

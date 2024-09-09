@@ -1,7 +1,4 @@
-from src.uploader import Uploader
-
 from datetime import datetime
-import timeit
 import os
 import shutil
 import hashlib
