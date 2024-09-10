@@ -211,7 +211,8 @@ class MVD(Runner_Base):
 
 
 def main():
-    pass
+    m = MVD()
+    m.run()
 
 
 if __name__ == "__main__":
