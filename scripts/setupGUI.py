@@ -35,18 +35,20 @@ class SetupGUI:
         self.rclone_path = ""
         self.register_file_path = os.path.join("src", "register.txt")
         self.rclone_file_path = os.path.join("src", "rclone.txt")
-        self.machinelist = ["Savannah ALD", "Fiji ALD (F202)", "Smart Cam", "MVD"]
+        self.machinelist = ["Savannah ALD", "Fiji ALD (F200)", "Fiji ALD (F202)", "MVD", "Smart Cam"]
         self.machinedict = {
             "Savannah ALD": "Savannah",
+            "Fiji ALD (F200)": "Fiji200",
             "Fiji ALD (F202)": "Fiji202",
-            "Smart Cam": "SmartCam",
-            "MVD": "MVD"
+            "MVD": "MVD",
+            "Smart Cam": "SmartCam"
         }
         self.how_many_folders = {
             "Savannah ALD": (2, "Pressure", "Heating"),
+            "Fiji ALD (F200)": (3, "Pressure", "Heating", "Plasma"),
             "Fiji ALD (F202)": (3, "Pressure", "Heating", "Plasma"),
-            "Smart Cam": (1, "Data"), 
-            "MVD": (2, "Pressure", "Heating")
+            "MVD": (2, "Pressure", "Heating"), 
+            "Smart Cam": (1, "Data")
         }
 
 
