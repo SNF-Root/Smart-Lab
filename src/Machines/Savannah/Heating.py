@@ -24,8 +24,6 @@ class Heating(Heating_Base):
         a list of the precursor manifold data for the heater
     precursors : list
         a list of lists of the precursor data for the heater
-    mfc1 : list
-        a list of the mfc1 data for the heater
     numPrecursors : int
         the number of precursors in the data
     cycles : list
@@ -114,7 +112,6 @@ class Heating(Heating_Base):
         self.innerHeater = []
         self.pManifold = []
         self.precursors = [[], [], [], [], []]
-        self.mfc1 = []
         self.numPrecursors = 0
         self.cycles = []
         self.recipe = ""
@@ -159,8 +156,7 @@ class Heating(Heating_Base):
                 for j in range(self.numPrecursors):
                     self.precursors[j].append(float(data[j+6]))
 
-                # record mfc1 and cycles data which is after the precursor data
-                self.mfc1.append(float(data[index+1]))
+                # record cycles data which is after the precursor data
                 self.cycles.append(int(data[index+3]))
 
                 iter += 1
@@ -270,8 +266,6 @@ class Heating(Heating_Base):
         axs[1, 1].set_title('Inner Heater')
         axs[2, 0].plot(self.hTime, self.pManifold, 'tab:purple')
         axs[2, 0].set_title('Precursor Manifold')
-        axs[2, 1].plot(self.hTime, self.mfc1, 'tab:brown')
-        axs[2, 1].set_title('MFC1')
         fig.tight_layout()
         fig.savefig(np_path)
         # plt.show()

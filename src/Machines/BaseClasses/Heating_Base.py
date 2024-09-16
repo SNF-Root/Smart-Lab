@@ -14,7 +14,6 @@ class Heating_Base(ABC):
         self.pDelivery = []
         self.aldValves = []
         self.precursors = [[], [], [], [], []]
-        self.mfc1 = []
         self.numPrecursors = 0
         # Cycles (int)
         self.cycles = []

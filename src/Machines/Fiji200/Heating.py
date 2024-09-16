@@ -116,8 +116,8 @@ class Heating(Heating_Base):
         self.chuck = []
         self.pDelivery = []
         self.aldValves = []
+        self.apc = []
         self.precursors = [[], [], [], [], []]
-        self.mfc1 = []
         self.numPrecursors = 0
         self.cycles = []
         self.recipe = ""
@@ -135,7 +135,7 @@ class Heating(Heating_Base):
         try:
             foobar = open(path)
         except FileNotFoundError:
-            print("FILE NOT FOUND, PROCESS ABORTE AT: \"src/Machines/Fiji200/Heating.py\" AT METHOD: readFile(). \n Hint: Try putting in a valid file path.")
+            print("FILE NOT FOUND, PROCESS ABORTED AT: \"src/Machines/Fiji200/Heating.py\" AT METHOD: readFile(). \n Hint: Try putting in a valid file path.")
             raise FileNotFoundError
 
         # main loop to read through the file line by line
@@ -175,7 +175,7 @@ class Heating(Heating_Base):
                         precursorsMax[i] =float(data[i + 7])
 
                 # record mfc1 and cycles data which is after the precursor data
-                self.mfc1.append(float(data[14]))
+                self.apc.append(float(data[12]))
                 self.cycles.append(int(data[16]))
 
                 iter += 1
@@ -218,6 +218,7 @@ class Heating(Heating_Base):
             self.outString += "Chuck Final Temp: " + str(self.chuck[-1]) + "\u00b0 C" + "\n\n"
             self.outString += "Precursor Delivery Final Temp: " + str(self.pDelivery[-1]) + "\u00b0 C" + "\n\n"
             self.outString += "ALD Valves Final Temp: " + str(self.aldValves[-1]) + "\u00b0 C" + "\n\n"
+            self.outString += "APC Valve Final Temp: " + str(self.apc[-1]) + "\u00b0 C" + "\n\n"
             self.averageTemp(precursorsMax)
             if errorMessage != "":
                 self.outString += "ERRORS: \n" + errorMessage
@@ -311,8 +312,8 @@ class Heating(Heating_Base):
         axs[2, 0].set_title('Precursor Delivery')
         axs[2, 1].plot(self.hTime, self.aldValves, 'tab:cyan')
         axs[2, 1].set_title('ALD Valves')
-        axs[3, 0].plot(self.hTime, self.mfc1, 'tab:brown')
-        axs[3, 0].set_title('MFC1')
+        axs[3, 0].plot(self.hTime, self.apc, 'tab:brown')
+        axs[3, 0].set_title('APC Valve')
         fig.tight_layout()
         fig.savefig(np_path)
         # plt.show()

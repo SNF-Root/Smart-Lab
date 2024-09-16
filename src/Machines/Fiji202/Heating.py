@@ -26,8 +26,6 @@ class Heating(Heating_Base):
         a list of the aldValves data for the heater
     precursors : list
         a list of lists of the precursor data for the heater
-    mfc1 : list
-        a list of the mfc1 data for the heater
     numPrecursors : int
         the number of precursors in the data
     cycles : list
@@ -117,7 +115,6 @@ class Heating(Heating_Base):
         self.pDelivery = []
         self.aldValves = []
         self.precursors = [[], [], [], [], []]
-        self.mfc1 = []
         self.numPrecursors = 0
         self.cycles = []
         self.recipe = ""
@@ -135,7 +132,7 @@ class Heating(Heating_Base):
         try:
             foobar = open(path)
         except FileNotFoundError:
-            print("FILE NOT FOUND, PROCESS ABORTE AT: \"src/Machines/Fiji202/Heating.py\" AT METHOD: readFile(). \n Hint: Try putting in a valid file path.")
+            print("FILE NOT FOUND, PROCESS ABORTED AT: \"src/Machines/Fiji202/Heating.py\" AT METHOD: readFile(). \n Hint: Try putting in a valid file path.")
             raise FileNotFoundError
 
         # main loop to read through the file line by line
@@ -174,8 +171,7 @@ class Heating(Heating_Base):
                     if float(data[i + 7]) > precursorsMax[i]:
                         precursorsMax[i] =float(data[i + 7])
 
-                # record mfc1 and cycles data which is after the precursor data
-                self.mfc1.append(float(data[14]))
+                # record cycles data which is after the precursor data
                 self.cycles.append(int(data[16]))
 
                 iter += 1
@@ -294,7 +290,7 @@ class Heating(Heating_Base):
         
         # Plotting the Heating Data
         # Graph the Non-Precursor Temperature Data
-        fig, axs = plt.subplots(4, 2)
+        fig, axs = plt.subplots(3, 2)
         fig.suptitle('Non-Precursor Heating Data')
         fig.supxlabel('Time (s)')
         fig.supylabel('Temperature (C)')
@@ -311,8 +307,6 @@ class Heating(Heating_Base):
         axs[2, 0].set_title('Precursor Delivery')
         axs[2, 1].plot(self.hTime, self.aldValves, 'tab:cyan')
         axs[2, 1].set_title('ALD Valves')
-        axs[3, 0].plot(self.hTime, self.mfc1, 'tab:brown')
-        axs[3, 0].set_title('MFC1')
         fig.tight_layout()
         fig.savefig(np_path)
         # plt.show()
