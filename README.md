@@ -112,6 +112,7 @@ To view the output files of a specific machine stored locally on the collector, 
 | Machine Name | Supported Algorithms | Support Status |
 | --- | :---: | :---: |
 | Cambridge Savannah ALD | Pressure, Heating | Beta |
+| Veeco Fiji 200 ALD | Pressure, Heating, Plasma (RF) | Beta |
 | Veeco Fiji 202 ALD | Pressure, Heating, Plasma (RF) | Beta |
 | MVD | Pressure, Heating | Beta |
 | SNF Smart Cam | None | Beta |
