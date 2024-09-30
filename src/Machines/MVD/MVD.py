@@ -108,9 +108,9 @@ class MVD(Runner_Base):
             if len(lines) < (2 * max_no_change_cycles):
                 return False
             lastCheck = lines[(-2 * max_no_change_cycles):]
-        print("Last 6 Checksums: ", lastCheck)
-        print("[DEBUG] Pressure Checksum: ", pSum)
-        print("[DEBUG] Heating Checksum: ", hSum)
+        # print("Last 6 Checksums: ", lastCheck)
+        # print("[DEBUG] Pressure Checksum: ", pSum)
+        # print("[DEBUG] Heating Checksum: ", hSum)
         print("[DEBUG] Num of Matching Pressure Checksums: ", lastCheck.count(pSum))
         print("[DEBUG] Num of Matching Heating Checksums: ", lastCheck.count(hSum))
         if (lastCheck.count(pSum) == max_no_change_cycles) and (lastCheck.count(hSum) == max_no_change_cycles):

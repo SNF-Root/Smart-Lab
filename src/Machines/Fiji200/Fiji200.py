@@ -112,10 +112,10 @@ class Fiji200(Runner_Base):
             if len(lines) < (3 * max_no_change_cycles):
                 return False
             lastCheck = lines[(-3 * max_no_change_cycles):]
-        print("Last 9 Checksums: ", lastCheck)
-        print("[DEBUG] Pressure Checksum: ", pSum)
-        print("[DEBUG] Heating Checksum: ", hSum)
-        print("[DEBUG] Plasma Checksum: ", plSum)
+        # print("Last 9 Checksums: ", lastCheck)
+        # print("[DEBUG] Pressure Checksum: ", pSum)
+        # print("[DEBUG] Heating Checksum: ", hSum)
+        # print("[DEBUG] Plasma Checksum: ", plSum)
         print("[DEBUG] Num of Matching Pressure Checksums: ", lastCheck.count(pSum))
         print("[DEBUG] Num of Matching Heating Checksums: ", lastCheck.count(hSum))
         print("[DEBUG] Num of Matching Plasma Checksums: ", lastCheck.count(plSum))
