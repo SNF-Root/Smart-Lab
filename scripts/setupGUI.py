@@ -35,20 +35,24 @@ class SetupGUI:
         self.rclone_path = ""
         self.register_file_path = os.path.join("src", "register.txt")
         self.rclone_file_path = os.path.join("src", "rclone.txt")
-        self.machinelist = ["Savannah ALD", "Fiji ALD (F200)", "Fiji ALD (F202)", "MVD", "Smart Cam"]
+        self.machinelist = ["Savannah ALD", "Fiji ALD (F200)", "Fiji ALD (F202)", "MVD", "Smart Cam", "Plasma-Therm HDPCVD (VersaLine)", "Oxford Cobra ALE (Ox-ALE)"]
         self.machinedict = {
             "Savannah ALD": "Savannah",
             "Fiji ALD (F200)": "Fiji200",
             "Fiji ALD (F202)": "Fiji202",
             "MVD": "MVD",
-            "Smart Cam": "SmartCam"
+            "Smart Cam": "SmartCam",
+            "Plasma-Therm HDPCVD (VersaLine)": "HDPCVD",
+            "Oxford Cobra ALE (Ox-ALE)": "OxALE"
         }
         self.how_many_folders = {
             "Savannah ALD": (2, "Pressure", "Heating"),
             "Fiji ALD (F200)": (3, "Pressure", "Heating", "Plasma"),
             "Fiji ALD (F202)": (3, "Pressure", "Heating", "Plasma"),
-            "MVD": (2, "Pressure", "Heating"), 
-            "Smart Cam": (1, "Data")
+            "MVD": (2, "Pressure", "Heating"),
+            "Smart Cam": (1, "Data"),
+            "Plasma-Therm HDPCVD (VersaLine)": (1, "WaferLog"),
+            "Oxford Cobra ALE (Ox-ALE)": (1, "Databases")
         }
 
 

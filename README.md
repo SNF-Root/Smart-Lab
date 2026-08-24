@@ -116,6 +116,8 @@ To view the output files of a specific machine stored locally on the collector, 
 | Veeco Fiji 202 ALD | Pressure, Heating, Plasma (RF) | Beta |
 | MVD | Pressure, Heating | Beta |
 | SNF Smart Cam | None | Beta |
+| Plasma-Therm HDPCVD (VersaLine) | WaferLog | Beta |
+| Oxford Instruments Cobra ALE (Ox-ALE / PTIQ) | Job | Beta |
 
 ## Packages Used
 
