@@ -29,7 +29,7 @@ class Job_Base(ABC):
         self.wafers = []
         # Recipe steps for this job's process action (list of dicts)
         self.steps = []
-        # Recipe phases (ALE cycle sub-steps) for this job's process action (list of dicts)
+        # Recipe phases (cycle sub-steps) for this job's process action (list of dicts)
         self.phases = []
 
         # File Paths (String)

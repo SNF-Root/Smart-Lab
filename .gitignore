@@ -17,8 +17,9 @@ src/Machines/Fiji202/*data*
 src/Machines/Savannah/*data*
 src/Machines/MVD/*data*
 src/Machines/SmartCam/*data*
-src/Machines/HDPCVD/*data*
-src/Machines/OxALE/*data*
+src/Machines/VersaLine/*data*
+src/Machines/Cobra/*data*
+src/Machines/KLADSE/*data*
 ansible/hosts.yml
 error.log
 

@@ -7,14 +7,16 @@ from src.Machines.BaseClasses.Job_Base import Job_Base
 
 class Job(Job_Base):
     """
-    A class to represent the Job algorithm for the Ox-ALE (Oxford Instruments Cobra ALE)
-    Machine.
+    A class to represent the Job algorithm for Oxford Instruments PlasmaPro 100 Cobra ICP
+    etchers running PTIQ control software (e.g. Ox-ALE, Ox-Gen: separate physical tools on
+    the same hardware/software platform, registered as separate named Cobra instances).
 
     Unlike the file-per-run tools in this project, the Cobra's PTIQ control software keeps
     its process history in a set of SQLite databases (PTIQ/Databases on the tool PC). This
     class reads the most recently completed job from Jobs.db: the job/lot info, the wafers
-    it moved, the recipe's process steps, and (for ALE recipes) the per-cycle phase timeline
-    for each step (RecipePhaseEntries.StepID references RecipeStepEntries.ID).
+    it moved, the recipe's process steps, and the per-cycle phase timeline for each step
+    (RecipePhaseEntries.StepID references RecipeStepEntries.ID) -- present whether the
+    recipe is a cyclic ALE process or a conventional single-pass ICP etch.
 
     Attributes
     ----------
@@ -37,7 +39,8 @@ class Job(Job_Base):
     steps : list
         a list of dicts describing each recipe step run during the job's process action
     phases : list
-        a list of dicts describing each recipe phase (ALE cycle sub-step) run within a step
+        a list of dicts describing each recipe phase (cycle sub-step, e.g. an ALE dose or
+        purge, or a single etch/overetch phase) run within a step
     dataPath : str
         the path to the directory that contains the data for the machine
     dbPath : str
@@ -163,7 +166,7 @@ class Job(Job_Base):
         self.phases = []
 
         if not self.taskID:
-            print("NO JOB SELECTED, PROCESS ABORTED AT: \"src/Machines/OxALE/Job.py\" AT METHOD: readJob(). \n Hint: Try running initialize() first.")
+            print("NO JOB SELECTED, PROCESS ABORTED AT: \"src/Machines/Cobra/Job.py\" AT METHOD: readJob(). \n Hint: Try running initialize() first.")
             return
 
         taskBytes = self.guidToBytes(self.taskID)
@@ -174,7 +177,7 @@ class Job(Job_Base):
             cur.execute("SELECT LotID, StartDate, EndDate, Status, Recipe FROM Jobs WHERE TaskID = ?;", (taskBytes,))
             row = cur.fetchone()
             if row is None:
-                print(f"JOB NOT FOUND, PROCESS ABORTED AT: \"src/Machines/OxALE/Job.py\" AT METHOD: readJob(). \n Hint: TaskID {self.taskID} was not found in Jobs.db.")
+                print(f"JOB NOT FOUND, PROCESS ABORTED AT: \"src/Machines/Cobra/Job.py\" AT METHOD: readJob(). \n Hint: TaskID {self.taskID} was not found in Jobs.db.")
                 return
             self.lotID, self.startTime, self.endTime, self.status, self.recipe = row
             self.durationSec = self.computeDurationSec(self.startTime, self.endTime)
@@ -339,7 +342,7 @@ class Job(Job_Base):
             fig.set_size_inches(8, 4)
             fig.tight_layout()
             fig.savefig(step_path)
-            print("GRAPHING ABORTED AT: \"src/Machines/OxALE/Job.py\" AT METHOD: plotJob(), No Step Data")
+            print("GRAPHING ABORTED AT: \"src/Machines/Cobra/Job.py\" AT METHOD: plotJob(), No Step Data")
 
         # Plotting the Phase Duration Trend for the step with the most phases
         if self.phases:
@@ -369,7 +372,7 @@ class Job(Job_Base):
             fig.set_size_inches(8, 5)
             fig.tight_layout()
             fig.savefig(phase_path)
-            print("GRAPHING ABORTED AT: \"src/Machines/OxALE/Job.py\" AT METHOD: plotJob(), No Phase Data")
+            print("GRAPHING ABORTED AT: \"src/Machines/Cobra/Job.py\" AT METHOD: plotJob(), No Phase Data")
 
 
     def sendData(self):
@@ -467,7 +470,7 @@ class Job(Job_Base):
 
 # Main function to test the Job class
 def main():
-    job = Job(os.path.join("src", "Machines", "OxALE", "data"))
+    job = Job(os.path.join("src", "Machines", "Cobra", "data"))
     job.initialize()
     job.sendData()
 

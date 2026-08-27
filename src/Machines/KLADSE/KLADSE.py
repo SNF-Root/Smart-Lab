@@ -1,4 +1,4 @@
-from src.Machines.OxALE.Job import Job
+from src.Machines.KLADSE.EventLog import EventLog
 from src.uploader import Uploader
 from src.Machines.BaseClasses.Runner_Base import Runner_Base
 
@@ -6,15 +6,18 @@ import timeit
 import os
 
 
-class OxALE(Runner_Base):
+class KLADSE(Runner_Base):
     """
-    Iterates through all Ox-ALE (Oxford Instruments Cobra ALE, PTIQ control software)
-    machines registered in register.txt and runs the Job algorithm for each of them.
+    Iterates through all KLA-DSE (Trikon/SPTS deep silicon etch, "fxPLPXTMC" control
+    software) machines registered in register.txt and runs the EventLog algorithm for
+    each of them.
 
-    Unlike the other machines in this project, Ox-ALE's process history lives in the PTIQ
-    software's Jobs.db SQLite database rather than one file per run. Ansible copies the
-    tool's PTIQ/Databases/Jobs.db into this machine's Databases-Data folder, and the Job
-    algorithm reads the most recently completed job out of it.
+    KLA-DSE's detailed per-step measured-value process trace lives in a live SQL Server
+    database (see Dataloggingscripts\\freshdatabase.sql on the tool PC), which this
+    project doesn't have connection details for yet - see tool_data/KLA-DSE/notes.txt.
+    What's read here instead is the portable EventLog\\CurrentEvents.csv, which records
+    every module state change, command, transfer, and fault, and from which each wafer's
+    process run can be reconstructed.
 
     Attributes
     ----------
@@ -33,15 +36,15 @@ class OxALE(Runner_Base):
     calculate_checksum(file_path)
         Calculate the checksum of the file contents.
     has_stopped_updating(dataPath, max_no_change_cycles=3)
-        Monitor Jobs.db for changes and return True if no changes are detected for
-        max_no_change_cycles consecutive cycles.
+        Monitor CurrentEvents.csv for changes and return True if no changes are detected
+        for max_no_change_cycles consecutive cycles.
     run()
-        Runs the Job algorithm for all Ox-ALE machines and uploads the results to the cloud storage.
+        Runs the EventLog algorithm for all KLA-DSE machines and uploads the results to the cloud storage.
     """
 
     def __init__(self):
         """
-        Constructor for the OxALE class.
+        Constructor for the KLADSE class.
 
             Parameters
             -----------
@@ -57,9 +60,9 @@ class OxALE(Runner_Base):
 
     def has_stopped_updating(self, dataPath, max_no_change_cycles=3):
         """
-        Monitor Jobs.db for changes and return True if no changes are detected for
-        max_no_change_cycles consecutive cycles. Guards against reading a copy of the
-        database mid-sync.
+        Monitor CurrentEvents.csv for changes and return True if no changes are detected
+        for max_no_change_cycles consecutive cycles. Guards against reading a copy of the
+        log mid-sync.
 
             Parameters
             ----------
@@ -70,25 +73,25 @@ class OxALE(Runner_Base):
 
             Returns
             -------
-                bool: True if the database stopped changing, False otherwise.
+                bool: True if the log stopped changing, False otherwise.
         """
-        job = Job(dataPath)
-        if not os.path.exists(job.dbPath):
+        eventlog = EventLog(dataPath)
+        if not os.path.exists(eventlog.eventLogFilePath):
             return False
-        dbSum = self.calculate_checksum(job.dbPath)
+        logSum = self.calculate_checksum(eventlog.eventLogFilePath)
 
         metadataPath = os.path.join(dataPath, "metadata.txt")
 
         with open(metadataPath, 'a+') as file:
-            file.write(dbSum + "\n")
+            file.write(logSum + "\n")
 
         with open(metadataPath, 'r') as file:
             lines = [line.strip() for line in file.readlines() if line.strip()]
             if len(lines) < max_no_change_cycles:
                 return False
             lastCheck = lines[-max_no_change_cycles:]
-        print("[DEBUG] Num of Matching Jobs.db Checksums: ", lastCheck.count(dbSum))
-        if lastCheck.count(dbSum) == max_no_change_cycles:
+        print("[DEBUG] Num of Matching CurrentEvents.csv Checksums: ", lastCheck.count(logSum))
+        if lastCheck.count(logSum) == max_no_change_cycles:
             with open(metadataPath, 'w') as file:
                 file.write("")
             return True
@@ -98,7 +101,7 @@ class OxALE(Runner_Base):
 
     def run(self):
         """
-        Runs the Job algorithm for all Ox-ALE machines and uploads the results to the cloud storage.
+        Runs the EventLog algorithm for all KLA-DSE machines and uploads the results to the cloud storage.
 
             Parameters
             -----------
@@ -115,7 +118,7 @@ class OxALE(Runner_Base):
         raw = []
         for line in file:
             m = tuple(line.strip().split())
-            if m[0] == "OxALE":
+            if m[0] == "KLADSE":
                 runMachine.append(m)
                 for i in range(len(m)):
                     if m[i] == "raw":
@@ -131,14 +134,14 @@ class OxALE(Runner_Base):
                 print(f"[NOTICE]: Machine data files are still updating OR awaiting new files\n skipping algs for data path: {dataPath}")
                 continue
 
-            j = Job(dataPath)
+            e = EventLog(dataPath)
 
             # Uploading raw files
             if raw[runMachine.index(machine)]:
-                newj = j.runRaw()
-                if newj:
-                    newj = self.changeName(newj, "Job")
-                    dirname = self.copy_sources_to_new_folder([newj], os.path.join(dataPath, "Output_Data"))
+                newe = e.runRaw()
+                if newe:
+                    newe = self.changeName(newe, "EventLog")
+                    dirname = self.copy_sources_to_new_folder([newe], os.path.join(dataPath, "Output_Data"))
                     # FIND ROOT DIRECTORY OF CLOUD STORAGE
                     file = open(os.path.join("src", "rclone.txt"), "r")
                     root = file.readline().strip()
@@ -153,14 +156,14 @@ class OxALE(Runner_Base):
                     up.rclone()
             # Uploading normal output files
             else:
-                newj = j.run()
+                newe = e.run()
                 stop = timeit.default_timer()
                 print('Data Processing Runtime: ', stop - start)
-                if newj:
+                if newe:
                     # ADD DATE TIME TO NEW DIRECTORY NAME
                     out_plot = os.path.join(dataPath, "Output_Plots")
                     out_text = os.path.join(dataPath, "Output_Text")
-                    dirname = self.copy_folder_contents(newj, out_plot, out_text,
+                    dirname = self.copy_folder_contents(newe, out_plot, out_text,
                                                         os.path.join(dataPath, "Output_Data"))
                     # FIND ROOT DIRECTORY OF CLOUD STORAGE
                     file = open(os.path.join("src", "rclone.txt"), "r")
@@ -178,8 +181,8 @@ class OxALE(Runner_Base):
 
 # Main function for testing
 def main():
-    o = OxALE()
-    o.run()
+    k = KLADSE()
+    k.run()
 
 
 if __name__ == "__main__":

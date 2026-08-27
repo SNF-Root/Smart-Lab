@@ -7,13 +7,14 @@ from src.Machines.BaseClasses.WaferLog_Base import WaferLog_Base
 
 class WaferLog(WaferLog_Base):
     """
-    A class to represent the WaferLog algorithm for the HDPCVD (Plasma-Therm VersaLine) Machine.
+    A class to represent the WaferLog algorithm for Plasma-Therm VersaLine process modules
+    (e.g. HDPCVD, or any other chemistry/config running the same VersaLine control software).
 
-    Parses the "HistoricalDataLogger" text file that VersaLine's HDPCVD/etch process module
-    writes out for every wafer it runs (found under HistoricalWaferDataLogs/<Module> on the
-    tool PC). Each file describes exactly one wafer run: run metadata, the recipe's step
-    table, any endpoint-detector channel history recorded during the run, and a process
-    sequence summary of set vs. actual step times.
+    Parses the "HistoricalDataLogger" text file that a VersaLine process module writes out
+    for every wafer it runs (found under HistoricalWaferDataLogs/<Module> on the tool PC).
+    Each file describes exactly one wafer run: run metadata, the recipe's step table, any
+    endpoint-detector channel history recorded during the run, and a process sequence
+    summary of set vs. actual step times.
 
     Attributes
     ----------
@@ -130,14 +131,14 @@ class WaferLog(WaferLog_Base):
             foobar = open(path)
             foobar.close()
         except FileNotFoundError:
-            print("FILE NOT FOUND, PROCESS ABORTED AT: \"src/Machines/HDPCVD/WaferLog.py\" AT METHOD: readFile(). \n Hint: Try putting in a valid file path.")
+            print("FILE NOT FOUND, PROCESS ABORTED AT: \"src/Machines/VersaLine/WaferLog.py\" AT METHOD: readFile(). \n Hint: Try putting in a valid file path.")
             raise FileNotFoundError
 
         with open(path, "r", encoding="utf-8", errors="replace") as file:
             lines = file.readlines()
 
         if not lines:
-            print("FILE IS EMPTY, PROCESS ABORTED AT: \"src/Machines/HDPCVD/WaferLog.py\" AT METHOD: readFile().")
+            print("FILE IS EMPTY, PROCESS ABORTED AT: \"src/Machines/VersaLine/WaferLog.py\" AT METHOD: readFile().")
             return
 
         self.parseHeader(lines)
@@ -475,7 +476,7 @@ class WaferLog(WaferLog_Base):
             fig.set_size_inches(8, 5)
             fig.tight_layout()
             fig.savefig(step_path)
-            print("GRAPHING ABORTED AT: \"src/Machines/HDPCVD/WaferLog.py\" AT METHOD: plotWaferLog(), No Process Sequence Data")
+            print("GRAPHING ABORTED AT: \"src/Machines/VersaLine/WaferLog.py\" AT METHOD: plotWaferLog(), No Process Sequence Data")
 
         # Plotting the Endpoint Channel Data
         hasData = any(len(v) > 0 for v in self.channelData)
@@ -497,7 +498,7 @@ class WaferLog(WaferLog_Base):
             fig.set_size_inches(8, 4)
             fig.tight_layout()
             fig.savefig(channel_path)
-            print("GRAPHING ABORTED AT: \"src/Machines/HDPCVD/WaferLog.py\" AT METHOD: plotWaferLog(), No Numeric Channel Data")
+            print("GRAPHING ABORTED AT: \"src/Machines/VersaLine/WaferLog.py\" AT METHOD: plotWaferLog(), No Numeric Channel Data")
 
 
     def sendData(self):
@@ -567,7 +568,7 @@ class WaferLog(WaferLog_Base):
 
 # Main function to test the WaferLog class
 def main():
-    waferlog = WaferLog(os.path.join("src", "Machines", "HDPCVD", "data"))
+    waferlog = WaferLog(os.path.join("src", "Machines", "VersaLine", "data"))
     waferlog.initialize()
     waferlog.sendData()
 

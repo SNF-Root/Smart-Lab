@@ -1,4 +1,4 @@
-from src.Machines.HDPCVD.WaferLog import WaferLog
+from src.Machines.VersaLine.WaferLog import WaferLog
 from src.uploader import Uploader
 from src.Machines.BaseClasses.Runner_Base import Runner_Base
 
@@ -6,9 +6,9 @@ import timeit
 import os
 
 
-class HDPCVD(Runner_Base):
+class VersaLine(Runner_Base):
     """
-    Iterates through all HDPCVD (Plasma-Therm VersaLine) machines registered in register.txt
+    Iterates through all Plasma-Therm VersaLine machines (e.g. PT-Ox, PT-MTL, HDPCVD) registered in register.txt
     and runs the WaferLog algorithm for each of them.
 
     Attributes
@@ -31,12 +31,12 @@ class HDPCVD(Runner_Base):
         Monitor the most recent wafer log file for updates and return True if no updates are
         detected for max_no_change_cycles consecutive cycles.
     run()
-        Runs the WaferLog algorithm for all HDPCVD machines and uploads the results to the cloud storage.
+        Runs the WaferLog algorithm for all VersaLine machines and uploads the results to the cloud storage.
     """
 
     def __init__(self):
         """
-        Constructor for the HDPCVD class.
+        Constructor for the VersaLine class.
 
             Parameters
             -----------
@@ -92,7 +92,7 @@ class HDPCVD(Runner_Base):
 
     def run(self):
         """
-        Runs the WaferLog algorithm for all HDPCVD machines and uploads the results to the cloud storage.
+        Runs the WaferLog algorithm for all VersaLine machines and uploads the results to the cloud storage.
 
             Parameters
             -----------
@@ -109,7 +109,7 @@ class HDPCVD(Runner_Base):
         raw = []
         for line in file:
             m = tuple(line.strip().split())
-            if m[0] == "HDPCVD":
+            if m[0] == "VersaLine":
                 runMachine.append(m)
                 for i in range(len(m)):
                     if m[i] == "raw":
@@ -172,8 +172,8 @@ class HDPCVD(Runner_Base):
 
 # Main function for testing
 def main():
-    h = HDPCVD()
-    h.run()
+    v = VersaLine()
+    v.run()
 
 
 if __name__ == "__main__":
