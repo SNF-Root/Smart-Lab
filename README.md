@@ -116,7 +116,7 @@ To view the output files of a specific machine stored locally on the collector, 
 | Veeco Fiji 202 ALD | Pressure, Heating, Plasma (RF) | Beta |
 | MVD | Pressure, Heating | Beta |
 | SNF Smart Cam | None | Beta |
-| Plasma-Therm VersaLine (HDPCVD and other configs) | WaferLog | Beta |
+| Plasma-Therm VersaLine (PT-Ox, PT-MTL, HDPCVD) | WaferLog | Beta |
 | Oxford Instruments PlasmaPro 100 Cobra ICP Etch (PTIQ) | Job | Beta |
 | KLA-DSE (Trikon/SPTS Deep Silicon Etch) | EventLog | Beta |
 
